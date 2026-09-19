@@ -61,6 +61,20 @@ describe('emitted palette.css contrast (task 2.3)', () => {
 	});
 });
 
+describe('emitted palette.css contrast: --accent as text on --surface', () => {
+	it('meets WCAG AA for every accent on surface in both modes', () => {
+		for (const name of PALETTE_NAMES) {
+			for (const mode of MODES) {
+				const accent = tokensFor(parsed[mode], `[data-palette="${name}"]`)['--accent'];
+				const surface = tokensFor(parsed[mode], ':root')['--surface'];
+				const ratio = contrastRatio(accent, surface);
+				expect(ratio, `${name} ${mode} accent on surface`).toBeGreaterThanOrEqual(WCAG_AA);
+			}
+		}
+	});
+
+});
+
 describe('emitted selector mapping (task 2.4)', () => {
 	it('maps each [data-palette] selector to that name\'s own tokens in both modes', () => {
 		for (const name of PALETTE_NAMES) {
