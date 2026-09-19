@@ -120,3 +120,16 @@ describe('HitPointsBlock — adjustment, persistence, and the down state', () =>
 		expect(tracker.style.opacity === '' || Number(tracker.style.opacity) === 1).toBe(true);
 	});
 });
+
+describe('HitPointsBlock — control order', () => {
+	it('renders the controls in reading order -5, -1, +1, +5, damage before healing', () => {
+		const { container } = render(HitPointsBlock, {
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'sunny' }
+		});
+
+		const order = [...container.querySelectorAll('[data-hp-adjust]')].map((el) =>
+			el.getAttribute('data-hp-adjust')
+		);
+		expect(order).toEqual(['-5', '-1', '+1', '+5']);
+	});
+});

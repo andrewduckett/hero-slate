@@ -14,10 +14,10 @@
 
 ## 3. Block order and group headings
 
-- [ ] 3.1 Write failing tests in `CharacterView.test.ts` for the "Sheet block order" requirement. Use `data-block` attributes and document position. Cover the full order, a missing hit points tracker, and abilities before the tracker. Verify they fail.
-- [ ] 3.2 Write failing tests for the "Group headings" requirement. Cover "Stats", "Health", and "Pools" in order, no "Health" heading without hit points, and a "Stats" heading with only combat entries. Verify they fail.
-- [ ] 3.3 Reorder the blocks in `CharacterView.svelte`, add the `data-block` attributes, and render each group heading only when its group renders. Verify the tests from 3.1 and 3.2 pass, and that every existing `CharacterView` test still passes unchanged.
-- [ ] 3.4 Write a test that the hit points controls appear in the order -5, -1, +1, +5. Verify it passes against the current markup, and keep it as a regression guard.
+- [x] 3.1 Write failing tests in `CharacterView.test.ts` for the "Sheet block order" requirement. Use `data-block` attributes and document position. Cover the full order, a missing hit points tracker, and abilities before the tracker. Verify they fail.
+- [x] 3.2 Write failing tests for the "Group headings" requirement. Cover "Stats", "Health", and "Pools" in order, no "Health" heading without hit points, and a "Stats" heading with only combat entries. Verify they fail.
+- [x] 3.3 Reorder the blocks in `CharacterView.svelte`, add the `data-block` attributes, and render each group heading only when its group renders. Verify the tests from 3.1 and 3.2 pass, and that every existing `CharacterView` test still passes unchanged.
+- [x] 3.4 Write a test that the hit points controls appear in the order -5, -1, +1, +5. Verify it passes against the current markup, and keep it as a regression guard.
 
 ## 4. Restyle the blocks
 

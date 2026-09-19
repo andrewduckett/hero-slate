@@ -9,7 +9,7 @@
 </script>
 
 {#if resolved.length > 0}
-	<div class="sections">
+	<div class="sections" data-block="sections">
 		{#each resolved as section}
 			<section data-palette={section.palette}>
 				<h2 class="section-heading">{section.title}</h2>

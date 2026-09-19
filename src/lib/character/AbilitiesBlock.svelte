@@ -11,7 +11,7 @@
 </script>
 
 {#if entries.length > 0}
-	<section class="abilities" aria-label="Abilities">
+	<section class="abilities" aria-label="Abilities" data-block="abilities">
 		{#each entries as entry}
 			<div class="ability">
 				<span class="label">{entry.label}</span>

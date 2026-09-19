@@ -73,6 +73,7 @@
 {#if resolved !== null}
 	<section
 		class="hit-points"
+		data-block="hit-points"
 		aria-label="Hit points"
 		data-hp-state={down ? 'down' : undefined}
 		style:opacity={down ? 0.55 : 1}

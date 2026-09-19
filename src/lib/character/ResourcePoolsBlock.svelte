@@ -30,7 +30,7 @@
 </script>
 
 {#if resolved.length > 0}
-	<section class="resource-pools" aria-label="Resource pools">
+	<section class="resource-pools" aria-label="Resource pools" data-block="pools">
 		{#each resolved as pool (pool.id)}
 			<div class="pool" data-palette={resolvePalette(pool.color)}>
 				<h2>{pool.label}</h2>

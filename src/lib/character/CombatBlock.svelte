@@ -11,7 +11,7 @@
 </script>
 
 {#if entries.length > 0}
-	<section class="combat" aria-label="Combat">
+	<section class="combat" aria-label="Combat" data-block="combat">
 		{#each entries as entry}
 			<div class="combat-entry">
 				<span class="label">{entry.label}</span>
