@@ -1,0 +1,59 @@
+name: Urven, the Silent Maw
+level: 6
+class: Monk
+color: neutral
+
+abilities:
+  - label: Strength
+    value: 14
+  - label: Dexterity
+    value: 20
+  - label: Constitution
+    value: 16
+  - label: Intelligence
+    value: 10
+  - label: Wisdom
+    value: 14
+  - label: Charisma
+    value: 11
+combat:
+  - label: Armor Class
+    value: 17
+  - label: Speed
+    value: 45
+  - label: Initiative
+    value: "+5"
+
+hitPoints:
+  max: 54
+
+pools:
+  - id: ki
+    label: Ki
+    color: sun
+    max: 5
+
+sections:
+  - title: Your Turn
+    color: forest
+    rows:
+      - title: Attack
+        body: "wwipe with your claws: [[d20+8]] to hit, [[1d8+5]] damage"
+      - title: Grapple an enemy
+        body: "[[d20+8]] to hit, must succeed on a Str/Dex (it chooses which) saving throw [[DC 13]]."
+      - title: Stun an enemy
+        body: "[[d20+8]] to hit, must succeed on a Con saving throw [[DC 13]]."
+      - title: Shadow Step
+        body: teleport up to 60 ft. to an unoccupied space that you can see that's also in Dim Light or Darkness. You have Advantage on the next melee attack you make before the end of the current turn.
+  - title: Strengths
+    color: forest
+    rows:
+    - title: 🤸🏼‍♂️ Acrobatics
+      body: flips, [[+8]] bonus
+    - title: 👀 Insight
+      body: understanding, [[+6]] bonus
+    - title: 🤫 Sneaking
+      body: moving quietly & hiding, [[+8]] bonus
+    - title: 🌿 Survival
+      body: learn about plants, beasts, & the wild, [[+5]] bonus
+

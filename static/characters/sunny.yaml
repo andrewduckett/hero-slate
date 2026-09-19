@@ -15,16 +15,16 @@ abilities:
   - label: Dexterity
     value: 14
   - label: Constitution
-    value: 13
+    value: 14
   - label: Intelligence
-    value: 12
+    value: 10
   - label: Wisdom
     value: 18
   - label: Charisma
-    value: 11
+    value: 12
 combat:
   - label: Armor Class
-    value: 16
+    value: 15
   - label: Speed
     value: 30
   - label: Initiative
@@ -37,10 +37,22 @@ hitPoints:
 
 # Resource-pool maximums are authored. Remaining uses are per-device state.
 pools:
+  - id: spell-slots-1
+    label: 1st Level
+    color: ocean
+    max: 4
+  - id: spell-slots-2
+    label: 2nd Level
+    color: ocean
+    max: 3
+  - id: spell-slots-3
+    label: 3rd Level
+    color: ocean
+    max: 3
   - id: wild-shape
     label: Wild Shape
     color: forest
-    max: 2
+    max: 3
 
 sections:
   - title: Your Turn
@@ -48,17 +60,21 @@ sections:
     rows:
       - title: Attack
         body: "Wild Shape claws: [[d20+6]] to hit, [[2d6+4]] damage"
-      - title: Shapeshift
-        body: "Turn into a beast (CR ≤ 2). Use [[+4]] Wis save to hold form."
-      - title: Spellcast
+      - title: Cast a Spell
         body: "Cast a prepared spell — spell attack [[d20+6]], save DC 15"
+      - title: Shapeshift
+        body: "Transform into an animal — Wolf, Bear, Horse, or Cat. You can do this 2 times before a rest, and you don't even have to roll."
       - title: Help
-        body: Give an ally *advantage* on their next roll
+        body: Heal a friend for [[2d8 + 3]]) — or boost the team [[+d4]], make enemies easy to hit, and more).
   - title: Strengths
     color: forest
     rows:
-      - title: Wild Empathy
-        body: "Speak with beasts; they treat you as a friend [[+4]] bonus"
-      - title: Druidic
-        body: Leave hidden messages only druids can read
-      - body: "**Thornwood grove** backs you — call for aid once per long rest"
+    - title: 👀 Spotting Things
+      body: noticing what others miss, [[+6]] bonus
+    - title: 🐾 Animal Friends
+      body: calming & handling animals, [[+6]] bonus
+    - title: 🤫 Sneaking
+      body: moving quietly & hiding, [[+5]] bonus
+    - title: 🌿 Forest Lore
+      body: learn about plants, beasts, & the wild, [[+3]] bonus
+
