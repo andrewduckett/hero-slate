@@ -199,7 +199,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 6. `custom-sections-richtext` — freeform titled sections with markup + styled dice pills
+- [x] 6. `custom-sections-richtext` — freeform titled sections with markup + styled dice pills
   - **Persona served**: Sunny (prompts), Andrew (authoring), Andrew-as-Player
   - **Journey segment**: Player "see who I am" (the philosophy payload: prompts, not a catalog)
   - **MoSCoW**: Must
