@@ -23,6 +23,7 @@ describe('shipped sunny.yaml', () => {
 			expect(result.character.name).toBe('Sunny Thornwood');
 			expect(result.character.level).toBe(6);
 			expect(result.character.class).toBe('Druid');
+			expect(result.character.color).toBe('forest');
 		}
 	});
 });

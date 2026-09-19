@@ -122,6 +122,44 @@ describe('createYamlProvider', () => {
 		expect((await provider.getCharacter('sunny')).status).toBe('invalid');
 	});
 
+	it('treats a non-string color as invalid', async () => {
+		const num = fetchReturning(res({ body: 'name: Sunny\ncolor: 42' }));
+		expect((await createYamlProvider(num.fn).getCharacter('sunny')).status).toBe('invalid');
+
+		const list = fetchReturning(res({ body: 'name: Sunny\ncolor:\n  - forest' }));
+		expect((await createYamlProvider(list.fn).getCharacter('sunny')).status).toBe('invalid');
+	});
+
+	it('carries a known color string through unresolved', async () => {
+		const { fn } = fetchReturning(res({ body: 'name: Sunny\ncolor: forest' }));
+		const result = await createYamlProvider(fn).getCharacter('sunny');
+
+		expect(result.status).toBe('found');
+		if (result.status === 'found') {
+			expect(result.character.color).toBe('forest');
+		}
+	});
+
+	it('carries an unknown color name through as valid data', async () => {
+		const { fn } = fetchReturning(res({ body: 'name: Sunny\ncolor: rainbow' }));
+		const result = await createYamlProvider(fn).getCharacter('sunny');
+
+		expect(result.status).toBe('found');
+		if (result.status === 'found') {
+			expect(result.character.color).toBe('rainbow');
+		}
+	});
+
+	it('reports an absent color as absent, not defaulted', async () => {
+		const { fn } = fetchReturning(res({ body: 'name: Sunny' }));
+		const result = await createYamlProvider(fn).getCharacter('sunny');
+
+		expect(result.status).toBe('found');
+		if (result.status === 'found') {
+			expect(result.character.color).toBeUndefined();
+		}
+	});
+
 	it('carries provisional fields through unchanged', async () => {
 		const body = [
 			'name: Sunny Thornwood',

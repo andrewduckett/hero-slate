@@ -1,0 +1,76 @@
+/* Generated from src/lib/theme/palette.ts by src/lib/theme/generate.ts. Do not edit by hand. */
+
+:root {
+	color-scheme: light dark;
+	--surface: #ffffff;
+	--foreground: #1a1d21;
+	background-color: var(--surface);
+	color: var(--foreground);
+}
+
+[data-palette="forest"] {
+	--accent: #1b7f43;
+	--on-accent: #ffffff;
+}
+
+[data-palette="fire"] {
+	--accent: #c0392b;
+	--on-accent: #ffffff;
+}
+
+[data-palette="ocean"] {
+	--accent: #1a66d6;
+	--on-accent: #ffffff;
+}
+
+[data-palette="berry"] {
+	--accent: #a83278;
+	--on-accent: #ffffff;
+}
+
+[data-palette="sun"] {
+	--accent: #8a5a12;
+	--on-accent: #ffffff;
+}
+
+[data-palette="neutral"] {
+	--accent: #444b53;
+	--on-accent: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--surface: #14171a;
+		--foreground: #e6e9ec;
+	}
+
+	[data-palette="forest"] {
+		--accent: #7fd8a0;
+		--on-accent: #06301a;
+	}
+
+	[data-palette="fire"] {
+		--accent: #ff9f8a;
+		--on-accent: #3a0d06;
+	}
+
+	[data-palette="ocean"] {
+		--accent: #8fc4ff;
+		--on-accent: #062146;
+	}
+
+	[data-palette="berry"] {
+		--accent: #f0a6d0;
+		--on-accent: #3d0a29;
+	}
+
+	[data-palette="sun"] {
+		--accent: #ffd86b;
+		--on-accent: #3a2905;
+	}
+
+	[data-palette="neutral"] {
+		--accent: #c9d1d9;
+		--on-accent: #14171a;
+	}
+}

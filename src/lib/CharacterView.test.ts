@@ -13,6 +13,35 @@ describe('CharacterView', () => {
 		expect(screen.getByText('Level 6 Druid')).toBeTruthy();
 	});
 
+	it('themes the header with the resolved palette accent and on-accent', () => {
+		const { container } = render(CharacterView, {
+			props: { result: { status: 'found', character: { ...sunny, color: 'forest' } } }
+		});
+
+		const root = container.querySelector('[data-palette]') as HTMLElement;
+		expect(root.getAttribute('data-palette')).toBe('forest');
+
+		const header = container.querySelector('header') as HTMLElement;
+		expect(header.style.backgroundColor).toContain('var(--accent)');
+		expect(header.style.color).toContain('var(--on-accent)');
+	});
+
+	it('falls back to the neutral palette for an unknown or missing color', () => {
+		const unknown = render(CharacterView, {
+			props: { result: { status: 'found', character: { ...sunny, color: 'rainbow' } } }
+		});
+		expect(unknown.container.querySelector('[data-palette]')?.getAttribute('data-palette')).toBe(
+			'neutral'
+		);
+
+		const missing = render(CharacterView, {
+			props: { result: { status: 'found', character: sunny } }
+		});
+		expect(missing.container.querySelector('[data-palette]')?.getAttribute('data-palette')).toBe(
+			'neutral'
+		);
+	});
+
 	it('renders the name alone when the descriptor is empty', () => {
 		const nameOnly: Character = { id: 'x', name: 'Nameless One' };
 		render(CharacterView, { props: { result: { status: 'found', character: nameOnly } } });

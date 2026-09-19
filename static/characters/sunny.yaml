@@ -1,9 +1,10 @@
 # Sunny Thornwood — the walking-skeleton sample character.
-# Identity fields (name, level, class) are validated this release.
+# Identity fields (name, level, class, color) are validated this release.
 # Everything below is provisional: later stories define and render it.
 name: Sunny Thornwood
 level: 6
 class: Druid
+color: forest
 
 # --- Provisional fields (illustrative only) ---
 abilities:
