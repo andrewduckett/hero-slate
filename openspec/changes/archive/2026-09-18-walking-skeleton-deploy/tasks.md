@@ -24,4 +24,4 @@
 ## 5. Character config and live deploy
 
 - [x] 5.1 Add `static/characters/sunny.yaml` (name "Sunny Thornwood", level 6, class "Druid", plus illustrative provisional fields); verify the dev server serves `/characters/sunny.yaml` as YAML and `/sunny` renders the header.
-- [ ] 5.2 Configure the Cloudflare Workers static-assets deploy (`wrangler.jsonc` assets directory + SPA not-found handling) and deploy; verify the live site returns 200 for `/sunny` on direct load and on refresh, and serves `/characters/sunny.yaml`.
+- [x] 5.2 Configure the Cloudflare Workers static-assets deploy (`wrangler.jsonc` assets directory + SPA not-found handling) and deploy; verify the live site returns 200 for `/sunny` on direct load and on refresh, and serves `/characters/sunny.yaml`.
