@@ -1,7 +1,7 @@
 # Discovery: Simple Character Sheet Web App
 
 > Status: complete
-> Created: 2026-09-18 · Last revised: 2026-09-18 (discovery complete)
+> Created: 2026-09-18 · Last revised: 2026-09-19 (added `sheet-restyle`)
 
 > Release plan produced by the discovery skill. Resume or revise by re-running the skill.
 > To build: run `/opsx:propose` and ask it to use the next unchecked story below.
@@ -126,6 +126,9 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
 - **Unlisted/noindex access config** — cheap privacy.
 - **Avatar images** — emoji works without it.
 
+- **Sheet restyle + section reorder** (story 7) — Player: see who I am; the unstyled
+  sheet reads worse than the bespoke page it replaces.
+
 ### Could
 
 - Pool number±view fallback for large counts (>12).
@@ -175,7 +178,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Scope**: in: six ability scores from authored scores, modifier `floor((score-10)/2)` shown prominently, raw score small; Armor Class + Speed (authored); Initiative auto from DEX with file override; standard D&D labels. / out: any tracking/interaction, custom sections.
   - **Relevant code**: `src/lib/character/abilities.*` (modifier calc), stat-block components.
   - **Added**: 2026-09-18
-  - **Change**: _not yet proposed_
+  - **Change**: `stat-block` (implemented, archived 2026-09-19)
 
 - [x] 4. `hp-tracker` — tap ± to change HP; state remembered across reloads
   - **Persona served**: Sunny, Andrew-as-Player
@@ -186,7 +189,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Scope**: in: `current/max` readout + slim bar; −1/−5/+1/+5 bidirectional; clamp `0..max`; gentle "down" state at 0; `state-store` interface + localStorage impl keyed by logical id; reconcile stored current vs new max on load. / out: reset button (manual restore by design), pools, temp HP/death saves.
   - **Relevant code**: `src/lib/state/store.*`, `src/lib/state/localStorage.*`, HP component.
   - **Added**: 2026-09-18
-  - **Change**: _not yet proposed_
+  - **Change**: `hp-tracker` (implemented, archived 2026-09-19)
 
 - [x] 5. `resource-pools` — tap pool dots to spend/restore; persists per device
   - **Persona served**: Sunny, Andrew-as-Player
@@ -197,7 +200,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Scope**: in: config-defined pools `{label,color,max}`; rows of bidirectional tappable dots; per-pool persistence via state-store; reconcile dot count vs changed `max`. / out: number±fallback for >12 (Could), reset button, rest mechanics.
   - **Relevant code**: pool components; extend `src/lib/state/*` for pool state.
   - **Added**: 2026-09-18
-  - **Change**: _not yet proposed_
+  - **Change**: `resource-pools` (implemented, archived 2026-09-19)
 
 - [x] 6. `custom-sections-richtext` — freeform titled sections with markup + styled dice pills
   - **Persona served**: Sunny (prompts), Andrew (authoring), Andrew-as-Player
@@ -208,9 +211,20 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Scope**: in: config-defined ordered sections `{title,color,rows:[{title,color?,body}]}`; titled rich-text row layout (colored title left, body right); XSS-safe markup renderer for `**bold**`, `*italic*`, emoji, and `[[d20+3]]` → styled non-interactive dice pill; optional `+N` badge on strengths rows; section hidden if absent. / out: interactive dice rolling, raw HTML in config, hex colors.
   - **Relevant code**: `src/lib/richtext/*` (parser + dice pill), section/row components.
   - **Added**: 2026-09-18
-  - **Change**: _not yet proposed_
+  - **Change**: `custom-sections-richtext` (implemented, archived 2026-09-19)
 
-- [ ] 7. `home-picker` — `/` lists characters as tappable cards
+- [x] 7. `sheet-restyle` — the sheet gets a real visual design, in the example sheet's section order
+  - **Persona served**: Sunny, Andrew-as-Player
+  - **Journey segment**: Player "see who I am" + "track in play" (legibility and polish)
+  - **MoSCoW**: Should
+  - **Why this story / why now**: stories 1–6 shipped behavior with almost no styling — browser-default serif, full-bleed header, no spacing. The sheet a child reads should look at least as polished as the bespoke page it replaces (`static.home.duckett.fun/sunny/`). Do it before the picker so picker cards can reuse the new card style.
+  - **Depends on**: stories 2, 3, 4, 5, 6
+  - **Scope**: in: restyle every existing block (header, ability tiles, combat tiles, HP tracker, pool dots, section cards) with a fresh look; reorder blocks to the example's order — header, stats (abilities then combat), health, pools, sections; self-hosted display + body web fonts served as static assets; any new color tokens added to `palette.ts` and AA-checked in light and dark; move Sunny's "Strengths" section before "Your Turn" in `sunny.yaml`. / out: new data fields (story, quote, callout, spell/animal cards), changes to tracker behavior (e.g. tappable hearts), a theme toggle.
+  - **Relevant code**: `src/lib/CharacterView.svelte` (block order), `src/lib/character/*Block.svelte`, `src/lib/theme/palette.ts` + generated `palette.css`, `src/routes/+layout.svelte`, `static/fonts/`, `static/characters/sunny.yaml`.
+  - **Added**: 2026-09-19
+  - **Change**: `sheet-restyle` (archived 2026-09-19)
+
+- [ ] 8. `home-picker` — `/` lists characters as tappable cards
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "find my character" (choose among many)
   - **MoSCoW**: Must
@@ -221,7 +235,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 8. `pwa-install` — installable app with manifest + icons
+- [ ] 9. `pwa-install` — installable app with manifest + icons
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "use with no wifi" (home-screen install half)
   - **MoSCoW**: Should
@@ -232,34 +246,34 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 9. `offline-caching` — works with no wifi; edits refresh next online open
+- [ ] 10. `offline-caching` — works with no wifi; edits refresh next online open
   - **Persona served**: Sunny, Andrew-as-Player, Andrew (Author)
   - **Journey segment**: Player "use with no wifi"; Author "iterate (edits propagate)"
   - **MoSCoW**: Should
-  - **Why this story / why now**: resilience for flaky table wifi. Riskier than install (SW lifecycle), so it follows story 8.
-  - **Depends on**: stories 1, 8
+  - **Why this story / why now**: resilience for flaky table wifi. Riskier than install (SW lifecycle), so it follows story 9.
+  - **Depends on**: stories 1, 9
   - **Scope**: in: service worker; cache-first app shell with versioned update + "refresh" prompt on new deploy; stale-while-revalidate for character/manifest config. / out: background sync, push, cross-device state.
   - **Relevant code**: SW registration + strategy config (e.g., Vite PWA/Workbox), build integration.
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 10. `unlisted-access` — site is public but not search-indexed
+- [ ] 11. `unlisted-access` — site is public but not search-indexed
   - **Persona served**: Andrew (Author)
   - **Journey segment**: Author "build & deploy" (privacy)
   - **MoSCoW**: Should
   - **Why this story / why now**: cheap privacy for a child's page; content stays low-sensitivity and shareable by link.
   - **Depends on**: story 1
   - **Scope**: in: `noindex`/robots headers or meta; no exposed directory beyond the manifest. / out: Cloudflare Access/login (explicitly not chosen).
-  - **Relevant code**: `robots.txt`, response headers / meta, Cloudflare Pages config.
+  - **Relevant code**: `robots.txt`, response headers / meta, Cloudflare Workers static-assets config (`wrangler` / `static/_headers`).
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 11. `avatar-images` — image avatars in header and picker cards
+- [ ] 12. `avatar-images` — image avatars in header and picker cards
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "find my character" + "see who I am" (polish)
   - **MoSCoW**: Should
   - **Why this story / why now**: emoji avatars already work from earlier stories; images are the enhancement.
-  - **Depends on**: stories 3, 7
+  - **Depends on**: stories 3, 8
   - **Scope**: in: `avatar` accepts an image path (repo asset) as well as emoji; render in header + picker card with sensible fit/fallback. / out: uploads, cropping, remote images.
   - **Relevant code**: identity header + picker card components; `characters/` or `public/` asset handling.
   - **Added**: 2026-09-18
@@ -281,3 +295,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
 - 2026-09-18 — Added personas (incl. Andrew-as-Player); journey maps; MoSCoW; 11 stories.
   Splits: kept `custom-sections-richtext` whole; split PWA into `pwa-install` +
   `offline-caching`. Discovery marked complete.
+- 2026-09-19 — Revision: inserted story 7 `sheet-restyle` (Should) ahead of `home-picker`
+  after reviewing the live sheet against the bespoke example; renumbered stories 7–11 to
+  8–12 and their dependencies; reconciled stories 3–6 as archived; `unlisted-access` (now 11) points
+  at Cloudflare Workers static-assets config instead of Cloudflare Pages.

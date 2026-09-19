@@ -6,8 +6,14 @@
 	// to the sheet (CharacterView sets `data-palette`); a route with no
 	// character, such as `/`, renders in the neutral default.
 	import '$lib/theme/palette.css';
+	// The self-hosted fonts, then the page-level layout variables. Neither holds
+	// a color.
+	import '$lib/theme/fonts.css';
+	import '$lib/theme/base.css';
 
 	let { children } = $props();
 </script>
 
-{@render children()}
+<main class="page">
+	{@render children()}
+</main>

@@ -30,10 +30,10 @@
 </script>
 
 {#if resolved.length > 0}
-	<section class="resource-pools" aria-label="Resource pools">
+	<section class="resource-pools" aria-label="Resource pools" data-block="pools">
 		{#each resolved as pool (pool.id)}
 			<div class="pool" data-palette={resolvePalette(pool.color)}>
-				<h2>{pool.label}</h2>
+				<h3>{pool.label}</h3>
 				<div class="dots" aria-label={`${pool.label}: ${counts[pool.id]} remaining`}>
 					{#each Array(pool.max) as _, index}
 						{@const dot = index + 1}
@@ -51,11 +51,53 @@
 {/if}
 
 <style>
-	.resource-pools { display: grid; gap: 1rem; margin-block: 1rem; }
-	.pool { display: grid; gap: 0.5rem; }
-	h2 { margin: 0; font-size: 1rem; }
-	.dots { display: flex; gap: 0.5rem; }
-	button { inline-size: 2.25rem; block-size: 2.25rem; border-radius: 50%; border: 2px solid var(--accent); cursor: pointer; }
-	button[data-pool-dot='filled'] { background: var(--accent); }
-	button[data-pool-dot='empty'] { background: transparent; }
+	.resource-pools {
+		display: grid;
+		gap: var(--space-3);
+	}
+
+	/* Each pool is a raised card with its own palette. */
+	.pool {
+		display: grid;
+		gap: var(--space-3);
+		padding: var(--space-4);
+		background-color: var(--raised);
+		border-radius: var(--radius-l);
+		box-shadow: var(--shadow);
+	}
+
+	h3 {
+		margin: 0;
+		font-size: 1.25rem;
+		font-weight: 800;
+	}
+
+	.dots {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+	}
+
+	/* A chunky dot that is its own tap target: 2.75rem is 44 CSS pixels. */
+	button {
+		inline-size: 2.75rem;
+		block-size: 2.75rem;
+		padding: 0;
+		border: 4px solid var(--accent);
+		border-radius: 50%;
+		cursor: pointer;
+	}
+
+	button[data-pool-dot='filled'] {
+		background-color: var(--accent);
+	}
+
+	button[data-pool-dot='empty'] {
+		background-color: var(--raised);
+	}
+
+	button:focus-visible {
+		outline: 3px solid var(--foreground);
+		outline-offset: 2px;
+	}
 </style>

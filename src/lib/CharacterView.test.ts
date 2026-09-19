@@ -124,3 +124,90 @@ describe('CharacterView', () => {
 		expect(screen.getByText('Could not load this character. Try again.')).toBeTruthy();
 	});
 });
+
+/** A character with every block, for the order and heading tests. */
+const full: Character = {
+	...sunny,
+	abilities: [{ label: 'Strength', value: 10 }],
+	combat: [{ label: 'Armor Class', value: 16 }],
+	hitPoints: { max: 45 },
+	pools: [{ id: 'magic', label: 'Magic', max: 2 }],
+	sections: [{ title: 'Your Turn', rows: [{ title: 'Attack', body: 'Claws' }] }]
+};
+
+/** The `data-block` names in the sheet, in document order. */
+function blockOrder(container: HTMLElement): string[] {
+	return [...container.querySelectorAll('[data-block]')].map((el) => el.getAttribute('data-block') ?? '');
+}
+
+/** The group heading texts in the sheet, in document order. */
+function groupHeadings(container: HTMLElement): string[] {
+	return [...container.querySelectorAll('[data-group-heading]')].map((el) => el.textContent?.trim() ?? '');
+}
+
+describe('CharacterView: sheet block order', () => {
+	it('renders a full character in the fixed order', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: full } } });
+
+		expect(blockOrder(container)).toEqual(['header', 'abilities', 'combat', 'hit-points', 'pools', 'sections']);
+	});
+
+	it('keeps the remaining blocks in order when the hit points tracker is missing', () => {
+		const character: Character = { ...full, hitPoints: undefined };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(blockOrder(container)).toEqual(['header', 'abilities', 'combat', 'pools', 'sections']);
+		expect(container.querySelector('[aria-label="Hit points"]')).toBeNull();
+	});
+
+	it('renders the abilities before the hit points tracker', () => {
+		const character: Character = { ...sunny, abilities: full.abilities, hitPoints: { max: 10 } };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		const abilities = container.querySelector('[data-block="abilities"]') as HTMLElement;
+		const hitPoints = container.querySelector('[data-block="hit-points"]') as HTMLElement;
+		expect(abilities).toBeTruthy();
+		expect(hitPoints).toBeTruthy();
+		expect(abilities.compareDocumentPosition(hitPoints) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	});
+});
+
+describe('CharacterView: group headings', () => {
+	it('shows Stats, Health, and Pools, in order, each directly before its group', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: full } } });
+
+		expect(groupHeadings(container)).toEqual(['Stats', 'Health', 'Pools']);
+
+		const firstBlockAfter = (heading: string) => {
+			const el = [...container.querySelectorAll('[data-group-heading]')].find(
+				(h) => h.textContent?.trim() === heading
+			) as HTMLElement;
+			return el.nextElementSibling?.getAttribute('data-block');
+		};
+		expect(firstBlockAfter('Stats')).toBe('abilities');
+		expect(firstBlockAfter('Health')).toBe('hit-points');
+		expect(firstBlockAfter('Pools')).toBe('pools');
+	});
+
+	it('shows no Health heading when there are no hit points to track', () => {
+		const character: Character = { ...full, hitPoints: undefined };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(groupHeadings(container)).toEqual(['Stats', 'Pools']);
+	});
+
+	it('shows the Stats heading above the combat block when no abilities are valid', () => {
+		const character: Character = { ...sunny, abilities: [null], combat: full.combat };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(groupHeadings(container)).toEqual(['Stats']);
+		const heading = container.querySelector('[data-group-heading]') as HTMLElement;
+		expect(heading.nextElementSibling?.getAttribute('data-block')).toBe('combat');
+	});
+
+	it('shows no group headings for a character with only a name', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: sunny } } });
+
+		expect(groupHeadings(container)).toEqual([]);
+	});
+});

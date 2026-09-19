@@ -28,12 +28,16 @@ export interface Palette {
 	onAccent: ModePair;
 }
 
-/** The base pair shared across all characters: the page background and body text. */
+/** The base colors shared across all characters: page, cards, and text. */
 export interface Base {
 	/** The page background. */
 	surface: ModePair;
+	/** The background of cards and tiles, drawn on the surface. */
+	raised: ModePair;
 	/** The default body text color. */
 	foreground: ModePair;
+	/** Secondary text, such as labels and raw scores. */
+	muted: ModePair;
 }
 
 /**
@@ -53,7 +57,7 @@ export type PaletteName = (typeof PALETTE_NAMES)[number];
  */
 export const PALETTE: Record<PaletteName, Palette> = {
 	forest: {
-		accent: { light: '#1b7f43', dark: '#7fd8a0' },
+		accent: { light: '#1a7a40', dark: '#7fd8a0' },
 		onAccent: { light: '#ffffff', dark: '#06301a' }
 	},
 	fire: {
@@ -79,13 +83,15 @@ export const PALETTE: Record<PaletteName, Palette> = {
 };
 
 /**
- * The shared surface and foreground, independent of the accent palette. The
- * foreground meets 4.5:1 against the surface in each mode; the contrast test
- * enforces it.
+ * The shared base colors, independent of the accent palette. In each mode the
+ * foreground and the muted text meet 4.5:1 on both the surface and the raised
+ * surface, and every accent meets 4.5:1 on both; the contrast tests enforce it.
  */
 export const BASE: Base = {
-	surface: { light: '#ffffff', dark: '#14171a' },
-	foreground: { light: '#1a1d21', dark: '#e6e9ec' }
+	surface: { light: '#f7f2e8', dark: '#14171a' },
+	raised: { light: '#ffffff', dark: '#1e2327' },
+	foreground: { light: '#1a1d21', dark: '#e6e9ec' },
+	muted: { light: '#5c5a55', dark: '#a9b0b8' }
 };
 
 /** The palette a bad or missing color falls back to. */

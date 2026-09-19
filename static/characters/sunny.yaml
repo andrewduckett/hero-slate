@@ -55,17 +55,6 @@ pools:
     max: 3
 
 sections:
-  - title: Your Turn
-    color: berry
-    rows:
-      - title: Attack
-        body: "Wild Shape claws: [[d20+6]] to hit, [[2d6+4]] damage"
-      - title: Cast a Spell
-        body: "Cast a prepared spell — spell attack [[d20+6]], save DC 15"
-      - title: Shapeshift
-        body: "Transform into an animal — Wolf, Bear, Horse, or Cat. You can do this 2 times before a rest, and you don't even have to roll."
-      - title: Help
-        body: Heal a friend for [[2d8 + 3]]) — or boost the team [[+d4]], make enemies easy to hit, and more).
   - title: Strengths
     color: forest
     rows:
@@ -78,3 +67,14 @@ sections:
     - title: 🌿 Forest Lore
       body: learn about plants, beasts, & the wild, [[+3]] bonus
 
+  - title: Your Turn
+    color: berry
+    rows:
+      - title: Attack
+        body: "Wild Shape claws: [[d20+6]] to hit, [[2d6+4]] damage"
+      - title: Cast a Spell
+        body: "Cast a prepared spell — spell attack [[d20+6]], save DC 15"
+      - title: Shapeshift
+        body: "Transform into an animal — Wolf, Bear, Horse, or Cat. You can do this 2 times before a rest, and you don't even have to roll."
+      - title: Help
+        body: Heal a friend for [[2d8 + 3]]) — or boost the team [[+d4]], make enemies easy to hit, and more).

@@ -75,6 +75,37 @@ describe('emitted palette.css contrast: --accent as text on --surface', () => {
 
 });
 
+describe('emitted palette.css contrast: raised surface and muted text', () => {
+	it('meets WCAG AA for the pairs that use raised and muted in both modes', () => {
+		for (const mode of MODES) {
+			const t = tokensFor(parsed[mode], ':root');
+			const pairs: [string, string, string][] = [
+				['foreground on raised', '--foreground', '--raised'],
+				['muted on surface', '--muted', '--surface'],
+				['muted on raised', '--muted', '--raised']
+			];
+			for (const [label, fg, bg] of pairs) {
+				expect(t[fg], `${mode} ${fg}`).toBeDefined();
+				expect(t[bg], `${mode} ${bg}`).toBeDefined();
+				const ratio = contrastRatio(t[fg], t[bg]);
+				expect(ratio, `${mode} ${label}`).toBeGreaterThanOrEqual(WCAG_AA);
+			}
+		}
+	});
+
+	it('meets WCAG AA for every accent on the raised surface in both modes', () => {
+		for (const name of PALETTE_NAMES) {
+			for (const mode of MODES) {
+				const accent = tokensFor(parsed[mode], `[data-palette="${name}"]`)['--accent'];
+				const raised = tokensFor(parsed[mode], ':root')['--raised'];
+				expect(raised, `${mode} --raised`).toBeDefined();
+				const ratio = contrastRatio(accent, raised);
+				expect(ratio, `${name} ${mode} accent on raised`).toBeGreaterThanOrEqual(WCAG_AA);
+			}
+		}
+	});
+});
+
 describe('emitted selector mapping (task 2.4)', () => {
 	it('maps each [data-palette] selector to that name\'s own tokens in both modes', () => {
 		for (const name of PALETTE_NAMES) {
@@ -93,6 +124,8 @@ describe('emitted selector mapping (task 2.4)', () => {
 			const t = tokensFor(parsed[mode], ':root');
 			expect(t['--surface'], `${mode} surface`).toBe(BASE.surface[mode].toLowerCase());
 			expect(t['--foreground'], `${mode} foreground`).toBe(BASE.foreground[mode].toLowerCase());
+			expect(t['--raised'], `${mode} raised`).toBe(BASE.raised[mode].toLowerCase());
+			expect(t['--muted'], `${mode} muted`).toBe(BASE.muted[mode].toLowerCase());
 		}
 	});
 });

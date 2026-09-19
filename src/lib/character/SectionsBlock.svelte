@@ -9,7 +9,7 @@
 </script>
 
 {#if resolved.length > 0}
-	<div class="sections">
+	<div class="sections" data-block="sections">
 		{#each resolved as section}
 			<section data-palette={section.palette}>
 				<h2 class="section-heading">{section.title}</h2>
@@ -33,21 +33,24 @@
 <style>
 	.sections {
 		display: grid;
-		gap: 1.5rem;
-		margin-block: 1rem;
+		gap: var(--space-5);
 	}
 
+	/* A raised card whose top is the accent title strip. */
 	section {
-		border-radius: 0.5rem;
+		background-color: var(--raised);
+		border-radius: var(--radius-l);
+		box-shadow: var(--shadow);
 		overflow: hidden;
 	}
 
 	.section-heading {
 		margin: 0;
-		padding: 0.4rem 0.75rem;
-		font-size: 0.875rem;
+		padding: var(--space-2) var(--space-4);
+		font-size: 1.125rem;
+		font-weight: 800;
+		letter-spacing: 0.04em;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
 		background-color: var(--accent);
 		color: var(--on-accent);
 	}
@@ -55,31 +58,42 @@
 	.rows {
 		list-style: none;
 		margin: 0;
-		padding: 0.5rem 0.75rem;
+		padding: var(--space-3) var(--space-4) var(--space-4);
 		display: grid;
-		gap: 0.375rem;
+		gap: var(--space-3);
 	}
 
+	/* On narrow screens a row stacks its title above its body. */
 	.row {
 		display: grid;
-		grid-template-columns: auto 1fr;
-		gap: 0.5rem;
-		align-items: baseline;
+		gap: var(--space-1);
 	}
 
 	.row-title {
-		font-size: 0.8125rem;
-		font-weight: 600;
+		font-family: var(--font-display);
+		font-size: 1rem;
+		font-weight: 800;
+		line-height: 1.2;
 		color: var(--accent);
 	}
 
 	.row-body {
-		font-size: 0.9375rem;
+		font-size: 1rem;
 	}
 
-	/* A body-only row spans both tracks so its text starts at the title gutter's
-	   left edge rather than auto-placing into the empty title column. */
-	.row-body:only-child {
-		grid-column: 1 / -1;
+	/* From about 30rem up, the title and body sit side by side. */
+	@media (min-width: 30rem) {
+		.row {
+			grid-template-columns: 8rem 1fr;
+			gap: var(--space-3);
+			align-items: baseline;
+		}
+
+		/* A body-only row spans both tracks so its text starts at the title
+		   gutter's left edge rather than auto-placing into the empty title
+		   column. */
+		.row-body:only-child {
+			grid-column: 1 / -1;
+		}
 	}
 </style>

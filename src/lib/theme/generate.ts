@@ -2,8 +2,9 @@
  * Generates `palette.css` from the typed `palette.ts` module.
  *
  * `palette.css` is build output, never hand-edited. The generator emits:
- * - `:root` light tokens for the base surface and foreground, and applies them
- *   to the page background and body text.
+ * - `:root` light tokens for the base colors (surface, raised, foreground,
+ *   muted), and applies the surface and foreground to the page background and
+ *   body text.
  * - a `[data-palette="<name>"]` rule per name mapping `--accent`/`--on-accent`
  *   to that name's light values.
  * - a `@media (prefers-color-scheme: dark)` block that overrides all of the
@@ -21,7 +22,9 @@ const HEADER = `/* Generated from src/lib/theme/palette.ts by src/lib/theme/gene
 function baseRule(mode: 'light' | 'dark'): string {
 	return [
 		`\t--surface: ${BASE.surface[mode]};`,
-		`\t--foreground: ${BASE.foreground[mode]};`
+		`\t--raised: ${BASE.raised[mode]};`,
+		`\t--foreground: ${BASE.foreground[mode]};`,
+		`\t--muted: ${BASE.muted[mode]};`
 	].join('\n');
 }
 

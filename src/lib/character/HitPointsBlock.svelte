@@ -1,5 +1,5 @@
 <script lang="ts">
-	// The hit points tracker: a `current / max` readout, a slim progress bar, and
+	// The hit points tracker: a `current / max` readout, a thick progress bar, and
 	// -5 / -1 / +1 / +5 controls. A 9-year-old restores hit points by tapping up,
 	// so there is no reset control. It resolves the authored `hitPoints` against
 	// the stored current and renders nothing when the character has none to track.
@@ -31,8 +31,10 @@
 	// fresh — `untrack` states that once-capture intent and silences the warning.
 	const resolved = untrack(() => resolveHitPoints(hitPoints, storedCurrent));
 
-	// The controls only ever add or subtract whole hit points.
-	const adjustments = [-5, -1, 1, 5];
+	// The controls only ever add or subtract whole hit points. Damage comes first
+	// and healing last, so one side lowers hit points and the other raises them.
+	const damage = [-5, -1];
+	const heal = [1, 5];
 
 	let current = $state(resolved?.current ?? 0);
 
@@ -73,6 +75,7 @@
 {#if resolved !== null}
 	<section
 		class="hit-points"
+		data-block="hit-points"
 		aria-label="Hit points"
 		data-hp-state={down ? 'down' : undefined}
 		style:opacity={down ? 0.55 : 1}
@@ -89,60 +92,106 @@
 			<div class="fill" style:width="{max > 0 ? (current / max) * 100 : 0}%"></div>
 		</div>
 		<div class="controls">
-			{#each adjustments as amount}
-				<button type="button" data-hp-adjust={label(amount)} onclick={() => adjust(amount)}>
-					{label(amount)}
-				</button>
-			{/each}
+			<div class="control-group damage">
+				{#each damage as amount}
+					<button type="button" data-hp-adjust={label(amount)} onclick={() => adjust(amount)}>
+						{label(amount)}
+					</button>
+				{/each}
+			</div>
+			<div class="control-group heal">
+				{#each heal as amount}
+					<button type="button" data-hp-adjust={label(amount)} onclick={() => adjust(amount)}>
+						{label(amount)}
+					</button>
+				{/each}
+			</div>
 		</div>
 	</section>
 {/if}
 
 <style>
+	/* A raised card. */
 	.hit-points {
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
-		margin-block: 1rem;
+		gap: var(--space-3);
+		padding: var(--space-4);
+		background-color: var(--raised);
+		border-radius: var(--radius-l);
+		box-shadow: var(--shadow);
 		/* A calm dim on the down state, eased so it never flashes. */
 		transition: opacity 300ms ease;
 	}
 
+	/* The max reads smaller than the current value. */
 	.readout {
+		font-family: var(--font-display);
 		font-size: 1.5rem;
 		font-weight: 700;
+		line-height: 1;
+		color: var(--muted);
 	}
 
 	.current {
+		font-size: 3.25rem;
+		font-weight: 800;
 		color: var(--accent);
 	}
 
+	/* A thick bar with fully rounded ends. */
 	.bar {
-		height: 0.5rem;
-		border-radius: 0.25rem;
-		background-color: color-mix(in srgb, var(--foreground) 15%, transparent);
+		height: 1rem;
+		border: 2px solid var(--accent);
+		border-radius: 999px;
+		background-color: var(--surface);
 		overflow: hidden;
 	}
 
 	.fill {
 		height: 100%;
+		border-radius: 999px;
 		background-color: var(--accent);
 	}
 
+	/* Damage on the left, healing on the right, with a flexible gap between. */
 	.controls {
 		display: flex;
-		gap: 0.5rem;
+		justify-content: space-between;
+		gap: var(--space-4);
+	}
+
+	.control-group {
+		display: flex;
+		gap: var(--space-3);
 	}
 
 	.controls button {
-		flex: 1;
-		padding-block: 0.75rem;
-		font-size: 1.125rem;
-		font-weight: 700;
-		color: var(--foreground);
-		background-color: color-mix(in srgb, var(--foreground) 8%, transparent);
-		border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent);
-		border-radius: 0.5rem;
+		inline-size: 3.25rem;
+		block-size: 3.25rem;
+		padding: 0;
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		font-weight: 800;
+		border: 3px solid var(--accent);
+		border-radius: 50%;
 		cursor: pointer;
+	}
+
+	/* Damage buttons are outlined. */
+	.damage button {
+		color: var(--accent);
+		background-color: var(--raised);
+	}
+
+	/* Heal buttons are filled with accent. */
+	.heal button {
+		color: var(--on-accent);
+		background-color: var(--accent);
+	}
+
+	.controls button:focus-visible {
+		outline: 3px solid var(--foreground);
+		outline-offset: 2px;
 	}
 </style>
