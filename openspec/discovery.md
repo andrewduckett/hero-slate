@@ -213,7 +213,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: `custom-sections-richtext` (implemented, archived 2026-09-19)
 
-- [ ] 7. `sheet-restyle` — the sheet gets a real visual design, in the example sheet's section order
+- [x] 7. `sheet-restyle` — the sheet gets a real visual design, in the example sheet's section order
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "see who I am" + "track in play" (legibility and polish)
   - **MoSCoW**: Should
@@ -222,7 +222,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Scope**: in: restyle every existing block (header, ability tiles, combat tiles, HP tracker, pool dots, section cards) with a fresh look; reorder blocks to the example's order — header, stats (abilities then combat), health, pools, sections; self-hosted display + body web fonts served as static assets; any new color tokens added to `palette.ts` and AA-checked in light and dark; move Sunny's "Strengths" section before "Your Turn" in `sunny.yaml`. / out: new data fields (story, quote, callout, spell/animal cards), changes to tracker behavior (e.g. tappable hearts), a theme toggle.
   - **Relevant code**: `src/lib/CharacterView.svelte` (block order), `src/lib/character/*Block.svelte`, `src/lib/theme/palette.ts` + generated `palette.css`, `src/routes/+layout.svelte`, `static/fonts/`, `static/characters/sunny.yaml`.
   - **Added**: 2026-09-19
-  - **Change**: `sheet-restyle` (in progress)
+  - **Change**: `sheet-restyle` (archived 2026-09-19)
 
 - [ ] 8. `home-picker` — `/` lists characters as tappable cards
   - **Persona served**: Sunny, Andrew-as-Player
