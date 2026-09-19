@@ -35,7 +35,7 @@ pools:
 
 sections:
   - title: Your Turn
-    color: forest
+    color: berry
     rows:
       - title: Attack
         body: "wwipe with your claws: [[d20+8]] to hit, [[1d8+5]] damage"
