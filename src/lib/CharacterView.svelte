@@ -7,6 +7,7 @@
 	import CombatBlock from '$lib/character/CombatBlock.svelte';
 	import HitPointsBlock from '$lib/character/HitPointsBlock.svelte';
 	import ResourcePoolsBlock from '$lib/character/ResourcePoolsBlock.svelte';
+	import SectionsBlock from '$lib/character/SectionsBlock.svelte';
 
 	type ViewState = GetCharacterResult | { status: 'loading' };
 
@@ -44,6 +45,7 @@
 		<ResourcePoolsBlock pools={result.character.pools} {storedPools} {store} {id} />
 		<AbilitiesBlock abilities={result.character.abilities} />
 		<CombatBlock combat={result.character.combat} />
+		<SectionsBlock sections={result.character.sections} />
 	</article>
 {:else if result.status === 'error'}
 	<p>Could not load this character. Try again.</p>

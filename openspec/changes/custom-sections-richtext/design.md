@@ -140,9 +140,11 @@ below `<CombatBlock>`. No state store involvement — sections are definition da
 ## Risks / Trade-offs
 
 **Nesting depth → stack depth** — The recursive renderer could stack-overflow on
-pathological input. Mitigation: the only nesting kinds are `strong` and `em`; real
-bodies are short prompts. Cap nesting depth at parse time (e.g. 8 levels) and emit
-a `text` node for anything beyond.
+pathological input. The grammar resolves this without a cap: a marker opens a span
+only when no span of that kind is already open, so at most one `strong` and one
+`em` are ever open and nesting is bounded at two levels. An explicit 8-level cap
+was specified first and dropped during implementation, once that bound proved to
+make the cap unreachable dead code.
 
 **`sun` accent on white is the tightest pair (5.04:1)** — Passes AA but has no
 headroom against a future palette edit. Mitigation: the added contrast test catches

@@ -9,19 +9,20 @@ styled inline elements without ever constructing an HTML string.
 ### Requirement: Bold and italic inline emphasis
 
 The system SHALL render text wrapped in `**...**` as bold. It SHALL render text
-wrapped in `*...*` as italic. Emphasis markers MAY nest: bold may wrap italic and
-italic may wrap bold. The system SHALL apply emphasis to the inner content, up to
-the nesting depth limit defined below.
+wrapped in `*...*` as italic. Emphasis markers MAY nest across kinds: bold may wrap
+italic, and italic may wrap bold. The system SHALL apply emphasis to the inner
+content.
 
-The system SHALL cap emphasis nesting at 8 levels. It SHALL render any marker that
-would open a ninth or deeper level as literal characters.
+A marker SHALL open a span only when no span of that kind is already open. When a
+span of that kind is already open, the marker SHALL close it instead. At most one
+bold span and one italic span can therefore be open at once, so emphasis nesting
+SHALL NOT exceed two levels. The grammar produces this bound on its own, so the
+system needs no separate depth limit.
 
-When the system encounters a closing delimiter, it SHALL close the most recently
-opened span of the same kind. If no open span of that kind exists, the closing
-delimiter SHALL render as literal characters. When closing a span, the system
-SHALL abandon any inner spans of a different kind that remain open within it.
-It SHALL render their opening delimiters as literal characters within the
-closed span's content.
+If no open span of that kind exists, a closing delimiter SHALL render as literal
+characters. When closing a span, the system SHALL abandon any inner span of the
+other kind that remains open within it. It SHALL render that span's opening
+delimiter as literal characters within the closed span's content.
 
 #### Scenario: Bold renders text in bold
 
@@ -49,10 +50,12 @@ closed span's content.
 - **THEN** the system closes the italic span at the first `*` it encounters
 - **AND** the remaining `**` after that `*` renders as literal characters
 
-#### Scenario: Markers beyond depth limit render literally
+#### Scenario: A second marker of the same kind closes instead of nesting
 
-- **WHEN** emphasis markers are nested more than 8 levels deep
-- **THEN** the ninth and deeper opening markers render as literal characters
+- **WHEN** a body contains `*first *second*`
+- **THEN** the system closes the italic span at the second `*`, so only "first " is italic
+- **AND** it renders "second" as plain text
+- **AND** it renders the third `*` as a literal character
 
 ### Requirement: Forgiving parse of malformed markers
 

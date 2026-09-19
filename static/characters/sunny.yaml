@@ -42,7 +42,23 @@ pools:
     color: forest
     max: 2
 
-# --- Provisional fields (defined and rendered by later stories) ---
 sections:
-  - title: Notes
-    body: A druid of the Thornwood grove.
+  - title: Your Turn
+    color: forest
+    rows:
+      - title: Attack
+        body: "Wild Shape claws: [[d20+6]] to hit, [[2d6+4]] damage"
+      - title: Shapeshift
+        body: "Turn into a beast (CR ≤ 2). Use [[+4]] Wis save to hold form."
+      - title: Spellcast
+        body: "Cast a prepared spell — spell attack [[d20+6]], save DC 15"
+      - title: Help
+        body: Give an ally *advantage* on their next roll
+  - title: Strengths
+    color: forest
+    rows:
+      - title: Wild Empathy
+        body: "Speak with beasts; they treat you as a friend [[+4]] bonus"
+      - title: Druidic
+        body: Leave hidden messages only druids can read
+      - body: "**Thornwood grove** backs you — call for aid once per long rest"
