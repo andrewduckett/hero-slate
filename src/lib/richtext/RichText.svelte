@@ -18,10 +18,10 @@
 {/each}
 
 <style>
-	/* The label keeps the untinted surface behind it: --accent as text on
-	   --surface is the pair the theming suite enforces at WCAG AA. A tinted
-	   fill would shift the background toward the accent and drop the ratio
-	   below 4.5:1 for the darker light-mode palettes. */
+	/* The label keeps the untinted surface or card behind it: --accent as text
+	   on --surface and on --raised are the pairs the theming suite enforces at
+	   WCAG AA. A tinted fill would shift the background toward the accent and
+	   drop the ratio below 4.5:1 for the darker light-mode palettes. */
 	.pill {
 		display: inline-block;
 		padding: 0.1em 0.4em;

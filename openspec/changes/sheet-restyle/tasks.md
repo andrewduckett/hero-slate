@@ -21,13 +21,13 @@
 
 ## 4. Restyle the blocks
 
-- [ ] 4.1 Restyle the identity header as a rounded accent card with the name in the display font, per design D1. Verify the existing header and theming tests still pass.
-- [ ] 4.2 Restyle `AbilitiesBlock.svelte` as raised tiles with an accent top border, a large modifier, and a muted label and score. Replace `opacity` with `--muted`. Verify the `AbilitiesBlock` tests still pass.
-- [ ] 4.3 Restyle `CombatBlock.svelte` as solid accent tiles with on-accent text. Verify the `CombatBlock` tests still pass.
-- [ ] 4.4 Restyle `HitPointsBlock.svelte` per design D2: a large readout, a thick rounded bar, and round buttons in two groups. Damage buttons are outlined and heal buttons are filled with accent. Replace the `color-mix` fill with tokens and keep the 0 hit points dim. Verify the `HitPointsBlock` tests still pass.
-- [ ] 4.5 Restyle `ResourcePoolsBlock.svelte` as a raised card with chunky dots and a tap target of at least 44 by 44 CSS pixels. Verify the `ResourcePoolsBlock` tests still pass.
-- [ ] 4.6 Restyle `SectionsBlock.svelte` as raised cards with the accent title strip on top. Rows stack below about 30rem and sit side by side above it. Check that `RichText.svelte` pills still read well on the raised surface. Verify the `SectionsBlock` and rich-text tests still pass.
-- [ ] 4.7 Search the restyled blocks for `color-mix` and `opacity`. Confirm that no text color or background behind text or a control uses blending, apart from the 0 hit points dim and decorative lines or shadows.
+- [x] 4.1 Restyle the identity header as a rounded accent card with the name in the display font, per design D1. Verify the existing header and theming tests still pass.
+- [x] 4.2 Restyle `AbilitiesBlock.svelte` as raised tiles with an accent top border, a large modifier, and a muted label and score. Replace `opacity` with `--muted`. Verify the `AbilitiesBlock` tests still pass.
+- [x] 4.3 Restyle `CombatBlock.svelte` as solid accent tiles with on-accent text. Verify the `CombatBlock` tests still pass.
+- [x] 4.4 Restyle `HitPointsBlock.svelte` per design D2: a large readout, a thick rounded bar, and round buttons in two groups. Damage buttons are outlined and heal buttons are filled with accent. Replace the `color-mix` fill with tokens and keep the 0 hit points dim. Verify the `HitPointsBlock` tests still pass.
+- [x] 4.5 Restyle `ResourcePoolsBlock.svelte` as a raised card with chunky dots and a tap target of at least 44 by 44 CSS pixels. Verify the `ResourcePoolsBlock` tests still pass.
+- [x] 4.6 Restyle `SectionsBlock.svelte` as raised cards with the accent title strip on top. Rows stack below about 30rem and sit side by side above it. Check that `RichText.svelte` pills still read well on the raised surface. Verify the `SectionsBlock` and rich-text tests still pass.
+- [x] 4.7 Search the restyled blocks for `color-mix` and `opacity`. Confirm that no text color or background behind text or a control uses blending, apart from the 0 hit points dim and decorative lines or shadows.
 
 ## 5. Data and verification
 

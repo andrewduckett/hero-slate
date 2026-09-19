@@ -1,6 +1,6 @@
 <script lang="ts">
-	// The combat block: a plainer list of label-and-value pairs, distinct from the
-	// abilities grid, with the value prominent. It resolves the loosely-typed
+	// The combat block: solid accent tiles of label-and-value pairs, distinct from
+	// the raised abilities tiles, with the value prominent. It resolves the loosely-typed
 	// `combat` field itself and renders nothing when no valid entry remains. All
 	// text comes from Svelte text bindings, so authored values can never inject markup.
 	import { resolveCombat, type ResolvedCombat } from './combat';
@@ -23,31 +23,36 @@
 
 <style>
 	.combat {
-		display: flex;
-		flex-direction: column;
-		margin-block: 1rem;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+		gap: var(--space-3);
 	}
 
+	/* A solid accent tile. Text uses on-accent, the contrast-checked pairing. */
 	.combat-entry {
 		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 1rem;
-		padding-block: 0.5rem;
-		border-bottom: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
-	}
-
-	.combat-entry:last-child {
-		border-bottom: none;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-1);
+		padding: var(--space-3) var(--space-2);
+		background-color: var(--accent);
+		color: var(--on-accent);
+		border-radius: var(--radius-m);
+		box-shadow: var(--shadow);
+		text-align: center;
 	}
 
 	.label {
-		opacity: 0.85;
+		font-size: 0.75rem;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
 	}
 
 	.value {
-		font-size: 1.25rem;
-		font-weight: 700;
-		color: var(--accent);
+		font-family: var(--font-display);
+		font-size: 2rem;
+		font-weight: 800;
+		line-height: 1;
 	}
 </style>

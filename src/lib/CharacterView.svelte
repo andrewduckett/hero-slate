@@ -85,3 +85,47 @@
 	<!-- not-found and invalid share a fixed, id-free message. -->
 	<p>Character not found</p>
 {/if}
+
+<style>
+	article {
+		display: grid;
+		gap: var(--space-5);
+	}
+
+	/* The identity header: a rounded accent card. Its colors come from the
+	   inline accent / on-accent style above. */
+	header {
+		padding: var(--space-5) var(--space-5) var(--space-4);
+		border-radius: var(--radius-l);
+		box-shadow: var(--shadow);
+	}
+
+	h1 {
+		margin: 0;
+		font-size: clamp(2rem, 8vw, 2.75rem);
+		font-weight: 800;
+		letter-spacing: -0.01em;
+	}
+
+	header p {
+		margin: var(--space-1) 0 0;
+		font-size: 1.125rem;
+		font-weight: 700;
+	}
+
+	.group {
+		display: grid;
+		gap: var(--space-3);
+	}
+
+	/* Fixed group labels: small, uppercase, in muted text. */
+	.group-heading {
+		margin: 0;
+		font-family: var(--font-body);
+		font-size: 0.8125rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--muted);
+	}
+</style>

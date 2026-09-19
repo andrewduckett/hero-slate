@@ -1,5 +1,5 @@
 <script lang="ts">
-	// The abilities block: a grid of cells, each with the modifier large and the
+	// The abilities block: a grid of raised tiles, each with the modifier large and the
 	// raw score small beneath it. It resolves the loosely-typed `abilities` field
 	// itself and renders nothing when no valid entry remains. All text comes from
 	// Svelte text bindings, so authored labels and modifiers can never inject markup.
@@ -25,40 +25,46 @@
 {/if}
 
 <style>
+	/* Six tiles on one row at desktop widths; 3 by 2 at 360px. */
 	.abilities {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(5rem, 1fr));
-		gap: 0.5rem;
-		margin-block: 1rem;
+		grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+		gap: var(--space-3);
 	}
 
+	/* A raised tile with an accent top border. */
 	.ability {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.125rem;
-		padding: 0.5rem;
-		border: 1px solid color-mix(in srgb, var(--foreground) 20%, transparent);
-		border-radius: 0.5rem;
+		gap: var(--space-1);
+		padding: var(--space-3) var(--space-2);
+		background-color: var(--raised);
+		border-top: 0.3rem solid var(--accent);
+		border-radius: var(--radius-m);
+		box-shadow: var(--shadow);
 		text-align: center;
 	}
 
 	.label {
 		font-size: 0.75rem;
+		font-weight: 800;
 		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		opacity: 0.75;
+		letter-spacing: 0.08em;
+		color: var(--muted);
 	}
 
 	.modifier {
-		font-size: 1.75rem;
-		font-weight: 700;
-		line-height: 1.1;
+		font-family: var(--font-display);
+		font-size: 2.25rem;
+		font-weight: 800;
+		line-height: 1;
 		color: var(--accent);
 	}
 
 	.score {
 		font-size: 0.875rem;
-		opacity: 0.75;
+		font-weight: 700;
+		color: var(--muted);
 	}
 </style>
