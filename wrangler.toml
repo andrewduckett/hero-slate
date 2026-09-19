@@ -1,6 +1,0 @@
-# Cloudflare Pages configuration.
-# Build command: `npm run build` (set in the Pages project / used by CI).
-# Output directory: `build` (adapter-static writes the site here).
-name = "hero-slate"
-compatibility_date = "2025-01-01"
-pages_build_output_dir = "build"
