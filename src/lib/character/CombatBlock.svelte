@@ -24,7 +24,7 @@
 <style>
 	.combat {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
 		gap: var(--space-3);
 	}
 

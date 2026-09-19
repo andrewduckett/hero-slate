@@ -31,6 +31,6 @@
 
 ## 5. Data and verification
 
-- [ ] 5.1 Move the "Strengths" section before "Your Turn" in `static/characters/sunny.yaml`. Verify that `/sunny` shows Strengths first in `npm run dev`.
-- [ ] 5.2 Open `/sunny` and `/urven` in a browser 360 CSS pixels wide, in light and dark mode. Confirm there is no sideways scrolling, the ability tiles wrap, each hit points control and pool dot is at least 44 by 44 CSS pixels, and the fonts load from the site itself. Save screenshots for the PR.
-- [ ] 5.3 Run `npm test` and `npm run build`. Confirm both are green before opening the implementation PR.
+- [x] 5.1 Move the "Strengths" section before "Your Turn" in `static/characters/sunny.yaml`. Verify that `/sunny` shows Strengths first in `npm run dev`.
+- [x] 5.2 Open `/sunny` and `/urven` in a browser 360 CSS pixels wide, in light and dark mode. Confirm there is no sideways scrolling, the ability tiles wrap, each hit points control and pool dot is at least 44 by 44 CSS pixels, and the fonts load from the site itself. Save screenshots for the PR.
+- [x] 5.3 Run `npm test` and `npm run build`. Confirm both are green before opening the implementation PR.

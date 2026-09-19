@@ -28,7 +28,7 @@
 	/* Six tiles on one row at desktop widths; 3 by 2 at 360px. */
 	.abilities {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
 		gap: var(--space-3);
 	}
 
