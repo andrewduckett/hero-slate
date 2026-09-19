@@ -2,7 +2,7 @@
 
 - [x] 1.1 Scaffold a SvelteKit + Vite app with `@sveltejs/adapter-static`, set `ssr = false`, and configure a fallback page; verify `npm run build` produces static assets with no worker or server-function entry.
 - [x] 1.2 Add Vitest and an npm `test` script; verify `npm test` runs a trivial passing test.
-- [x] 1.3 Add `static/_redirects` with `/* /index.html 200`; verify the rule reaches the build output and does not shadow files under `/characters/`.
+- [x] 1.3 Configure Workers SPA fallback (`assets.not_found_handling: "single-page-application"` in `wrangler.jsonc`); verify unmatched clean paths serve the app shell and files under `/characters/` are served directly, not shadowed.
 
 ## 2. Character type and descriptor function (test-first)
 
@@ -24,4 +24,4 @@
 ## 5. Character config and live deploy
 
 - [x] 5.1 Add `static/characters/sunny.yaml` (name "Sunny Thornwood", level 6, class "Druid", plus illustrative provisional fields); verify the dev server serves `/characters/sunny.yaml` as YAML and `/sunny` renders the header.
-- [ ] 5.2 Configure the Cloudflare Pages build (build command and output directory) and deploy; verify the live site returns 200 for `/sunny` on direct load and on refresh, and serves `/characters/sunny.yaml`.
+- [ ] 5.2 Configure the Cloudflare Workers static-assets deploy (`wrangler.jsonc` assets directory + SPA not-found handling) and deploy; verify the live site returns 200 for `/sunny` on direct load and on refresh, and serves `/characters/sunny.yaml`.

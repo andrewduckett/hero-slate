@@ -13,5 +13,5 @@ ADR review completed for this change. This is the first change in a greenfield r
 
 ## New Durable ADRs Created
 
-- `docs/adr/0001-static-first-sveltekit-on-cloudflare-pages.md` — the framework, hosting, and static-first rendering model that keep the dynamic-backend door open.
+- `docs/adr/0001-static-first-sveltekit-on-cloudflare-workers.md` — the framework, hosting, and static-first rendering model that keep the dynamic-backend door open.
 - `docs/adr/0002-character-data-behind-a-provider-interface.md` — the data-provider boundary and logical-id addressing that keep a future hosted backend a component swap.
