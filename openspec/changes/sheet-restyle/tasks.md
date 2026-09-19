@@ -1,9 +1,9 @@
 ## 1. Color tokens
 
-- [ ] 1.1 Write failing tests in `palette.test.ts` and `emitted-css.test.ts`. They check that `raised` and `muted` exist in both modes as opaque `#rrggbb` values. They also check that the emitted `--raised` and `--muted` meet 4.5:1 for foreground on raised, muted on surface, and muted on raised. Verify the new tests fail.
-- [ ] 1.2 Write a failing test that every palette accent meets 4.5:1 on the emitted raised surface in both modes. Verify it fails.
-- [ ] 1.3 Add `raised` and `muted` to `Base` and `BASE` in `palette.ts`, and set the light `surface` to `#f7f2e8`, per design D3. Update `generate.ts` to emit `--raised` and `--muted`. Run `npm run generate:palette`. Verify the tests from 1.1 and 1.2 pass.
-- [ ] 1.4 Darken the light-mode `forest` accent until it reaches at least 4.8:1 on the surface. Keep its hue. Verify with the contrast tests, then run `npm test` and confirm the whole suite is green.
+- [x] 1.1 Write failing tests in `palette.test.ts` and `emitted-css.test.ts`. They check that `raised` and `muted` exist in both modes as opaque `#rrggbb` values. They also check that the emitted `--raised` and `--muted` meet 4.5:1 for foreground on raised, muted on surface, and muted on raised. Verify the new tests fail.
+- [x] 1.2 Write a failing test that every palette accent meets 4.5:1 on the emitted raised surface in both modes. Verify it fails.
+- [x] 1.3 Add `raised` and `muted` to `Base` and `BASE` in `palette.ts`, and set the light `surface` to `#f7f2e8`, per design D3. Update `generate.ts` to emit `--raised` and `--muted`. Run `npm run generate:palette`. Verify the tests from 1.1 and 1.2 pass.
+- [x] 1.4 Darken the light-mode `forest` accent until it reaches at least 4.8:1 on the surface. Keep its hue. Verify with the contrast tests, then run `npm test` and confirm the whole suite is green.
 
 ## 2. Self-hosted fonts
 

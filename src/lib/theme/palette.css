@@ -2,14 +2,16 @@
 
 :root {
 	color-scheme: light dark;
-	--surface: #ffffff;
+	--surface: #f7f2e8;
+	--raised: #ffffff;
 	--foreground: #1a1d21;
+	--muted: #5c5a55;
 	background-color: var(--surface);
 	color: var(--foreground);
 }
 
 [data-palette="forest"] {
-	--accent: #1b7f43;
+	--accent: #1a7a40;
 	--on-accent: #ffffff;
 }
 
@@ -41,7 +43,9 @@
 @media (prefers-color-scheme: dark) {
 	:root {
 		--surface: #14171a;
+		--raised: #1e2327;
 		--foreground: #e6e9ec;
+		--muted: #a9b0b8;
 	}
 
 	[data-palette="forest"] {

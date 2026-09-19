@@ -31,8 +31,18 @@ describe('palette module (task 1.1)', () => {
 		}
 	});
 
+	it('defines the raised surface and muted text for both modes', () => {
+		for (const mode of MODES) {
+			expect(BASE.raised[mode], `raised ${mode}`).toMatch(HEX);
+			expect(BASE.muted[mode], `muted ${mode}`).toMatch(HEX);
+		}
+	});
+
 	it('uses only opaque #rrggbb values with no alpha channel', () => {
 		const values: string[] = [BASE.surface.light, BASE.surface.dark, BASE.foreground.light, BASE.foreground.dark];
+		for (const key of ['raised', 'muted'] as const) {
+			values.push(BASE[key].light, BASE[key].dark);
+		}
 		for (const name of PALETTE_NAMES) {
 			const p = PALETTE[name];
 			values.push(p.accent.light, p.accent.dark, p.onAccent.light, p.onAccent.dark);
