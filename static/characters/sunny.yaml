@@ -30,10 +30,12 @@ combat:
   - label: Initiative
     value: "+2"
 
-# --- Provisional fields (defined and rendered by later stories) ---
+# Maximum hit points is authored; current hit points are per-device state, not a
+# definition field, so a new character starts at full health.
 hitPoints:
   max: 45
-  current: 45
+
+# --- Provisional fields (defined and rendered by later stories) ---
 pools:
   wildShape: 2
 sections:

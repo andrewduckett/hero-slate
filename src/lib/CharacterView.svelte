@@ -1,13 +1,24 @@
 <script lang="ts">
 	import type { GetCharacterResult } from '$lib/data/provider';
+	import type { JsonValue, StateStore } from '$lib/state/store';
 	import { formatIdentity } from '$lib/format';
 	import { resolvePalette } from '$lib/theme/resolve';
 	import AbilitiesBlock from '$lib/character/AbilitiesBlock.svelte';
 	import CombatBlock from '$lib/character/CombatBlock.svelte';
+	import HitPointsBlock from '$lib/character/HitPointsBlock.svelte';
 
 	type ViewState = GetCharacterResult | { status: 'loading' };
 
-	let { result }: { result: ViewState } = $props();
+	// The route resolves the character and the "hp" state, then passes both here.
+	// `storedHp`, `store`, and `id` support the tracker; a character with no hit
+	// points to track renders none, so they are optional for state-free callers.
+	let {
+		result,
+		storedHp = undefined,
+		store = undefined,
+		id = ''
+	}: { result: ViewState; storedHp?: JsonValue | undefined; store?: StateStore; id?: string } =
+		$props();
 </script>
 
 {#if result.status === 'loading'}
@@ -22,6 +33,12 @@
 				<p>{formatIdentity(result.character)}</p>
 			{/if}
 		</header>
+		<HitPointsBlock
+			hitPoints={result.character.hitPoints}
+			storedCurrent={storedHp}
+			{store}
+			{id}
+		/>
 		<AbilitiesBlock abilities={result.character.abilities} />
 		<CombatBlock combat={result.character.combat} />
 	</article>

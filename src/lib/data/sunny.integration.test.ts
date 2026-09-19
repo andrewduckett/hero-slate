@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { createYamlProvider, type FetchLike } from './yaml';
 import { resolveAbilities } from '$lib/character/abilities';
 import { resolveCombat } from '$lib/character/combat';
+import { resolveHitPoints } from '$lib/character/hitPoints';
 
 // Prove the shipped sample file parses to a valid `found` character.
 const sunnyPath = resolve(process.cwd(), 'static/characters/sunny.yaml');
@@ -55,6 +56,19 @@ describe('shipped sunny.yaml', () => {
 			const combat = resolveCombat(result.character.combat);
 			expect(combat.map((e) => e.label)).toEqual(['Armor Class', 'Speed', 'Initiative']);
 			expect(combat.map((e) => e.value)).toEqual(['16', '30', '+2']);
+		}
+	});
+
+	it('resolves hit points to full health from the authored max, with no stored current', async () => {
+		const result = await createYamlProvider(serveSunny).getCharacter('sunny');
+
+		expect(result.status).toBe('found');
+		if (result.status === 'found') {
+			// The file supplies only `max`; a new character starts at full health.
+			expect(resolveHitPoints(result.character.hitPoints, undefined)).toEqual({
+				current: 45,
+				max: 45
+			});
 		}
 	});
 });
