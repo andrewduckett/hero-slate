@@ -1,8 +1,8 @@
 /**
  * A loaded character definition.
  *
- * The identity fields (`id`, `name`, `level`, `class`) are the stable contract
- * this release relies on and validates. Everything else is carried through
+ * The identity fields (`id`, `name`, `level`, `class`, `color`) are the stable
+ * contract this release relies on and validates. Everything else is carried through
  * provisionally: later changes own the semantics of abilities, combat metrics,
  * hit points, pools, and sections, so those are typed loosely for now.
  *
@@ -18,6 +18,9 @@ export interface Character {
 	level?: number;
 	/** Optional; printed as authored. */
 	class?: string;
+	/** Optional; a string naming a palette. The theming layer resolves it — an
+	 * unknown name is valid data here and falls back to neutral when rendered. */
+	color?: string;
 
 	// --- Provisional fields (defined and validated by later changes) ---
 	abilities?: unknown;

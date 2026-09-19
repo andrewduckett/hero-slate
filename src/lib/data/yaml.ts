@@ -108,6 +108,12 @@ function toFoundOrInvalid(id: string, body: Record<string, unknown>): GetCharact
 		return { status: 'invalid', reason: 'class must be a string' };
 	}
 
+	// color: optional; a string when present. The provider does not resolve it
+	// against the palette, so an unknown palette name is valid data here.
+	if (body.color !== undefined && typeof body.color !== 'string') {
+		return { status: 'invalid', reason: 'color must be a string' };
+	}
+
 	// Provisional fields pass through unchanged; the request id is authoritative.
 	const character = { ...body, id } as Character;
 	return { status: 'found', character };
