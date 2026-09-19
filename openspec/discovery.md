@@ -155,7 +155,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 2. `named-palette-theming` — sheet shows in the character's palette color; auto light/dark
+- [x] 2. `named-palette-theming` — sheet shows in the character's palette color; auto light/dark
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "see who I am" (legibility)
   - **MoSCoW**: Must
@@ -164,7 +164,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Scope**: in: named palette → CSS custom-property tokens (light + dark values); `prefers-color-scheme` auto switch; apply a character's `color` to the sheet chrome; readable-contrast defaults. / out: per-row/section colors (arrive with story 6), user-facing theme toggle.
   - **Relevant code**: `src/lib/theme/palette.*`, global CSS tokens, sheet header component.
   - **Added**: 2026-09-18
-  - **Change**: _not yet proposed_
+  - **Change**: `named-palette-theming` (implemented, archived 2026-09-19)
 
 - [ ] 3. `stat-block` — ability scores with computed modifiers + AC/speed/initiative
   - **Persona served**: Sunny, Andrew-as-Player
