@@ -33,6 +33,27 @@ function found(id: string, name: string, extra: Record<string, unknown> = {}): G
 }
 
 describe('CharacterSheet — load lifecycle', () => {
+	it('waits for pool state before rendering pool controls', async () => {
+		const pools = deferred<JsonValue | undefined>();
+		const store: StateStore = {
+			read: (_id, key) => (key === 'pools' ? pools.promise : Promise.resolve(undefined)),
+			write: vi.fn().mockResolvedValue(undefined)
+		};
+		render(CharacterSheet, {
+			props: {
+				id: 'sunny',
+				provider: provider({ sunny: found('sunny', 'Sunny', { pools: [{ id: 'magic', label: 'Magic', max: 2 }] }) }),
+				store
+			}
+		});
+
+		await Promise.resolve();
+		expect(screen.queryByRole('button', { name: 'Magic: 1 remaining' })).toBeNull();
+
+		pools.resolve({ magic: 1 });
+		await waitFor(() => expect(screen.getByRole('button', { name: 'Magic: 1 remaining' })).toBeTruthy());
+	});
+
 	it('keeps the controls inert until the stored current resolves', async () => {
 		const storedHp = deferred<JsonValue | undefined>();
 		const store: StateStore = { read: () => storedHp.promise, write: vi.fn().mockResolvedValue(undefined) };

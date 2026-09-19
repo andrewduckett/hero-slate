@@ -35,9 +35,14 @@ combat:
 hitPoints:
   max: 45
 
-# --- Provisional fields (defined and rendered by later stories) ---
+# Resource-pool maximums are authored. Remaining uses are per-device state.
 pools:
-  wildShape: 2
+  - id: wild-shape
+    label: Wild Shape
+    color: forest
+    max: 2
+
+# --- Provisional fields (defined and rendered by later stories) ---
 sections:
   - title: Notes
     body: A druid of the Thornwood grove.
