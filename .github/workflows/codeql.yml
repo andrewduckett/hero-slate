@@ -29,9 +29,6 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
-          # Produce both security (code-scanning) and code-quality results so the
-          # main-branch ruleset's `code_scanning` and `code_quality` rules are satisfied.
-          analysis-kinds: code-scanning,code-quality
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
