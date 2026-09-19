@@ -177,7 +177,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 4. `hp-tracker` — tap ± to change HP; state remembered across reloads
+- [x] 4. `hp-tracker` — tap ± to change HP; state remembered across reloads
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "track in play → restore after → reopen later" (HP)
   - **MoSCoW**: Must
