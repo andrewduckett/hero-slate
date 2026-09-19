@@ -144,7 +144,7 @@ Ordered release checklist. One story = one OpenSpec change (proposal ≈ 200 wor
 Every story is a thin vertical slice — end-to-end and demoable, never a horizontal layer.
 Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelte).
 
-- [ ] 1. `walking-skeleton-deploy` — visit `/sunny` on the live site; identity renders from YAML
+- [x] 1. `walking-skeleton-deploy` — visit `/sunny` on the live site; identity renders from YAML
   - **Persona served**: Andrew (Author), Sunny (Player)
   - **Journey segment**: Author "build & deploy"; Player "find (deep link) → open → see who I am" (identity only)
   - **MoSCoW**: Must
@@ -153,7 +153,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Scope**: in: Vite+Svelte scaffold; `data-provider` interface with a YAML implementation; clean-path route `/:id` with SPA fallback; render identity header (name + formatted `Level X Class`); one `characters/sunny.yaml` + Cloudflare Pages build/deploy. / out: picker, stats, trackers, theming, PWA.
   - **Relevant code**: greenfield — `vite.config.*`, `src/main`, `src/lib/data/provider.*`, `src/routes|pages`, `characters/sunny.yaml`, Cloudflare `_redirects`/adapter config.
   - **Added**: 2026-09-18
-  - **Change**: _not yet proposed_
+  - **Change**: `walking-skeleton-deploy` (implemented, archived 2026-09-18)
 
 - [x] 2. `named-palette-theming` — sheet shows in the character's palette color; auto light/dark
   - **Persona served**: Sunny, Andrew-as-Player
