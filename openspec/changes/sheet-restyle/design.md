@@ -73,8 +73,10 @@ parts.
   renders (see the character-sheet delta spec).
 - **Ability tiles:** a grid of raised cards with an accent top border. The label and
   score are muted, and the modifier is large in the display font. The grid uses
-  `repeat(auto-fit, minmax(6.5rem, 1fr))`. It gives six tiles on one row at
-  desktop widths and 3 by 2 at 360px.
+  `repeat(auto-fit, minmax(6rem, 1fr))`. It gives six tiles on one row at
+  desktop widths and 3 by 2 at 360px. A 6.5rem minimum wraps to two rows,
+  because six tiles and their gaps then need more room than the 44rem page
+  container leaves.
 - **Combat tiles:** solid accent tiles with on-accent text. This is the "distinct
   visual treatment" the existing spec requires.
 - **Section cards:** raised cards. The existing accent title strip becomes the
@@ -169,9 +171,11 @@ attributes. Tests then do not depend on class names or visual layout.
 
 Each block keeps its scoped `<style>`. A small global stylesheet, `src/lib/theme/base.css`,
 holds only page-level rules and shared variables: the fonts, a spacing scale,
-corner radii, shadow, and the centered container. It holds no colors, which still
-come only from `palette.css`. The theming layer stays the one place for color
-values.
+corner radii, shadow, and the centered container. It holds no color tokens, which
+still come only from `palette.css`. The one exception is the shadow, which names
+a translucent black. A shadow carries no text, so D3 lets it blend, and the
+contrast tests never need to read it. The theming layer stays the one place for
+the color values that text and surfaces use.
 
 ## Risks / Trade-offs
 

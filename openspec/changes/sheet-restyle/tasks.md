@@ -9,7 +9,7 @@
 
 - [x] 2.1 Write a failing test that reads `src/lib/theme/fonts.css`. It asserts that every `@font-face` source is a root-relative `/fonts/` path and names no other host. It also asserts that each face sets `font-display: swap`, and that each `.woff2` file and its `OFL.txt` exist in `static/fonts/`. Verify it fails.
 - [x] 2.2 Download the latin-subset variable `.woff2` files for Baloo 2 and Nunito from Fontsource, with each family's `OFL.txt`, into `static/fonts/`. Verify the files exist and their licences are SIL OFL 1.1.
-- [x] 2.3 Write `src/lib/theme/fonts.css` with the `@font-face` rules. Add `src/lib/theme/base.css` with `--font-display`, `--font-body` (each with a `system-ui, sans-serif` fallback), a spacing scale, radii, a shadow, and the centered page container. Base.css holds no colors. Import both files in `src/routes/+layout.svelte`. Verify the test from 2.1 passes.
+- [x] 2.3 Write `src/lib/theme/fonts.css` with the `@font-face` rules. Add `src/lib/theme/base.css` with `--font-display`, `--font-body` (each with a `system-ui, sans-serif` fallback), a spacing scale, radii, a shadow, and the centered page container. Base.css holds no color tokens; only the decorative shadow names a color. Import both files in `src/routes/+layout.svelte`. Verify the test from 2.1 passes.
 - [x] 2.4 Run `npm run build` and verify that `build/fonts/` contains both `.woff2` files and both `OFL.txt` files.
 
 ## 3. Block order and group headings
