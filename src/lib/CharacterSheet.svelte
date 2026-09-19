@@ -23,6 +23,7 @@
 
 	let result = $state<ViewState>({ status: 'loading' });
 	let storedHp = $state<JsonValue | undefined>(undefined);
+	let storedPools = $state<JsonValue | undefined>(undefined);
 	let boundId = $state('');
 
 	$effect(() => {
@@ -30,12 +31,13 @@
 		result = { status: 'loading' };
 		let cancelled = false;
 
-		Promise.all([provider.getCharacter(requestedId), store.read(requestedId, 'hp')]).then(
-			([characterResult, hp]) => {
+		Promise.all([provider.getCharacter(requestedId), store.read(requestedId, 'hp'), store.read(requestedId, 'pools')]).then(
+			([characterResult, hp, pools]) => {
 				// Drop a completion for a superseded id: the cleanup below flips
 				// `cancelled` before the next request starts.
 				if (cancelled) return;
 				storedHp = hp;
+				storedPools = pools;
 				boundId = requestedId;
 				result = characterResult;
 			}
@@ -47,4 +49,4 @@
 	});
 </script>
 
-<CharacterView {result} {storedHp} {store} id={boundId} />
+<CharacterView {result} {storedHp} {storedPools} {store} id={boundId} />

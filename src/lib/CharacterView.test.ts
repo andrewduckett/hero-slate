@@ -13,6 +13,17 @@ describe('CharacterView', () => {
 		expect(screen.getByText('Level 6 Druid')).toBeTruthy();
 	});
 
+	it('renders valid resource pools', () => {
+		render(CharacterView, {
+			props: {
+				result: { status: 'found', character: { ...sunny, pools: [{ id: 'magic', label: 'Magic', max: 2 }] } },
+				storedPools: { magic: 1 }
+			}
+		});
+
+		expect(screen.getByRole('button', { name: 'Magic: 1 remaining' })).toBeTruthy();
+	});
+
 	it('themes the header with the resolved palette accent and on-accent', () => {
 		const { container } = render(CharacterView, {
 			props: { result: { status: 'found', character: { ...sunny, color: 'forest' } } }

@@ -6,6 +6,7 @@
 	import AbilitiesBlock from '$lib/character/AbilitiesBlock.svelte';
 	import CombatBlock from '$lib/character/CombatBlock.svelte';
 	import HitPointsBlock from '$lib/character/HitPointsBlock.svelte';
+	import ResourcePoolsBlock from '$lib/character/ResourcePoolsBlock.svelte';
 
 	type ViewState = GetCharacterResult | { status: 'loading' };
 
@@ -15,9 +16,10 @@
 	let {
 		result,
 		storedHp = undefined,
+		storedPools = undefined,
 		store = undefined,
 		id = ''
-	}: { result: ViewState; storedHp?: JsonValue | undefined; store?: StateStore; id?: string } =
+	}: { result: ViewState; storedHp?: JsonValue | undefined; storedPools?: JsonValue | undefined; store?: StateStore; id?: string } =
 		$props();
 </script>
 
@@ -39,6 +41,7 @@
 			{store}
 			{id}
 		/>
+		<ResourcePoolsBlock pools={result.character.pools} {storedPools} {store} {id} />
 		<AbilitiesBlock abilities={result.character.abilities} />
 		<CombatBlock combat={result.character.combat} />
 	</article>
