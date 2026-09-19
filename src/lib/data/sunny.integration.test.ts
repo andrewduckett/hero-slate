@@ -44,7 +44,7 @@ describe('shipped sunny.yaml', () => {
 				'Wisdom',
 				'Charisma'
 			]);
-			expect(abilities.map((e) => e.score)).toEqual([10, 14, 13, 12, 18, 11]);
+			expect(abilities.map((e) => e.score)).toEqual([10, 14, 14, 10, 18, 12]);
 		}
 	});
 
@@ -55,7 +55,7 @@ describe('shipped sunny.yaml', () => {
 		if (result.status === 'found') {
 			const combat = resolveCombat(result.character.combat);
 			expect(combat.map((e) => e.label)).toEqual(['Armor Class', 'Speed', 'Initiative']);
-			expect(combat.map((e) => e.value)).toEqual(['16', '30', '+2']);
+			expect(combat.map((e) => e.value)).toEqual(['15', '30', '+2']);
 		}
 	});
 
