@@ -188,7 +188,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 5. `resource-pools` — tap pool dots to spend/restore; persists per device
+- [x] 5. `resource-pools` — tap pool dots to spend/restore; persists per device
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "track in play → restore after" (spell slots/rage/ki…)
   - **MoSCoW**: Must
