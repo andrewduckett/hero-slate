@@ -1,0 +1,12 @@
+{
+  // Static-assets-only Worker: no server code, just serve the built site.
+  // `npm run build` produces ./build (adapter-static), then `npx wrangler deploy`
+  // uploads it. The `_redirects` file in the build root gives the SPA fallback:
+  // `/sunny` serves the app shell, while a present `/characters/<id>.yaml` is
+  // served as a static asset (assets take priority over redirect rewrites).
+  "name": "hero-slate",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./build"
+  }
+}
