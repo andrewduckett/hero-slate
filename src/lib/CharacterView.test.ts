@@ -42,6 +42,49 @@ describe('CharacterView', () => {
 		);
 	});
 
+	it('renders the identity header, then the abilities block, then the combat block', () => {
+		const character: Character = {
+			...sunny,
+			abilities: [{ label: 'Strength', value: 10 }],
+			combat: [{ label: 'Armor Class', value: 16 }]
+		};
+		const { container } = render(CharacterView, {
+			props: { result: { status: 'found', character } }
+		});
+
+		const article = container.querySelector('article') as HTMLElement;
+		const header = article.querySelector('header') as HTMLElement;
+		const abilities = article.querySelector('[aria-label="Abilities"]') as HTMLElement;
+		const combat = article.querySelector('[aria-label="Combat"]') as HTMLElement;
+
+		expect(header).toBeTruthy();
+		expect(abilities).toBeTruthy();
+		expect(combat).toBeTruthy();
+
+		// Header precedes abilities, which precedes combat, in document order.
+		expect(header.compareDocumentPosition(abilities) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+		expect(abilities.compareDocumentPosition(combat) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	});
+
+	it('renders the header with neither block, and no error, for malformed stat data', () => {
+		const character: Character = {
+			...sunny,
+			abilities: [null, 3, { value: 10 }], // all invalid members
+			combat: { armorClass: 16 } // not a list
+		};
+
+		expect(() =>
+			render(CharacterView, { props: { result: { status: 'found', character } } })
+		).not.toThrow();
+
+		const { container } = render(CharacterView, {
+			props: { result: { status: 'found', character } }
+		});
+		expect(container.querySelector('header')).toBeTruthy();
+		expect(container.querySelector('[aria-label="Abilities"]')).toBeNull();
+		expect(container.querySelector('[aria-label="Combat"]')).toBeNull();
+	});
+
 	it('renders the name alone when the descriptor is empty', () => {
 		const nameOnly: Character = { id: 'x', name: 'Nameless One' };
 		render(CharacterView, { props: { result: { status: 'found', character: nameOnly } } });

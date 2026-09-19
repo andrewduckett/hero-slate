@@ -1,23 +1,36 @@
 # Sunny Thornwood — the walking-skeleton sample character.
 # Identity fields (name, level, class, color) are validated this release.
-# Everything below is provisional: later stories define and render it.
 name: Sunny Thornwood
 level: 6
 class: Druid
 color: forest
 
-# --- Provisional fields (illustrative only) ---
+# Abilities and combat are authored as ordered lists of { label, value } entries.
+# Labels are author-driven: the app assumes no fixed abilities and no defaults.
+# An ability's modifier is computed from its value; author a string value (e.g.
+# "+2") to show a sign on a combat number.
 abilities:
-  str: 10
-  dex: 14
-  con: 13
-  int: 12
-  wis: 18
-  cha: 11
+  - label: Strength
+    value: 10
+  - label: Dexterity
+    value: 14
+  - label: Constitution
+    value: 13
+  - label: Intelligence
+    value: 12
+  - label: Wisdom
+    value: 18
+  - label: Charisma
+    value: 11
 combat:
-  armorClass: 16
-  initiative: 2
-  speed: 30
+  - label: Armor Class
+    value: 16
+  - label: Speed
+    value: 30
+  - label: Initiative
+    value: "+2"
+
+# --- Provisional fields (defined and rendered by later stories) ---
 hitPoints:
   max: 45
   current: 45
