@@ -47,28 +47,98 @@ one.
 ### Adding a character
 
 Drop a `<id>.yaml` file in [`static/characters/`](static/characters). The filename
-stem is the character's logical id and the path in the URL. Identity fields are
-validated; everything else is carried through for later stories to render.
+stem is the character's logical id and the URL path.
+
+A file must not declare an `id` that differs from its filename. An invalid identity
+field or unparseable YAML shows a "not found" message rather than crash — the id is
+never echoed back. The full field reference is in
+[Character YAML reference](#character-yaml-reference) below.
+
+### Character YAML reference
+
+Every field the app renders, with validation rules and markup syntax:
 
 ```yaml
-name: Sunny Thornwood   # required, non-empty string
-level: 6                # optional, finite number
-class: Druid            # optional, string
-color: forest           # optional, a palette name (see Theming)
+# ── Identity ─────────────────────────────────────────────────────────────────
+# Validated on every load. An invalid identity field shows a "not found" message.
+name: Sunny Thornwood        # required — non-empty string
+level: 6                     # optional — finite number
+class: Druid                 # optional — any string
+color: forest                # optional — palette name; unknown names fall back to neutral
+                             # palette names: forest | fire | ocean | berry | sun | neutral
 
-# Provisional fields — carried through, rendered by later stories:
-abilities: { str: 10, dex: 14, con: 13, int: 12, wis: 18, cha: 11 }
-combat:    { armorClass: 16, initiative: 2, speed: 30 }
-hitPoints: { max: 45, current: 45 }
-pools:     { wildShape: 2 }
+# ── Ability scores ───────────────────────────────────────────────────────────
+# An ordered list of labeled entries. Author any labels you like — the app
+# assumes no fixed ability names. A number value computes a modifier
+# automatically (floor((value − 10) / 2)). A string value (e.g. "+2") renders
+# verbatim with no modifier computed. The order you author is the order shown.
+abilities:
+  - label: Strength
+    value: 10        # shows score 10, modifier −0
+  - label: Dexterity
+    value: 14        # shows score 14, modifier +2
+  - label: Wisdom
+    value: 18        # shows score 18, modifier +4
+
+# ── Combat stats ─────────────────────────────────────────────────────────────
+# Same entry shape as abilities. String values render verbatim; numbers render
+# as their numeric value. A missing or invalid value shows an em dash (—).
+combat:
+  - label: Armor Class
+    value: 15
+  - label: Speed
+    value: 30
+  - label: Initiative
+    value: "+2"      # string — the plus sign is preserved
+
+# ── Hit points ───────────────────────────────────────────────────────────────
+# Author max only — must be a positive integer. Current HP is per-device state;
+# a new character starts at full health. Do not author a current value here.
+hitPoints:
+  max: 45
+
+# ── Resource pools ───────────────────────────────────────────────────────────
+# Each pool tracks a countable resource: spell slots, ki, etc.
+# Author max only — remaining uses are per-device state.
+pools:
+  - id: spell-slots-1        # required — unique in this file; lowercase, starts
+                             # alphanumeric, then alphanumeric or hyphens
+    label: 1st Level         # required — display name
+    color: ocean             # optional — any palette name
+    max: 4                   # required — integer, 1–12
+  - id: wild-shape
+    label: Wild Shape
+    color: forest
+    max: 3
+
+# ── Sections ─────────────────────────────────────────────────────────────────
+# Free-text areas. A section needs a title and at least one valid row.
+# A row needs a body — rows without a body are silently dropped.
+# color on a row inherits from its section when omitted on the row.
+# An unknown or missing color falls back to neutral on both sections and rows.
 sections:
-  - title: Notes
-    body: A druid of the Thornwood grove.
+  - title: Your Turn
+    color: forest            # optional — any palette name
+    rows:
+      - title: Attack        # optional row title
+        body: "Claws: [[d20+6]] to hit, [[2d6+4]] damage"
+      - title: Heal
+        body: "Restore [[2d8+3]] hit points, or give an ally [[+d4]]"
+  - title: Strengths
+    rows:
+      - title: Sneaking
+        body: "moving quietly & hiding, [[+5]] bonus"
+      - body: "a row with no title is fine too"
 ```
 
-A file must not declare an `id` that differs from its filename. A missing name, a
-wrong-typed identity field, or unparseable YAML makes the sheet render a generic
-"not found" message rather than crash — the id is never echoed back.
+**Rich-text markup** is valid in any `body` field:
+
+| Syntax | Renders as |
+|---|---|
+| `[[2d6+4]]`, `[[d20]]` | Highlighted dice pill |
+| `[[+3]]`, `[[-1]]` | Highlighted bonus pill |
+| `**word**` | Bold |
+| `*word*` | Italic |
 
 ## 🎨 Theming
 
