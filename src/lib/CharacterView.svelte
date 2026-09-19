@@ -2,6 +2,8 @@
 	import type { GetCharacterResult } from '$lib/data/provider';
 	import { formatIdentity } from '$lib/format';
 	import { resolvePalette } from '$lib/theme/resolve';
+	import AbilitiesBlock from '$lib/character/AbilitiesBlock.svelte';
+	import CombatBlock from '$lib/character/CombatBlock.svelte';
 
 	type ViewState = GetCharacterResult | { status: 'loading' };
 
@@ -20,6 +22,8 @@
 				<p>{formatIdentity(result.character)}</p>
 			{/if}
 		</header>
+		<AbilitiesBlock abilities={result.character.abilities} />
+		<CombatBlock combat={result.character.combat} />
 	</article>
 {:else if result.status === 'error'}
 	<p>Could not load this character. Try again.</p>

@@ -166,7 +166,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: `named-palette-theming` (implemented, archived 2026-09-19)
 
-- [ ] 3. `stat-block` — ability scores with computed modifiers + AC/speed/initiative
+- [x] 3. `stat-block` — ability scores with computed modifiers + AC/speed/initiative
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "see who I am"
   - **MoSCoW**: Must
