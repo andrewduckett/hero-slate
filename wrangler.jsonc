@@ -1,12 +1,18 @@
 {
   // Static-assets-only Worker: no server code, just serve the built site.
   // `npm run build` produces ./build (adapter-static), then `npx wrangler deploy`
-  // uploads it. The `_redirects` file in the build root gives the SPA fallback:
-  // `/sunny` serves the app shell, while a present `/characters/<id>.yaml` is
-  // served as a static asset (assets take priority over redirect rewrites).
+  // uploads it.
+  //
+  // SPA fallback: `not_found_handling: "single-page-application"` serves the
+  // app shell (index.html, HTTP 200) for any path with no matching asset, so
+  // `/sunny` resolves on direct load and refresh. Real assets take priority, so
+  // a present `/characters/<id>.yaml` is served as-is. (Workers static assets
+  // rejects a `/* /index.html 200` `_redirects` rule as an infinite loop, so we
+  // use this option instead of the Pages-style `_redirects` file.)
   "name": "hero-slate",
   "compatibility_date": "2025-09-01",
   "assets": {
-    "directory": "./build"
+    "directory": "./build",
+    "not_found_handling": "single-page-application"
   }
 }
