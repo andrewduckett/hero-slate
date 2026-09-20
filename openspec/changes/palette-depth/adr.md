@@ -13,8 +13,13 @@ No record in force is superseded by this change. The supersession graph is flat:
 every record reads `Supersedes: none` and `Superseded by: none`. The highest
 sequence number in use was 0005, so the new record takes 0006.
 
-One decision met the bar. Three did not, and we record why below rather than
-inventing records for them.
+Two decisions met the bar. Two did not, and we record why below rather than inventing
+records for them.
+
+Round 2 of review found that an earlier version of this manifest excluded the colour-role
+decision on bad grounds. It judged the decision by how cheap the mapping table is to
+edit, not by what reversing the decision would cost. We withdrew that exclusion and wrote
+`0007`.
 
 ## In-Force ADRs Reviewed
 
@@ -36,22 +41,16 @@ inventing records for them.
 - `docs/decisions/0006-palette-tokens-separate-fills-from-marks.md` — a palette name
   defines four colours, and the readable-as-text rule belongs to `deep` rather than
   to `accent`.
+- `docs/decisions/0007-colour-marks-meaning-not-identity.md` — colour marks what a block
+  is rather than whose sheet it is. Hit points, armour class, speed and initiative take
+  fixed roles; the character's colour keeps the header and the ability tiles.
 
 ## Decisions That Did Not Meet the Bar
 
 - **The role-to-palette mapping** (health to `fire`, armour to `ocean`, speed to
-  `forest`, initiative to `sun`). This is one table in code. Changing it costs a line
-  per row and breaks nothing, so it is a product choice, not an architectural fork.
-
-  Round 1 of review argued that a neighbouring decision does meet the bar: the delta
-  spec originally said a config author could never override a role. That is a config
-  contract, and its asymmetry is real — granting author control later is easy, and
-  withdrawing it once authors depend on it breaks their files. We agree with the
-  finding and removed the cause. The spec now states only what this release does: it
-  ignores an authored colour field for those four blocks. It no longer forecloses
-  author control, so no durable decision is being made and no record is needed. If a
-  later change decides to refuse author control permanently, that change writes the
-  record.
+  `forest`, initiative to `sun`). The *principle* behind it is recorded in `0007`. Which
+  palette name each role points at is not: it is one table, a line per row, and changing
+  a role from `ocean` to `forest` forecloses nothing.
 - **The starting colour values.** The contrast tests gate them, and `palette.ts`
   already states that it is the only place a colour value lives. A reader learns
   these by reading them.

@@ -6,7 +6,7 @@ The system SHALL define a palette whose names are exactly `forest`, `fire`, `oce
 
 - `accent` — a solid fill color.
 - `onAccent` — the color of text or icons drawn on the accent.
-- `tint` — a soft background wash drawn on the surface or the raised surface.
+- `tint` — a soft background wash drawn on the raised surface.
 - `deep` — the family color used as text, or as a border, on the surface, the raised surface, or the tint.
 
 Each of the four SHALL have both a light-mode value and a dark-mode value, so each name defines eight color values in total. A name MAY give `deep` and `accent` the same value when that value already satisfies every rule for both.
@@ -63,7 +63,9 @@ In each mode, these pairs SHALL each meet a contrast ratio of at least 4.5:1:
 - the muted text color on every palette's tint
 - every palette's `deep` on that same palette's tint
 
-A tint SHALL also read as an area separate from the raised surface. In each mode, every palette's tint SHALL meet a contrast ratio of at least 1.2:1 against the raised surface. This is a separation floor, not a readability rule, so it sits far below 4.5:1. An equality check is not enough: two values may differ and still look identical. A test SHALL compute each contrast ratio from the values emitted to the stylesheet.
+The system SHALL draw a tint on the raised surface, not on the page surface. A tint SHALL read as an area separate from the raised surface. In each mode, every palette's tint SHALL meet a contrast ratio of at least 1.2:1 against the raised surface. This is a separation floor, not a readability rule, so it sits far below 4.5:1. An equality check is not enough: two values may differ and still look identical. A test SHALL compute each contrast ratio from the values emitted to the stylesheet.
+
+The floor covers the raised surface alone, because the light-mode surface and raised surface sit only 1.096:1 apart. A tint clearing 1.2:1 against both would have to fall below the page background. That would darken what `deep` must sit on, so the two rules would fight. A later change that wants a tint on the page adds the rule and retunes the values.
 
 #### Scenario: Body text is readable on any tint
 
@@ -156,4 +158,4 @@ This release SHALL NOT read a role's colour from character config. Roles are not
 
 **Migration**: The `Deep text and border color` requirement replaces it. Every palette now defines a separate `deep` value, and that value carries the 4.5:1 rule on both the surface and the raised surface. Any code that drew accent-colored text or borders SHALL draw them in `deep` instead.
 
-The emitted-stylesheet suite holds two accent-as-text assertions, not one: accent on the surface, and accent on the raised surface. Only the second had a requirement behind it. Both SHALL be retargeted to `deep`, because `Deep text and border color` states that the system no longer requires an accent to be readable as text on any background.
+The emitted-stylesheet suite holds two accent-as-text assertions, not one: accent on the surface, and accent on the raised surface. Only the second had a requirement behind it. The implementer SHALL retarget both to `deep`, because `Deep text and border color` states that the system no longer requires an accent to be readable as text on any background.

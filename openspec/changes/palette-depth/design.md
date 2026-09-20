@@ -105,8 +105,8 @@ sun       #ffd86b   #3a2905    #453a24   #ffd86b   (deep = accent)
 neutral   #c9d1d9   #14171a    #383d42   #c9d1d9   (deep = accent)
 ```
 
-Every pair above was computed against every rule in the delta spec, in both modes,
-before this design was accepted. All pass. The tightest results are `forest` muted-on-
+The author computed every pair above against every rule in the delta spec, in both
+modes, and a cross-model reviewer re-derived them independently. All pass. The tightest results are `forest` muted-on-
 tint in dark mode at 4.71:1, and `fire` deep-on-tint in light mode at 5.33:1. The
 separation floor's tightest result is `fire` in light mode at 1.21:1.
 
@@ -142,8 +142,16 @@ Trade-off accepted: a forest druid's hit points card is red. The reference does 
 and it works, because "health is red" is a stronger cue than a character's theme.
 
 Alternative considered: give roles their own base colors instead of reusing palette
-names. Rejected. Reusing names means the roles inherit every contrast rule for free
-and add no new values to tune.
+names. Rejected for now. Reusing names means the roles inherit every contrast rule for
+free and add no new values to tune.
+
+That reuse couples two things with no reason to stay aligned. Warming `fire` so the
+`fire` *character theme* reads more like fire would also turn every character's hit
+points tracker orange, on every sheet. Nobody editing a palette would expect that. We
+accept the coupling because six names and four roles is small enough to hold in one
+head, and because the escape hatch is cheap: give the roles their own token set. That
+changes no part of the palette contract. Anyone retuning a palette must check the role
+table first — see ADR 0007.
 
 ### D5. Where each token gets used
 
@@ -183,8 +191,14 @@ Two structural moves come with this, both taken from the reference:
   or in the structural color. The current design leans on `box-shadow`, which is
   nearly invisible on the dark surface, so cards stop reading as cards in dark mode.
 - **The shadow gains a tinted second layer**, as the reference's
-  `0 6px 0 ...,  0 14px 30px rgba(47,93,58,.12)` does. It carries no text, so it may
-  blend.
+  `0 6px 0 ...,  0 14px 30px rgba(47,93,58,.12)` does.
+
+The shadow sits outside the token contract. It is decorative, carries no text, and lives
+in `base.css` rather than the palette. The `Color values are opaque sRGB` requirement
+governs theme colour values, which the contrast tests read; a shadow is not one, and
+`base.css` already ships a blended shadow under the rule `sheet-restyle` set. The
+proposal does not mention this tweak, so treat it as optional: drop it if it draws
+debate, because nothing else in the change depends on it.
 
 ### D6. Generator and tests
 

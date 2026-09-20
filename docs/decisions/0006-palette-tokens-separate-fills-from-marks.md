@@ -77,9 +77,9 @@ darkening to stay gold rather than turning brown, while a dark green needs none 
 all. A formula tuned to satisfy the worst case would flatten the rest.
 
 We accept the cost this imposes: every value is hand-tuned, and a name added later
-needs four values rather than two. Should the palette ever grow past a handful of
-names, generating a first draft from a formula and hand-correcting it is the obvious
-next step, and nothing in this decision blocks that.
+needs four values rather than two. Should the palette ever grow past a handful of names, we
+would generate a first draft from a formula and correct it by hand. Nothing in this
+decision blocks that.
 
 **Define a full ramp per name.** Give each name four or more steps, from darkest to
 palest, as a conventional design system does. Rejected as more than this product
