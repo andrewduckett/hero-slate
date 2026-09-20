@@ -11,8 +11,8 @@ Three decisions could look ADR-worthy, but none is. The CSS-token mechanism is c
 
 ## In-Force ADRs Reviewed
 
-- `docs/adr/0001-static-first-sveltekit-on-cloudflare-workers.md` — static-first SvelteKit on Cloudflare Workers. Still in force; this change adds only client-side CSS and a pure resolver, consistent with it.
-- `docs/adr/0002-character-data-behind-a-provider-interface.md` — character data behind a provider interface. Still in force; the `color` field is carried through the same interface, and palette resolution stays out of the provider.
+- `docs/decisions/0001-static-first-sveltekit-on-cloudflare-workers.md` — static-first SvelteKit on Cloudflare Workers. Still in force; this change adds only client-side CSS and a pure resolver, consistent with it.
+- `docs/decisions/0002-character-data-behind-a-provider-interface.md` — character data behind a provider interface. Still in force; the `color` field is carried through the same interface, and palette resolution stays out of the provider.
 
 ## New Durable ADRs Created
 

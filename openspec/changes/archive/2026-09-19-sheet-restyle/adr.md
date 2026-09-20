@@ -15,15 +15,15 @@ or test hooks. They can be read from the code and are cheap to change.
 
 No ADR supersedes another. The highest sequence number was 0004.
 
-- `docs/adr/0001-static-first-sveltekit-on-cloudflare-workers.md`: fonts ship as
+- `docs/decisions/0001-static-first-sveltekit-on-cloudflare-workers.md`: fonts ship as
   static files, with no Worker code.
-- `docs/adr/0002-character-data-behind-a-provider-interface.md`: this change adds
+- `docs/decisions/0002-character-data-behind-a-provider-interface.md`: this change adds
   no data fields and does not touch the provider.
-- `docs/adr/0003-per-device-state-behind-a-key-value-store-interface.md`: the
+- `docs/decisions/0003-per-device-state-behind-a-key-value-store-interface.md`: the
   trackers keep their state keys and behavior.
-- `docs/adr/0004-rich-text-rendered-as-token-tree-not-html-string.md`: the rich-text
+- `docs/decisions/0004-rich-text-rendered-as-token-tree-not-html-string.md`: the rich-text
   styles may change, but the renderer does not.
 
 ## New Durable ADRs Created
 
-- `docs/adr/0005-self-hosted-fonts-no-third-party-requests.md`
+- `docs/decisions/0005-self-hosted-fonts-no-third-party-requests.md`

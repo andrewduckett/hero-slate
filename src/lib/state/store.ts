@@ -8,7 +8,7 @@
  * without changing a call site. The interface exposes no storage location:
  * callers depend only on the id and the key.
  *
- * See `docs/adr/0003-per-device-state-behind-a-key-value-store-interface.md`.
+ * See `docs/decisions/0003-per-device-state-behind-a-key-value-store-interface.md`.
  */
 
 /**
