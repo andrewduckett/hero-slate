@@ -42,6 +42,16 @@ inventing records for them.
 - **The role-to-palette mapping** (health to `fire`, armour to `ocean`, speed to
   `forest`, initiative to `sun`). This is one table in code. Changing it costs a line
   per row and breaks nothing, so it is a product choice, not an architectural fork.
+
+  Round 1 of review argued that a neighbouring decision does meet the bar: the delta
+  spec originally said a config author could never override a role. That is a config
+  contract, and its asymmetry is real — granting author control later is easy, and
+  withdrawing it once authors depend on it breaks their files. We agree with the
+  finding and removed the cause. The spec now states only what this release does: it
+  ignores an authored colour field for those four blocks. It no longer forecloses
+  author control, so no durable decision is being made and no record is needed. If a
+  later change decides to refuse author control permanently, that change writes the
+  record.
 - **The starting colour values.** The contrast tests gate them, and `palette.ts`
   already states that it is the only place a colour value lives. A reader learns
   these by reading them.

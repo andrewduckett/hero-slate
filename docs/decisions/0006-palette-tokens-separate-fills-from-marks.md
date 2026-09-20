@@ -58,11 +58,28 @@ text.
 
 We considered three alternatives.
 
-**Keep two tokens and blend.** Derive a wash at run time by mixing the accent with
-the background, using a CSS colour-mixing function. Rejected: a blended colour cannot
-be read back from the stylesheet, so the contrast tests could not check the value the
-browser actually paints. This project holds the rule that no blended colour sits
-behind text.
+**Keep two tokens and blend at run time.** Derive a wash in the browser by mixing the
+accent with the background, using a CSS colour-mixing function. Rejected: the contrast
+tests cannot read a blended colour back from the stylesheet, so they cannot check the
+value the browser actually paints. This project holds the rule that no blended colour
+sits behind text.
+
+**Keep two tokens and derive the rest at build time.** A generator already turns the
+palette module into a stylesheet. It could compute each `tint` and `deep` from the
+`accent` by a fixed formula and emit plain hex, which the contrast tests would read
+normally. This answers the testing objection above, so it deserves its own answer.
+
+Rejected, because a formula cannot hold a hue steady across the set. Lightening a
+saturated green toward a wash drifts it grey, and the wash this project wants is the
+reference page's `#cfe3bf` — a warmer, yellower green than any mechanical lightening
+of `#2f5d3a` produces. The same applies to `deep`: gold needs a large, hand-judged
+darkening to stay gold rather than turning brown, while a dark green needs none at
+all. A formula tuned to satisfy the worst case would flatten the rest.
+
+We accept the cost this imposes: every value is hand-tuned, and a name added later
+needs four values rather than two. Should the palette ever grow past a handful of
+names, generating a first draft from a formula and hand-correcting it is the obvious
+next step, and nothing in this decision blocks that.
 
 **Define a full ramp per name.** Give each name four or more steps, from darkest to
 palest, as a conventional design system does. Rejected as more than this product

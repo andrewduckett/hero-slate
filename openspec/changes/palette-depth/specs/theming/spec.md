@@ -63,7 +63,7 @@ In each mode, these pairs SHALL each meet a contrast ratio of at least 4.5:1:
 - the muted text color on every palette's tint
 - every palette's `deep` on that same palette's tint
 
-A tint SHALL also be visually distinct from the raised surface, so a tinted area reads as a separate area. A test SHALL assert that every tint differs from the raised surface in the same mode. A test SHALL compute each contrast ratio from the values emitted to the stylesheet.
+A tint SHALL also read as an area separate from the raised surface. In each mode, every palette's tint SHALL meet a contrast ratio of at least 1.2:1 against the raised surface. This is a separation floor, not a readability rule, so it sits far below 4.5:1. An equality check is not enough: two values may differ and still look identical. A test SHALL compute each contrast ratio from the values emitted to the stylesheet.
 
 #### Scenario: Body text is readable on any tint
 
@@ -82,8 +82,8 @@ A tint SHALL also be visually distinct from the raised surface, so a tinted area
 
 #### Scenario: A tint is distinct from the raised surface
 
-- **WHEN** a test compares each palette's tint with the raised surface in the same mode
-- **THEN** the two values differ
+- **WHEN** a test computes the contrast of each palette's tint against the raised surface in the same mode
+- **THEN** every ratio is at least 1.2:1
 
 ### Requirement: Deep text and border color
 
@@ -113,7 +113,7 @@ The system SHALL NOT require the `accent` color to be readable as text. An accen
 
 The system SHALL define one more base color, shared across all characters and independent of the accent palette: a structural color for tile borders and secondary labels. It SHALL have a light-mode value and a dark-mode value. It SHALL be an opaque sRGB color in the canonical format.
 
-In each mode, the structural color SHALL meet a contrast ratio of at least 4.5:1 against the surface and against the raised surface, because the system may draw label text in it. A test SHALL compute each ratio from the values emitted to the stylesheet.
+In each mode, the structural color SHALL meet a contrast ratio of at least 4.5:1 against the surface and against the raised surface. The system may draw label text in it, so it must stay readable. A test SHALL compute each ratio from the values emitted to the stylesheet.
 
 #### Scenario: The structural color has both modes
 
@@ -130,7 +130,7 @@ In each mode, the structural color SHALL meet a contrast ratio of at least 4.5:1
 
 The system SHALL define a fixed color role for each of hit points, armor class, speed, and initiative. Each role SHALL resolve to one name from the fixed palette set. A role's palette name SHALL be the same for every character. A character's `color` SHALL NOT change any role.
 
-A config author SHALL NOT be able to set or override a role. Roles are not authored data.
+This release SHALL NOT read a role's colour from character config. Roles are not authored data today. The system SHALL ignore an authored field that names a colour for one of the four, rather than rejecting the character. This requirement fixes current behaviour. It does not commit the project to withholding author control in a later release.
 
 #### Scenario: A role holds its color across characters
 
@@ -142,7 +142,7 @@ A config author SHALL NOT be able to set or override a role. Roles are not autho
 - **WHEN** any of the four roles is looked up
 - **THEN** it resolves to one of `forest`, `fire`, `ocean`, `berry`, `sun`, or `neutral`
 
-#### Scenario: Config cannot override a role
+#### Scenario: An authored colour field for a role is ignored
 
 - **WHEN** a character file sets a field that names a color for hit points, armor class, speed, or initiative
 - **THEN** the sheet still renders that block in its fixed role color
@@ -154,4 +154,6 @@ A config author SHALL NOT be able to set or override a role. Roles are not autho
 
 **Reason**: The rule forced each `accent` to serve as both a solid fill and a text color. One value cannot do both jobs across the palette. Meeting it drove `sun` to a brown and `berry` to a magenta, so those names stopped describing their colors.
 
-**Migration**: The `Deep text and border color` requirement replaces it. Every palette now defines a separate `deep` value, and that value carries the 4.5:1 rule on both the surface and the raised surface. Any code that drew accent-colored text or borders SHALL draw them in `deep` instead. The contrast test that asserted accent on the raised surface is retargeted to `deep`.
+**Migration**: The `Deep text and border color` requirement replaces it. Every palette now defines a separate `deep` value, and that value carries the 4.5:1 rule on both the surface and the raised surface. Any code that drew accent-colored text or borders SHALL draw them in `deep` instead.
+
+The emitted-stylesheet suite holds two accent-as-text assertions, not one: accent on the surface, and accent on the raised surface. Only the second had a requirement behind it. Both SHALL be retargeted to `deep`, because `Deep text and border color` states that the system no longer requires an accent to be readable as text on any background.

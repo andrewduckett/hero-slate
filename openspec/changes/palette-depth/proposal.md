@@ -16,8 +16,8 @@ accent double as a text colour. A mid-tone hue fails both. So `sun` is `#8a5a12`
 brown, and `berry` is `#a83278`, a magenta. The palette names no longer describe
 their colours.
 
-Third, styles that need a middle value have none. A pool dot can only be a solid
-disc or an empty ring, because no soft fill exists between them.
+Third, styles that need a soft fill have none. A pool dot can only be a solid disc or
+an empty ring, because no soft fill exists between them.
 
 The bespoke sheet this app replaces gives every accent a soft companion
 (`--sage`, `--berry-soft`, `--sun-soft`, `--sky-soft`) and assigns colour by

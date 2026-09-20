@@ -83,21 +83,32 @@ Light mode:
 name      accent    onAccent   tint      deep
 forest    #2f5d3a   #ffffff    #cfe3bf   #2f5d3a   (deep = accent)
 fire      #c0392b   #ffffff    #fbe2df   #a8342e
-ocean     #2f7fae   #ffffff    #dceef6   #1f5d80
+ocean     #2d79a6   #ffffff    #d8e9f1   #1f5d80
 berry     #b5356a   #ffffff    #f8dcea   #8e2953
-sun       #e9a23b   #3a2905    #fdeccf   #7d5010
+sun       #e9a23b   #3a2905    #f5e5c9   #7d5010
 neutral   #4a4a42   #ffffff    #e8e3d6   #4a4a42   (deep = accent)
 ```
 
-Dark mode keeps the current pastel accents. A dark-mode `tint` is a dark, desaturated
-family color, and `deep` will usually equal `accent` there, because a pastel already
-reads on a near-black surface:
+Dark mode keeps the current pastel accents, and `deep` equals `accent` for every name,
+because a pastel already reads on a near-black surface. A dark-mode `tint` sits
+*lighter* than the raised surface, not darker. Darkening it far enough to clear the
+separation floor pushes it below the page background, where a tinted panel reads as a
+hole rather than a highlight:
 
 ```
 name      accent    onAccent   tint      deep
-forest    #7fd8a0   #06301a    #16281c   #7fd8a0
-...
+forest    #7fd8a0   #06301a    #2c4636   #7fd8a0   (deep = accent)
+fire      #ff9f8a   #3a0d06    #4a2f2a   #ff9f8a   (deep = accent)
+ocean     #8fc4ff   #062146    #2b3c4f   #8fc4ff   (deep = accent)
+berry     #f0a6d0   #3d0a29    #46303e   #f0a6d0   (deep = accent)
+sun       #ffd86b   #3a2905    #453a24   #ffd86b   (deep = accent)
+neutral   #c9d1d9   #14171a    #383d42   #c9d1d9   (deep = accent)
 ```
+
+Every pair above was computed against every rule in the delta spec, in both modes,
+before this design was accepted. All pass. The tightest results are `forest` muted-on-
+tint in dark mode at 4.71:1, and `fire` deep-on-tint in light mode at 5.33:1. The
+separation floor's tightest result is `fire` in light mode at 1.21:1.
 
 Base colors change in two ways:
 
@@ -151,6 +162,21 @@ section card    tint title strip + deep title,
 dice pill       tint fill + deep border and text   (inherited from its row)
 ```
 
+Five components draw text in `var(--accent)` today. Every one moves to `var(--deep)`:
+
+```
+src/lib/character/AbilitiesBlock.svelte:62     the modifier
+src/lib/character/SectionsBlock.svelte:77      the row title
+src/lib/richtext/RichText.svelte:33            the dice pill's text and border
+src/lib/character/HitPointsBlock.svelte:139    the current-value readout
+src/lib/character/HitPointsBlock.svelte:183    the damage button labels
+```
+
+The last two are easy to miss, because the tracker's fills dominate the block. Nothing
+breaks today if they are left behind — the health role maps to `fire`, which stays dark.
+The failure is latent: remap health to a mid-tone role later and the readout renders at
+about 2.2:1, which is the exact defect this change exists to remove.
+
 Two structural moves come with this, both taken from the reference:
 
 - **Borders carry separation, not shadows.** Containers gain a 3px border in `deep`
@@ -174,30 +200,43 @@ muted on tint           >= 4.5      12
 deep on tint            >= 4.5      12
 deep on surface         >= 4.5      12
 deep on raised          >= 4.5      12
-tint != raised          inequality  12
+tint vs raised          >= 1.20     12
 structural on surface   >= 4.5       2
 structural on raised    >= 4.5       2
 ```
 
-The retargeted check replaces the removed accent-on-raised assertion. No existing
-assertion is loosened.
+Two existing assertions must change, and the first was missed in an earlier draft of
+this design. `emitted-css.test.ts` asserts accent on the surface (line 65) and accent on
+the raised surface (line 96). Only the second had a requirement behind it. Both are
+retargeted to `deep`, because the delta spec now states that an accent need not be
+readable as text on any background. Leaving either in place fails the build the moment
+the `sun` accent lands: gold on the light surface measures about 1.9:1.
+
+No other existing assertion is loosened.
 
 ## Risks / Trade-offs
 
-- **`deep` on `tint` is the tightest rule** → It squeezes from both sides: the tint
-  must stay pale enough for body text, and `deep` must stay dark enough to sit on it.
-  A quick check of the reference's own gold pairing (`#9a6312` on `#fdeccf`) gives
-  about **4.30:1** — it fails. Expect to darken several `deep` values. Tune `deep`
-  first, since a tint also has to carry the plain foreground.
-- **Dark-mode tints are new ground** → The reference is light-only, so it offers no
-  values to borrow. Build them as dark desaturated family colors and let the tests
-  decide.
+- **`deep` on `tint` squeezes from both sides** → The tint must stay pale enough for
+  body text, and `deep` must stay dark enough to sit on it. The reference's own gold
+  pairing (`#9a6312` on `#fdeccf`) measures about **4.30:1** and fails. The values in
+  D3 resolve this — the tightest is `fire` at 5.33:1 — but any later retune must
+  re-check the whole set, not one pair.
+- **The separation floor and the readability rules pull against each other** → Deepening
+  a tint to clear 1.2:1 against the raised surface also darkens what `deep` must sit on.
+  In dark mode the two rules cannot both be met by darkening, which is why dark tints
+  run lighter than the raised surface. Anyone retuning a tint must move `deep` with it.
 - **Sunny's health card turns red** → A deliberate product call, not a bug. It is
   cheap to reverse: the role mapping is one table in code.
 - **The palette module grows from 24 to 60-odd values** → Mitigated because
   `palette.ts` stays the single source and every value is machine-checked.
-- **`sun` and `berry` shift hue** → Any character already using them changes
-  appearance. Only two sample characters exist, and neither uses either name.
+- **`sun`, `berry`, and `ocean` shift hue** → Any character already using them changes
+  appearance. Only two sample characters exist; neither uses `sun` or `berry`, and
+  `sunny.yaml` uses `ocean` for three spell-slot pools, which will read slightly softer.
+- **An accent that fails as text is now legal, and nothing tests component usage** →
+  The contrast tests check the palette's values, not which token a component reached
+  for. Drawing text in `accent` still renders something visible, so the mistake is
+  quiet. The five call sites in D5 are the full list today; a new one is caught by
+  review, not by CI.
 
 ## Migration Plan
 
@@ -214,5 +253,5 @@ file or stored state needs migrating.
 
 ## Open Questions
 
-- Should dark-mode `deep` simply alias dark-mode `accent` for every name? The
-  contrast tests will answer it during step 3. It changes no requirement and no task.
+None. The one question this design previously carried — whether dark-mode `deep` should
+alias dark-mode `accent` — is answered in D3: it does, for every name.
