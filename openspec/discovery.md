@@ -1,7 +1,7 @@
 # Discovery: Simple Character Sheet Web App
 
 > Status: complete
-> Created: 2026-09-18 · Last revised: 2026-09-19 (added `sheet-restyle`)
+> Created: 2026-09-18 · Last revised: 2026-09-20 (added `palette-depth`, `theme-preference`, `landscape-layout`)
 
 > Release plan produced by the discovery skill. Resume or revise by re-running the skill.
 > To build: run `/opsx:propose` and ask it to use the next unchecked story below.
@@ -128,6 +128,13 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
 
 - **Sheet restyle + section reorder** (story 7) — Player: see who I am; the unstyled
   sheet reads worse than the bespoke page it replaces.
+- **Palette depth + colour roles** (story 8) — Player: see who I am; two tokens per
+  palette can only fill a shape, so the sheet reads as one hue and a name no longer
+  describes its colour.
+- **Theme default + toggle** (story 9) — Player: open the sheet; dark is the wanted
+  default and no control exists to switch.
+- **Landscape layout** (story 10) — Player: track in play; the table setup is a tablet
+  on its side, and one narrow column wastes the wide axis.
 
 ### Could
 
@@ -224,7 +231,40 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-19
   - **Change**: `sheet-restyle` (archived 2026-09-19)
 
-- [ ] 8. `home-picker` — `/` lists characters as tappable cards
+- [ ] 8. `palette-depth` — palette names get a wash and a readable mark; colour marks meaning, not just the character
+  - **Persona served**: Sunny, Andrew-as-Player
+  - **Journey segment**: Player "see who I am" + "track in play" (legibility and polish)
+  - **MoSCoW**: Should
+  - **Why this story / why now**: a palette defines only an accent and the text on it. Two tokens can fill a shape and nothing else. So the whole sheet renders in one hue, and two spec rules force every accent dark — `sun` is a brown and `berry` a magenta. The bespoke page this app replaces gives every accent a soft companion and colours by meaning. Do it before the picker, so picker cards inherit the finished tokens.
+  - **Depends on**: stories 2, 3, 7
+  - **Scope**: in: four tokens per palette name (`accent`, `onAccent`, `tint`, `deep`) in both modes; move the readable-as-text rule from `accent` to `deep`; let light-mode `onAccent` vary per name; retune `sun` and `berry`; one warm structural base colour; a warmer raised surface; fixed colour roles for hit points, armour class, speed, and initiative; apply the tokens across every block; extend the contrast tests to each new pairing. / out: a light/dark toggle or a new default mode (story 9); page width and block layout (story 10); new character data fields; a per-palette ramp beyond four tokens.
+  - **Relevant code**: `src/lib/theme/palette.ts`, `generate.ts`, generated `palette.css`, `palette.test.ts`, `emitted-css.test.ts`, `src/lib/character/*Block.svelte`, `src/lib/CharacterView.svelte`, `src/lib/richtext/RichText.svelte`.
+  - **Added**: 2026-09-20
+  - **Change**: `palette-depth` (proposed)
+
+- [ ] 9. `theme-preference` — the sheet opens dark, and a control switches modes
+  - **Persona served**: Sunny, Andrew-as-Player
+  - **Journey segment**: Player "open the sheet" + "see who I am" (control over legibility)
+  - **MoSCoW**: Should
+  - **Why this story / why now**: the app follows the device preference and offers no control. A player who wants the other mode cannot get it without changing a device setting. Dark is the preferred default at the table. **This reverses a durable constraint**: `AGENTS.md`, story 2, and story 7 all state that light/dark is a pure `prefers-color-scheme` media query with no toggle. Update that text as part of this story.
+  - **Depends on**: stories 2, 8
+  - **Scope**: in: dark as the default when the device states no preference; a toggle control; the chosen mode persisted per device through the existing state store; a `data-theme` selector path alongside the media query; no flash of the wrong mode on load, given a prerendered shell with `ssr = false`; contrast tests cover both selector paths; amend the no-toggle wording in `AGENTS.md` and in stories 2 and 7. / out: a per-character mode; a system/light/dark tri-state if a simple toggle serves; new palette values.
+  - **Relevant code**: `src/lib/theme/generate.ts`, generated `palette.css`, `src/routes/+layout.svelte`, `src/app.html`, `src/lib/state/*`, `src/lib/theme/emitted-css.test.ts`, `AGENTS.md`.
+  - **Added**: 2026-09-20
+  - **Change**: _not yet proposed_
+
+- [ ] 10. `landscape-layout` — the sheet uses a landscape tablet's width instead of one narrow column
+  - **Persona served**: Sunny, Andrew-as-Player
+  - **Journey segment**: Player "see who I am" + "track in play" (reach and glanceability)
+  - **MoSCoW**: Should
+  - **Why this story / why now**: the expected table setup is a tablet on its side in a kickstand. That is wide and short. The sheet caps content at 44rem in a single column, so it wastes the plentiful axis and stacks everything in the scarce one. The two blocks a player touches most, hit points and pools, fall below the fold.
+  - **Depends on**: stories 3, 4, 5, 6, 7
+  - **Scope**: in: a landscape breakpoint that places blocks in more than one column; a wider content cap on wide screens; keep the trackers reachable without scrolling on a landscape tablet; the ability grid uses a fixed column count per breakpoint, never `auto-fit`, so a lone tile can never orphan; portrait and phone layouts keep working. / out: colour and token work (story 8); a theme toggle (story 9); new blocks or data fields; changes to tracker behaviour.
+  - **Relevant code**: `src/lib/theme/base.css` (`.page`), `src/lib/CharacterView.svelte`, `src/lib/character/AbilitiesBlock.svelte`, `ResourcePoolsBlock.svelte`.
+  - **Added**: 2026-09-20
+  - **Change**: _not yet proposed_
+
+- [ ] 11. `home-picker` — `/` lists characters as tappable cards
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "find my character" (choose among many)
   - **MoSCoW**: Must
@@ -235,29 +275,29 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 9. `pwa-install` — installable app with manifest + icons
+- [ ] 12. `pwa-install` — installable app with manifest + icons
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "use with no wifi" (home-screen install half)
   - **MoSCoW**: Should
   - **Why this story / why now**: quick win — "Add to Home Screen" gives the full-screen `/sunny` icon; lower risk than the service-worker caching half.
   - **Depends on**: story 1
-  - **Scope**: in: web app manifest, icons, theme/display config, installability. / out: service worker, offline caching (story 9).
+  - **Scope**: in: web app manifest, icons, theme/display config, installability. / out: service worker, offline caching (story 13).
   - **Relevant code**: `public/manifest.webmanifest`, icon assets, `<head>` wiring.
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 10. `offline-caching` — works with no wifi; edits refresh next online open
+- [ ] 13. `offline-caching` — works with no wifi; edits refresh next online open
   - **Persona served**: Sunny, Andrew-as-Player, Andrew (Author)
   - **Journey segment**: Player "use with no wifi"; Author "iterate (edits propagate)"
   - **MoSCoW**: Should
   - **Why this story / why now**: resilience for flaky table wifi. Riskier than install (SW lifecycle), so it follows story 9.
-  - **Depends on**: stories 1, 9
+  - **Depends on**: stories 1, 12
   - **Scope**: in: service worker; cache-first app shell with versioned update + "refresh" prompt on new deploy; stale-while-revalidate for character/manifest config. / out: background sync, push, cross-device state.
   - **Relevant code**: SW registration + strategy config (e.g., Vite PWA/Workbox), build integration.
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 11. `unlisted-access` — site is public but not search-indexed
+- [ ] 14. `unlisted-access` — site is public but not search-indexed
   - **Persona served**: Andrew (Author)
   - **Journey segment**: Author "build & deploy" (privacy)
   - **MoSCoW**: Should
@@ -268,12 +308,12 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
-- [ ] 12. `avatar-images` — image avatars in header and picker cards
+- [ ] 15. `avatar-images` — image avatars in header and picker cards
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "find my character" + "see who I am" (polish)
   - **MoSCoW**: Should
   - **Why this story / why now**: emoji avatars already work from earlier stories; images are the enhancement.
-  - **Depends on**: stories 3, 8
+  - **Depends on**: stories 3, 11
   - **Scope**: in: `avatar` accepts an image path (repo asset) as well as emoji; render in header + picker card with sensible fit/fallback. / out: uploads, cropping, remote images.
   - **Relevant code**: identity header + picker card components; `characters/` or `public/` asset handling.
   - **Added**: 2026-09-18
@@ -299,3 +339,8 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   after reviewing the live sheet against the bespoke example; renumbered stories 7–11 to
   8–12 and their dependencies; reconciled stories 3–6 as archived; `unlisted-access` (now 11) points
   at Cloudflare Workers static-assets config instead of Cloudflare Pages.
+- 2026-09-20 — Revision: inserted stories 8 `palette-depth`, 9 `theme-preference`, and
+  10 `landscape-layout` ahead of `home-picker`, after comparing the live sheet with the
+  bespoke page it replaces. Renumbered stories 8–12 to 11–15 and updated their
+  dependency references. `theme-preference` reverses the no-toggle constraint recorded
+  in `AGENTS.md` and in stories 2 and 7; that story owns the amendment.
