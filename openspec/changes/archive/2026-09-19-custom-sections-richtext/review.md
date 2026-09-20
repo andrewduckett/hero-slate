@@ -4,7 +4,7 @@
 - **Prior round**: Round 3 — VERDICT: REVISE (2 new criticals, 1 moderate)
 - **Reviewer context**: cross-model (Gemini 3.1 Pro High, via agy)
 - **Tool restrictions**: read-only
-- **Artifacts reviewed**: proposal.md, design.md, specs/custom-sections/spec.md, specs/rich-text/spec.md, adr.md, docs/adr/0004
+- **Artifacts reviewed**: proposal.md, design.md, specs/custom-sections/spec.md, specs/rich-text/spec.md, adr.md, docs/decisions/0004
 
 <!-- Round 1 (REVISE): 2 criticals — overlapping markers unspecified, nesting depth gap -->
 <!-- Round 2 (REVISE): 2 criticals — dice regex redundant, empty pill contradiction; -->

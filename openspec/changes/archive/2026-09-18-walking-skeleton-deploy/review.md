@@ -4,7 +4,7 @@
 - **Prior round**: rounds 1 and 2 verdict REVISE (trust boundary, deployability, failure handling, plain language, assertable scenarios, schema scope) — all addressed
 - **Reviewer context**: cross-model (codex CLI), read-only
 - **Tool restrictions**: read-only: view, grep, glob only
-- **Artifacts reviewed**: proposal.md, design.md, specs/, adr.md, docs/adr/
+- **Artifacts reviewed**: proposal.md, design.md, specs/, adr.md, docs/decisions/
 
 ## Findings
 

@@ -20,7 +20,7 @@ ADR review completed for this change.
 
 ## New Durable ADRs Created
 
-- **ADR 0004** — `docs/adr/0004-rich-text-rendered-as-token-tree-not-html-string.md`
+- **ADR 0004** — `docs/decisions/0004-rich-text-rendered-as-token-tree-not-html-string.md`
   The rich-text renderer builds a typed token tree and walks it with recursive
   Svelte components. It never constructs an HTML string or uses `{@html}`. This
   makes XSS structurally impossible rather than runtime-filtered, and it removes

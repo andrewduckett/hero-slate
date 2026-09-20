@@ -162,11 +162,11 @@ a raw hex value is never honored.
   release (`ssr = false`, prerendered shell, SPA fallback for clean paths), served
   on Cloudflare Workers static assets. Adding server rendering later is an adapter
   swap, not a framework change. See
-  [`docs/adr/0001`](docs/adr/0001-static-first-sveltekit-on-cloudflare-workers.md).
+  [`docs/decisions/0001`](docs/decisions/0001-static-first-sveltekit-on-cloudflare-workers.md).
 - **Data behind a provider.** The UI depends only on `getCharacter(id)`, which
   returns one of four typed results (`found`, `not-found`, `invalid`, `error`) and
   never throws. See
-  [`docs/adr/0002`](docs/adr/0002-character-data-behind-a-provider-interface.md).
+  [`docs/decisions/0002`](docs/decisions/0002-character-data-behind-a-provider-interface.md).
 
 The SPA fallback is why `/sunny` resolves on direct load and refresh:
 `wrangler.jsonc` sets `not_found_handling: "single-page-application"`, so any path
@@ -189,7 +189,7 @@ src/
 scripts/                       # palette.css generator (runs before build)
 static/characters/             # <id>.yaml definitions, shipped as public assets
 openspec/                      # prd, discovery roadmap, specs, changes (+ archive)
-docs/adr/                      # architecture decision records
+docs/decisions/                      # architecture decision records
 ```
 
 ## 🛠️ Development
@@ -208,7 +208,7 @@ failing test first.
 
 This project plans with **OpenSpec**. In-flight work lives under
 `openspec/changes/`, durable specs under `openspec/specs/`, and decision records
-under `docs/adr/`. The roadmap is `openspec/discovery.md` — one story per change.
+under `docs/decisions/`. The roadmap is `openspec/discovery.md` — one story per change.
 Two constraints hold across every change: the core stays **static with no backend**
 this release, and character data is reached **only through the provider interface**
 keyed by a logical id. Full guidance is in [`AGENTS.md`](AGENTS.md).

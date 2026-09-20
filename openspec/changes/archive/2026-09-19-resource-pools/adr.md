@@ -12,9 +12,9 @@ Its pool format and dot interaction are feature-level contracts.
 
 ## In-Force ADRs Reviewed
 
-- `docs/adr/0001-static-first-sveltekit-on-cloudflare-workers.md`
-- `docs/adr/0002-character-data-behind-a-provider-interface.md`
-- `docs/adr/0003-per-device-state-behind-a-key-value-store-interface.md`
+- `docs/decisions/0001-static-first-sveltekit-on-cloudflare-workers.md`
+- `docs/decisions/0002-character-data-behind-a-provider-interface.md`
+- `docs/decisions/0003-per-device-state-behind-a-key-value-store-interface.md`
 
 ## New Durable ADRs Created
 

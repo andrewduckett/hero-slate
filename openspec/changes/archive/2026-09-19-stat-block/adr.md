@@ -5,8 +5,8 @@ were introduced, and no new repository-level ADR files were created.
 
 ## Context reviewed
 
-- `docs/adr/0001-static-first-sveltekit-on-cloudflare-workers.md` — in force.
-- `docs/adr/0002-character-data-behind-a-provider-interface.md` — in force.
+- `docs/decisions/0001-static-first-sveltekit-on-cloudflare-workers.md` — in force.
+- `docs/decisions/0002-character-data-behind-a-provider-interface.md` — in force.
 
 No ADR supersedes another; the highest sequence number in use is 0002.
 

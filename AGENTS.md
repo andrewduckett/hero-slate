@@ -17,13 +17,13 @@ milestone status live in `openspec/discovery.md`.
   with SvelteKit `adapter-static`: a prerendered app shell, `ssr = false`, and an
   SPA fallback for clean paths. It ships **no** server-side Worker code or server
   functions. To add server rendering later, swap the adapter — not the framework.
-  See `docs/adr/0001-static-first-sveltekit-on-cloudflare-workers.md`.
+  See `docs/decisions/0001-static-first-sveltekit-on-cloudflare-workers.md`.
 - **Character data sits behind a provider interface.** Consumers depend only on
   `getCharacter(id)` from `src/lib/data/provider.ts`, never on a file path or URL.
   A character is a **stable logical id** (e.g. `sunny`), not a filename, so it can
   resolve to a YAML file today and a hosted database record tomorrow. Keep palette
   and rendering knowledge out of the provider. See
-  `docs/adr/0002-character-data-behind-a-provider-interface.md`.
+  `docs/decisions/0002-character-data-behind-a-provider-interface.md`.
 - **No future-DB traps.** A later phase may add a hosted database, accounts, and
   cross-device sync. Keep definition data separate from per-device state, keep the
   `Character` type JSON-clean, and route everything through the provider so that

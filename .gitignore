@@ -30,3 +30,6 @@ pnpm-debug.log*
 .vscode/*
 !.vscode/extensions.json
 *.swp
+
+# Scratch and working files (see AGENTS.md)
+.workspace/

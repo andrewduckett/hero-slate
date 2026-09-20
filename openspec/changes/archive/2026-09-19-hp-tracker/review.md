@@ -4,7 +4,7 @@
 - **Prior round**: REVISE (round 3: 4 critical, 2 moderate)
 - **Reviewer context**: cross-model (codex CLI)
 - **Tool restrictions**: read-only: view, grep, glob only
-- **Artifacts reviewed**: proposal.md, design.md, specs/, adr.md, docs/adr/0003, CLAUDE.md, relevant source files
+- **Artifacts reviewed**: proposal.md, design.md, specs/, adr.md, docs/decisions/0003, CLAUDE.md, relevant source files
 
 ## Findings
 

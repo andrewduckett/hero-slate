@@ -4,7 +4,7 @@
 - **Prior round**: round 1 — Claude Sonnet (same family as author), APPROVE_WITH_CHANGES; its four required changes (M1–M4) were applied and re-checked.
 - **Reviewer context**: cross-model — GPT family (`gpt-5.6-terra` via `codex exec`, read-only sandbox, high reasoning). Independent family from the Claude author; requested by the user for a genuinely independent adversary.
 - **Tool restrictions**: read-only (codex `-s read-only`); the reviewer's analysis was captured to a file, then composed into this review by the author.
-- **Artifacts reviewed**: proposal.md, design.md, specs/character-sheet/spec.md, tasks.md, adr.md, round-1 review.md; grounding: openspec/specs/character-sheet/spec.md, discovery.md, docs/adr/0001–0002, CLAUDE.md, and the src/ files.
+- **Artifacts reviewed**: proposal.md, design.md, specs/character-sheet/spec.md, tasks.md, adr.md, round-1 review.md; grounding: openspec/specs/character-sheet/spec.md, discovery.md, docs/decisions/0001–0002, CLAUDE.md, and the src/ files.
 
 <!-- STALENESS: this verdict applies only to the artifact contents reviewed in this -->
 <!-- round. Any later edit other than applying listed changes VOIDS the verdict. -->
