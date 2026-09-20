@@ -2,176 +2,128 @@
 
 ## Review Metadata
 
-- **Review round**: 1
-- **Prior round**: none
+- **Review round**: 2
+- **Prior round**: round 1 returned `VERDICT: REVISE` — four critical findings, all fixed
+  in commit `9c835da`.
 - **Date**: 2026-09-20
 - **Author family**: `claude` (Claude Opus 5)
 - **Reviewer family**: `gemini` (`gemini-3.1-pro-high`, via `agy --mode plan`, read-only)
-- **Independence**: cross-model. The reviewer read only files on disk and no authoring
-  transcript. A check of `git status` after the run confirmed it wrote nothing.
-- **Artifacts reviewed**: `proposal.md`, `design.md`, `specs/theming/spec.md`, `adr.md`,
-  `docs/decisions/0006-palette-tokens-separate-fills-from-marks.md`
+- **Independence**: cross-model, fresh context. The reviewer read only files on disk. It
+  re-derived every contrast ratio with its own script rather than trusting the design.
+- **Escalation**: two consecutive REVISE verdicts. Per the schema's rounds rule, the
+  author stops here and escalates rather than running round 3 unprompted.
 
-The author verified every finding against the repository before accepting it. Each
-carries CONFIRMED, REFUTED, or NOTED. One finding the reviewer missed is added at the
-end, found by an independent contrast check the author ran in parallel.
+The author verified every finding against the repository. Each carries CONFIRMED,
+REFUTED, or NOTED.
 
 ## Findings
 
-### 🔴 F1. Two existing accent-as-text tests fail, and the delta removes only one
+### 🔴 R2-F1. The tint separation floor does not cover the page surface
 
-- **Verdict**: CONFIRMED, and wider than reported.
-- **Artifact**: `design.md` ("No existing assertion is loosened");
-  `src/lib/theme/emitted-css.test.ts`
-- **The defect**: `emitted-css.test.ts` holds two accent-as-text assertions, not one.
-  Line 65 asserts accent on `--surface`. Line 96 asserts accent on `--raised`. The
-  delta spec removes only the raised rule. The surface assertion has no spec
-  requirement behind it, so nothing in the change accounts for it.
-- **The scenario**: The implementer adds the `sun` accent `#e9a23b` at migration step 3.
-  `npm test` fails at line 71: gold on the surface `#f7f2e8` measures about 1.9:1.
-  Nothing in the artifacts tells them whether that test is wrong or their value is.
-- **What must be true**: The delta spec must also account for accent-on-surface, and
-  `design.md` must drop the claim that no existing assertion is loosened.
-
-### 🔴 F2. "Differs" does not enforce "visually distinct"
-
-- **Verdict**: CONFIRMED. The author wrote this requirement and agrees it is too weak.
+- **Verdict**: CONFIRMED as a contradiction between the spec and the design.
 - **Artifact**: `specs/theming/spec.md`, `Soft tint background`
-- **The defect**: The requirement says a tint "SHALL also be visually distinct from the
-  raised surface", then specifies the test as asserting the two values differ. Strict
-  inequality does not express visual distinction.
-- **The scenario**: A tint of `#fffffe` against a raised surface of `#ffffff` passes the
-  test. The wash is invisible, so the tinted area reads as the card it sits on and the
-  token buys nothing.
-- **What must be true**: The requirement must name a measurable floor — a minimum
-  contrast ratio between tint and raised, or a perceptual distance — that a test can
-  assert.
+- **The defect**: The requirement describes a tint as "a soft background wash drawn on
+  the surface or the raised surface", then imposes the 1.2:1 separation floor against
+  the raised surface only. A tint drawn on the page has no separation rule at all.
+- **The scenario**: Measured, light mode: `fire` tint on the surface is **1.104:1**,
+  `sun` **1.111:1**, `ocean` **1.117:1**, `berry` **1.146:1**. Four of six fall below the
+  floor the requirement sets for the other background. A wash placed on the page would
+  be close to invisible.
+- **The author's reading**: The numbers are right, but the fix is not a second floor.
+  The light-mode surface and raised surface are only **1.096:1** apart to begin with. A
+  tint clearing 1.2:1 against *both* would have to sit below the page background, which
+  then squeezes `deep` on `tint` from the other side. Design D5 places every tint inside
+  a raised card — the section strip, the pool dot, the tracker's bar track, the dice
+  pill. None is drawn on the page. So the requirement's wording is broader than any use.
+- **What must be true**: Narrow the requirement to say a tint is drawn on the raised
+  surface, and keep the single floor. If a later change wants a tint on the page, that
+  change adds the rule and re-tunes.
 
-### 🔴 F3. `HitPointsBlock` keeps drawing text in `accent`
+### 🔴 R2-F2. No record covers decoupling colour from the character
 
-- **Verdict**: CONFIRMED, and wider than reported.
-- **Artifact**: `design.md` D5; `src/lib/character/HitPointsBlock.svelte:139,183`
-- **The defect**: Five components draw text in `var(--accent)`:
-  `AbilitiesBlock:62`, `SectionsBlock:77`, `RichText:33`, and `HitPointsBlock:139`
-  (the current-value readout) and `:183` (the damage button labels). D5's usage table
-  covers the first three. It lists the tracker's fills and its bar ring, and never
-  mentions the readout or the buttons.
-- **The scenario**: Once the accent-as-text rule is lifted, a mid-tone accent is legal.
-  The health role currently maps to `fire`, which stays dark, so nothing breaks today.
-  Remap health to `sun` later and the readout renders gold on a white card at about
-  2.2:1 — the exact failure this change exists to prevent, reintroduced silently.
-- **What must be true**: D5 must route both the readout and the damage-button labels to
-  `deep`, and the task list must name every one of the five call sites.
+- **Verdict**: CONFIRMED. Two rounds have now converged on this area, and the author
+  accepts the escalation.
+- **Artifact**: `adr.md`; `docs/decisions/0006-...md`
+- **The defect**: ADR 0006 records the token split and nothing else. The change also
+  reverses how colour is assigned: colour now marks what a block *is* rather than whose
+  sheet it is. No record covers that.
+- **The scenario**: A maintainer asks why a forest druid's tracker is red, finds the
+  mapping table, sees it is trivially editable, and reverts it. They restore the
+  single-hue page the change existed to fix, because nothing told them why.
+- **The author's earlier position, now withdrawn**: Round 1 raised the neighbouring
+  question of author overrides. The author answered it by softening the spec, and judged
+  the mapping itself "one table in code". That conflated two things. The *mapping* is
+  cheap to change. The *principle* — colour encodes meaning, not identity — is the
+  paradigm the sheet is built on, and reversing it silently is exactly the failure a
+  record prevents.
+- **What must be true**: A second record covers the role decision, its alternatives, and
+  what it costs. The manifest's exclusion entry is withdrawn.
 
-### 🔴 F4. The proposed `ocean` accent fails its own on-accent rule
+### 🟠 R2-F3. Roles borrow character palettes, so tuning one moves the other
 
-- **Verdict**: CONFIRMED. **Found by the author, missed by the reviewer.**
-- **Artifact**: `design.md` D3, light-mode table
-- **The defect**: `ocean` proposes accent `#2f7fae` with `onAccent` `#ffffff`. That pair
-  measures **4.40:1**, below the 4.5:1 the unchanged `Accent and on-accent meet a
-  contrast minimum` requirement demands. The design borrowed the value from the
-  reference page, which never carried white text on it.
-- **The scenario**: The implementer fills in `ocean` at migration step 3 and the
-  existing on-accent test fails. It is the one proposed value that breaks a rule the
-  change does not touch.
-- **What must be true**: Darken the accent — `#2d79a6` gives 4.78:1 and keeps the hue —
-  or pair it with a dark `onAccent`.
+- **Verdict**: CONFIRMED. Not raised in round 1, and the author had not considered it.
+- **Artifact**: `design.md` D4
+- **The defect**: Each role resolves to an existing palette name. The design presents
+  this as free — roles inherit every contrast rule and add no values. It does not note
+  the coupling that comes with it.
+- **The scenario**: Someone warms `fire` toward orange so the `fire` character theme
+  reads better. Every character's hit points tracker turns orange, on every sheet,
+  because health borrows that name. The two needs have no reason to stay aligned.
+- **What must be true**: The design states the coupling as an accepted trade-off and
+  names the escape hatch — roles can take their own token set later without touching the
+  palette contract.
 
-### 🟠 F5. Build-time token derivation was never considered
+### 🟠 R2-F4. Plain-language violations introduced by the round 1 fixes
 
-- **Verdict**: CONFIRMED as a gap in the record, though the decision likely survives.
-- **Artifact**: `docs/decisions/0006-...md`, "Keep two tokens and blend"
-- **The defect**: The ADR rejects blending because a run-time CSS mix cannot be read back
-  from the stylesheet. That reasoning is sound for run-time mixing, and it never
-  addresses the obvious variant: derive `tint` and `deep` from `accent` inside
-  `generate.ts` and emit static hex. The tests would read those values fine.
-- **The scenario**: A later reader sees 60-odd hand-tuned values, asks why they are not
-  generated, and finds the record answers a question they did not ask.
-- **What must be true**: The ADR must address build-time derivation on its merits. The
-  author's position is that derivation loses hue control — the reference's `sage`
-  `#cfe3bf` is not a mechanical lightening of `forest` `#2f5d3a` — but the record has to
-  say so rather than leave the alternative unnamed.
+- **Verdict**: CONFIRMED. All three verified.
+- **Artifacts and text**:
+  - `docs/decisions/0006-...md` — "Should the palette ever grow past a handful of names,
+    generating a first draft from a formula and hand-correcting it is the obvious next
+    step, and nothing in this decision blocks that." Counted at **32 words**.
+  - `design.md` — "Every pair above was computed against every rule in the delta spec, in
+    both modes, before this design was accepted." Passive twice; names no actor.
+  - `specs/theming/spec.md` — "Both SHALL be retargeted to `deep`." Names no actor.
+- **Note**: The author introduced all three while fixing round 1. That is the cost of
+  editing prose under time pressure, and it is why the standard is checked every round.
 
-### 🟠 F6. The dark-mode table is truncated
+### 📌 R2-F5. The tinted shadow is unproposed and allegedly breaks the opacity rule
 
-- **Verdict**: CONFIRMED.
-- **Artifact**: `design.md` D3
-- **The defect**: The dark-mode table lists `forest` and then a literal `...`. Five of
-  six palettes have no proposed dark values, and the text defers them to "let the tests
-  decide".
-- **The scenario**: The implementer hits the tightest rule in the change — `deep` on
-  `tint` — with no starting point, in the mode the reference design cannot supply
-  values for. The design proves the math holds in light mode only.
-- **What must be true**: Either the design supplies dark-mode starting values, or it
-  states plainly that dark values are an implementation task and says why that is safe.
-
-### 🟠 F7. Roles being non-overridable is a durable decision, not just a table
-
-- **Verdict**: CONFIRMED. The author's ADR manifest under-read this one.
-- **Artifact**: `adr.md`, "Decisions That Did Not Meet the Bar"
-- **The defect**: The manifest dismisses the role work as "one table in code". The
-  mapping is. But `specs/theming/spec.md` also requires that "A config author SHALL NOT
-  be able to set or override a role." That is a config-contract boundary, and the
-  manifest never weighs it.
-- **The scenario**: An author wants a deliberately monochrome character. The sheet forces
-  a red tracker and a gold initiative tile regardless. Granting the override later is
-  easy; withdrawing it once authors rely on it is breaking. The direction of that
-  asymmetry is exactly what a decision record exists to capture.
-- **What must be true**: Either record the config-contract decision, or soften the spec
-  so it does not foreclose author control forever.
-
-### 📌 F8. A 32-word sentence in the delta spec
-
-- **Verdict**: CONFIRMED. Counted at 32 words against the 30-word ceiling.
-- **Artifact**: `specs/theming/spec.md`, `Structural base color`
-- **Fix**: Split after "against the raised surface."
-
-### 📌 F9. Passive voice hides the actor in ADR 0006
-
-- **Verdict**: CONFIRMED.
-- **Artifact**: `docs/decisions/0006-...md` — "a blended colour cannot be read back from
-  the stylesheet"
-- **Fix**: Name the actor: "the contrast tests cannot read a blended colour back".
-
-### 📌 F10. Two terms for one concept in the proposal
-
-- **Verdict**: NOTED, weak. "Middle value" and "soft fill" sit in adjacent sentences and
-  both point at `tint`. The author reads these as a plain-language gloss before the token
-  is named, not as elegant variation, but a single term costs nothing.
-- **Artifact**: `proposal.md`, Why, third cost
-
-### 🟠 F11. Structural colour and the warmed surface are scope creep
-
-- **Verdict**: REFUTED as stated; NOTED as a judgment call.
-- **Reason**: Both items appear in `proposal.md` under What Changes, so they are declared
-  scope, not creep against the proposal. The reviewer's underlying point — that base
-  colours could ship separately — stands as a preference. The author's position is that
-  the warmed raised surface is not separable: `#ffffff` cards are what the new tints are
-  measured against, and changing that value later would invalidate every tint check.
+- **Verdict**: REFUTED in part, NOTED in part.
+- **Refuted**: The existing `Color values are opaque sRGB` requirement governs *theme
+  colour values* — the palette and base tokens that the contrast tests read. A shadow is
+  not one. The `sheet-restyle` design that shipped the current shadow states the rule
+  plainly: only decorative lines and shadows, which carry no text, may blend. The
+  current `base.css` already ships `rgb(0 0 0 / 0.08)`. So the change breaks nothing.
+- **Noted**: The reviewer is right that `proposal.md` never mentions the shadow while
+  `design.md` D5 changes it. The design should say the shadow is decorative and sits
+  outside the token contract, or drop the tweak.
 
 ## Checked and Held Up
 
-The reviewer verified and the author re-confirmed:
+The reviewer wrote its own WCAG implementation and re-derived every pair independently.
+It confirmed:
 
-- The `sun` deep value. `#9a6312` on `#fdeccf` does fail, and the design's darkened
-  `#7d5010` passes on the tint.
-- The warmed raised surface `#fffdf6`. Foreground and muted text both still clear 4.5:1.
-- The spent pool dot. `structural` `#6b4a2b` passes on the new raised surface.
-
-The author additionally computed every proposed light-mode pairing against every rule in
-the delta spec. All pass except `ocean` on-accent (F4). Specifically: on-accent/accent,
-foreground/tint, muted/tint, deep/tint, deep/surface, deep/raised for all six names, plus
-structural on both surfaces.
+- **Every value passes.** All six names, both modes, all readability rules and the
+  separation floor against the raised surface.
+- **The round 1 fixes hold.** Ocean accent `#2d79a6` on white at 4.78:1. Light `fire`
+  deep on tint at 5.33:1. Light `fire` tint against raised at 1.21:1. The six new
+  dark-mode rows, including the tightest pair, dark `forest` muted on tint at 4.71:1.
+- **The 1.2:1 floor is mechanically assertable** from the emitted stylesheet, unlike the
+  "differs" check it replaced.
+- **The accent-as-text usage risk** is correctly stated and correctly accepted as caught
+  by review rather than by CI.
 
 ## Required Changes
 
-Not applicable. The verdict is REVISE, so the artifacts are fixed and the full review is
-re-run in a fresh context rather than spot-checked.
+Not applicable. The verdict is REVISE.
 
 ## Rebuttals
 
-F11 is rebutted above. It is a Moderate finding, so the rebuttal counts only once the
-reviewer re-checks and accepts it in round 2.
+R2-F5 is rebutted in part above. It is a Suggestion, so the author may decline the
+refuted half without reviewer sign-off; the noted half will be fixed regardless.
+
+The round 1 rebuttal of F11 (structural colour and warmed surface as scope creep) was
+not re-raised in round 2. The author treats it as dropped.
 
 CHANGES_APPLIED: n/a
 
