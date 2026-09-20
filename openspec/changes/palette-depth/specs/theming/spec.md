@@ -132,6 +132,12 @@ In each mode, the structural color SHALL meet a contrast ratio of at least 4.5:1
 
 The system SHALL define a fixed color role for each of hit points, armor class, speed, and initiative. Each role SHALL resolve to one name from the fixed palette set. A role's palette name SHALL be the same for every character. A character's `color` SHALL NOT change any role.
 
+Hit points need no identification, because the character defines them in their own structured field.
+
+Armor class, speed, and initiative arrive as authored `{ label, value }` combat entries, and an author may write any label. The system SHALL identify a combat entry's role by comparing its authored label against a fixed list of label names held for each role. The comparison SHALL ignore case, and SHALL ignore leading and trailing whitespace. A label name SHALL appear in at most one role's list, so a label can never match two roles.
+
+A combat entry whose label matches no role SHALL render in the character's resolved palette. This keeps an authored metric the app does not recognise readable, and never blocks the sheet.
+
 This release SHALL NOT read a role's colour from character config. Roles are not authored data today. The system SHALL ignore an authored field that names a colour for one of the four, rather than rejecting the character. This requirement fixes current behaviour. It does not commit the project to withholding author control in a later release.
 
 #### Scenario: A role holds its color across characters
@@ -143,6 +149,18 @@ This release SHALL NOT read a role's colour from character config. Roles are not
 
 - **WHEN** any of the four roles is looked up
 - **THEN** it resolves to one of `forest`, `fire`, `ocean`, `berry`, `sun`, or `neutral`
+
+#### Scenario: A combat label matches its role regardless of case and spacing
+
+- **WHEN** a character authors a combat entry labelled `  armor class  `
+- **THEN** the sheet renders that entry in the armor class role's color
+
+#### Scenario: An unrecognised combat label falls back to the character's colour
+
+- **WHEN** a character with `color: forest` authors a combat entry labelled `Carrying Capacity`, which matches no role
+- **THEN** the sheet renders that entry in the forest palette
+- **AND** the sheet still renders the entry's label and value
+- **AND** no error is raised
 
 #### Scenario: An authored colour field for a role is ignored
 

@@ -76,9 +76,9 @@ tiles still carry the character's colour, so the sheet is still recognisably the
 Roles borrow palette names, which couples two things that have no reason to stay
 aligned. Warming `fire` because the `fire` character theme should read more like fire
 would turn every character's tracker orange, on every sheet. Nobody editing a palette
-would expect that. The escape hatch is to give the roles their own token set, which
-changes no part of the palette contract — but until someone does, a palette edit is
-also a role edit.
+would expect that. The escape hatch is to give the roles their own token
+set, which changes no part of the palette contract. Until someone does that, a palette
+edit is also a role edit.
 
 The mapping itself is one table and trivial to edit. That is exactly why this record
 exists. An engineer who finds the table, sees how cheap it looks, and points it back at

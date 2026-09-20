@@ -16,11 +16,6 @@ sequence number in use was 0005, so the new record takes 0006.
 Two decisions met the bar. Two did not, and we record why below rather than inventing
 records for them.
 
-Round 2 of review found that an earlier version of this manifest excluded the colour-role
-decision on bad grounds. It judged the decision by how cheap the mapping table is to
-edit, not by what reversing the decision would cost. We withdrew that exclusion and wrote
-`0007`.
-
 ## In-Force ADRs Reviewed
 
 - `docs/decisions/0001-static-first-sveltekit-on-cloudflare-workers.md` — static-first

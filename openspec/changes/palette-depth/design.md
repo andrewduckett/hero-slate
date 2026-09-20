@@ -135,6 +135,21 @@ speed        forest    matches the reference's --moss
 initiative   sun       matches the reference's --sun
 ```
 
+Combat entries carry an authored label, so each role holds a short list of labels it
+answers to. Matching ignores case and surrounding whitespace:
+
+```
+role         palette   labels matched
+health       fire      (none - hit points is a structured field)
+armor        ocean     "armor class", "armour class", "ac"
+speed        forest    "speed"
+initiative   sun       "initiative"
+```
+
+An entry matching nothing keeps the character's palette. So `sunny.yaml` matches all
+three today, and a future "Carrying Capacity" row still renders, in the character's
+colour.
+
 Sunny's sheet then reads: forest header, forest ability numbers, a four-color metric
 row, a red tracker, blue and green pool dots, forest and berry section cards.
 
@@ -148,9 +163,9 @@ free and add no new values to tune.
 That reuse couples two things with no reason to stay aligned. Warming `fire` so the
 `fire` *character theme* reads more like fire would also turn every character's hit
 points tracker orange, on every sheet. Nobody editing a palette would expect that. We
-accept the coupling because six names and four roles is small enough to hold in one
-head, and because the escape hatch is cheap: give the roles their own token set. That
-changes no part of the palette contract. Anyone retuning a palette must check the role
+accept the coupling. Six names and four roles is small enough to hold in one head. The
+escape hatch is also cheap: give the roles their own token set, which changes no part
+of the palette contract. Anyone retuning a palette must check the role
 table first — see ADR 0007.
 
 ### D5. Where each token gets used
@@ -170,15 +185,22 @@ section card    tint title strip + deep title,
 dice pill       tint fill + deep border and text   (inherited from its row)
 ```
 
-Five components draw text in `var(--accent)` today. Every one moves to `var(--deep)`:
+Six call sites across five components draw the accent as a mark today. Every one moves
+to `var(--deep)`:
 
 ```
 src/lib/character/AbilitiesBlock.svelte:62     the modifier
 src/lib/character/SectionsBlock.svelte:77      the row title
-src/lib/richtext/RichText.svelte:33            the dice pill's text and border
+src/lib/richtext/RichText.svelte:33            the dice pill's text
+src/lib/richtext/RichText.svelte:28            the dice pill's border
 src/lib/character/HitPointsBlock.svelte:139    the current-value readout
 src/lib/character/HitPointsBlock.svelte:183    the damage button labels
 ```
+
+The pill's border is the odd one. It is not solid today. It is
+`color-mix(in srgb, var(--accent) 45%, transparent)`, a blend chosen because the accent
+had to double as text. A solid `deep` border replaces it, which also removes a blended
+colour from a component that carries text.
 
 The last two are easy to miss, because the tracker's fills dominate the block. Nothing
 breaks today if they are left behind — the health role maps to `fire`, which stays dark.
@@ -190,15 +212,9 @@ Two structural moves come with this, both taken from the reference:
 - **Borders carry separation, not shadows.** Containers gain a 3px border in `deep`
   or in the structural color. The current design leans on `box-shadow`, which is
   nearly invisible on the dark surface, so cards stop reading as cards in dark mode.
-- **The shadow gains a tinted second layer**, as the reference's
-  `0 6px 0 ...,  0 14px 30px rgba(47,93,58,.12)` does.
-
-The shadow sits outside the token contract. It is decorative, carries no text, and lives
-in `base.css` rather than the palette. The `Color values are opaque sRGB` requirement
-governs theme colour values, which the contrast tests read; a shadow is not one, and
-`base.css` already ships a blended shadow under the rule `sheet-restyle` set. The
-proposal does not mention this tweak, so treat it as optional: drop it if it draws
-debate, because nothing else in the change depends on it.
+The shadow stays exactly as it is. An earlier draft proposed a tinted second layer,
+copied from the reference. The proposal never mentioned it, and nothing else here
+depends on it, so it is dropped. This change stays on the token contract.
 
 ### D6. Generator and tests
 
