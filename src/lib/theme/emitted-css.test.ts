@@ -61,18 +61,17 @@ describe('emitted palette.css contrast (task 2.3)', () => {
 	});
 });
 
-describe('emitted palette.css contrast: --accent as text on --surface', () => {
-	it('meets WCAG AA for every accent on surface in both modes', () => {
+describe('emitted palette.css contrast: --deep as text on --surface', () => {
+	it('meets WCAG AA for every deep on surface in both modes', () => {
 		for (const name of PALETTE_NAMES) {
 			for (const mode of MODES) {
-				const accent = tokensFor(parsed[mode], `[data-palette="${name}"]`)['--accent'];
+				const deep = tokensFor(parsed[mode], `[data-palette="${name}"]`)['--deep'];
 				const surface = tokensFor(parsed[mode], ':root')['--surface'];
-				const ratio = contrastRatio(accent, surface);
-				expect(ratio, `${name} ${mode} accent on surface`).toBeGreaterThanOrEqual(WCAG_AA);
+				const ratio = contrastRatio(deep, surface);
+				expect(ratio, `${name} ${mode} deep on surface`).toBeGreaterThanOrEqual(WCAG_AA);
 			}
 		}
 	});
-
 });
 
 describe('emitted palette.css contrast: raised surface and muted text', () => {
@@ -93,20 +92,20 @@ describe('emitted palette.css contrast: raised surface and muted text', () => {
 		}
 	});
 
-	it('meets WCAG AA for every accent on the raised surface in both modes', () => {
+	it('meets WCAG AA for every deep on the raised surface in both modes', () => {
 		for (const name of PALETTE_NAMES) {
 			for (const mode of MODES) {
-				const accent = tokensFor(parsed[mode], `[data-palette="${name}"]`)['--accent'];
+				const deep = tokensFor(parsed[mode], `[data-palette="${name}"]`)['--deep'];
 				const raised = tokensFor(parsed[mode], ':root')['--raised'];
 				expect(raised, `${mode} --raised`).toBeDefined();
-				const ratio = contrastRatio(accent, raised);
-				expect(ratio, `${name} ${mode} accent on raised`).toBeGreaterThanOrEqual(WCAG_AA);
+				const ratio = contrastRatio(deep, raised);
+				expect(ratio, `${name} ${mode} deep on raised`).toBeGreaterThanOrEqual(WCAG_AA);
 			}
 		}
 	});
 });
 
-describe('emitted selector mapping (task 2.4)', () => {
+describe('emitted selector mapping', () => {
 	it('maps each [data-palette] selector to that name\'s own tokens in both modes', () => {
 		for (const name of PALETTE_NAMES) {
 			for (const mode of MODES) {
@@ -115,17 +114,84 @@ describe('emitted selector mapping (task 2.4)', () => {
 				expect(t['--on-accent'], `${name} ${mode} on-accent`).toBe(
 					PALETTE[name].onAccent[mode].toLowerCase()
 				);
+				expect(t['--tint'], `${name} ${mode} tint`).toBe(PALETTE[name].tint[mode].toLowerCase());
+				expect(t['--deep'], `${name} ${mode} deep`).toBe(PALETTE[name].deep[mode].toLowerCase());
 			}
 		}
 	});
 
-	it('emits the base surface and foreground for both modes', () => {
+	it('emits the base surface, foreground, raised, muted, and structural for both modes', () => {
 		for (const mode of MODES) {
 			const t = tokensFor(parsed[mode], ':root');
 			expect(t['--surface'], `${mode} surface`).toBe(BASE.surface[mode].toLowerCase());
 			expect(t['--foreground'], `${mode} foreground`).toBe(BASE.foreground[mode].toLowerCase());
 			expect(t['--raised'], `${mode} raised`).toBe(BASE.raised[mode].toLowerCase());
 			expect(t['--muted'], `${mode} muted`).toBe(BASE.muted[mode].toLowerCase());
+			expect(t['--structural'], `${mode} structural`).toBe(BASE.structural[mode].toLowerCase());
+		}
+	});
+});
+
+describe('emitted palette.css contrast: tint readability', () => {
+	it('meets WCAG AA for foreground on every tint in both modes', () => {
+		for (const name of PALETTE_NAMES) {
+			for (const mode of MODES) {
+				const root = tokensFor(parsed[mode], ':root');
+				const palette = tokensFor(parsed[mode], `[data-palette="${name}"]`);
+				const ratio = contrastRatio(root['--foreground'], palette['--tint']);
+				expect(ratio, `${name} ${mode} foreground on tint`).toBeGreaterThanOrEqual(WCAG_AA);
+			}
+		}
+	});
+
+	it('meets WCAG AA for muted text on every tint in both modes', () => {
+		for (const name of PALETTE_NAMES) {
+			for (const mode of MODES) {
+				const root = tokensFor(parsed[mode], ':root');
+				const palette = tokensFor(parsed[mode], `[data-palette="${name}"]`);
+				const ratio = contrastRatio(root['--muted'], palette['--tint']);
+				expect(ratio, `${name} ${mode} muted on tint`).toBeGreaterThanOrEqual(WCAG_AA);
+			}
+		}
+	});
+
+	it('meets WCAG AA for each deep on its own tint in both modes', () => {
+		for (const name of PALETTE_NAMES) {
+			for (const mode of MODES) {
+				const palette = tokensFor(parsed[mode], `[data-palette="${name}"]`);
+				const ratio = contrastRatio(palette['--deep'], palette['--tint']);
+				expect(ratio, `${name} ${mode} deep on tint`).toBeGreaterThanOrEqual(WCAG_AA);
+			}
+		}
+	});
+
+	it('meets a 1.2:1 separation floor for every tint against the raised surface in both modes', () => {
+		const SEPARATION_FLOOR = 1.2;
+		for (const name of PALETTE_NAMES) {
+			for (const mode of MODES) {
+				const root = tokensFor(parsed[mode], ':root');
+				const palette = tokensFor(parsed[mode], `[data-palette="${name}"]`);
+				const ratio = contrastRatio(palette['--tint'], root['--raised']);
+				expect(ratio, `${name} ${mode} tint vs raised`).toBeGreaterThanOrEqual(SEPARATION_FLOOR);
+			}
+		}
+	});
+});
+
+describe('emitted palette.css contrast: structural readability', () => {
+	it('meets WCAG AA for structural on the surface and raised surface in both modes', () => {
+		for (const mode of MODES) {
+			const root = tokensFor(parsed[mode], ':root');
+			const structural = root['--structural'];
+			expect(structural, `${mode} structural defined`).toBeDefined();
+			expect(
+				contrastRatio(structural, root['--surface']),
+				`${mode} structural on surface`
+			).toBeGreaterThanOrEqual(WCAG_AA);
+			expect(
+				contrastRatio(structural, root['--raised']),
+				`${mode} structural on raised`
+			).toBeGreaterThanOrEqual(WCAG_AA);
 		}
 	});
 });

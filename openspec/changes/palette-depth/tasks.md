@@ -19,11 +19,11 @@ the call sites; `specs/theming/spec.md` holds the rules.
 
 ## 2. Write the contrast rules as failing tests
 
-- [ ] 2.1 Add assertions to `src/lib/theme/emitted-css.test.ts` for the foreground on every tint, the muted text on every tint, and each palette's `deep` on its own tint, at 4.5:1 in both modes. Verify they pass for `forest` and fail for the five unfilled names.
-- [ ] 2.2 Add assertions for each palette's `deep` on the surface and on the raised surface at 4.5:1 in both modes. Verify the same pass/fail split.
-- [ ] 2.3 Add the separation assertion: every palette's tint against the raised surface at 1.2:1 or more, in both modes. Verify a deliberately near-identical tint fails it, then restore the real value.
-- [ ] 2.4 Add assertions for `structural` on the surface and on the raised surface at 4.5:1 in both modes. Verify both pass with the value from task 1.2.
-- [ ] 2.5 Retarget the two existing accent-as-text assertions to `deep`: accent on the surface at `emitted-css.test.ts:65`, and accent on the raised surface at `:96`. Verify no assertion anywhere still requires an accent to be readable as text.
+- [x] 2.1 Add assertions to `src/lib/theme/emitted-css.test.ts` for the foreground on every tint, the muted text on every tint, and each palette's `deep` on its own tint, at 4.5:1 in both modes. Verify they pass for `forest` and fail for the five unfilled names.
+- [x] 2.2 Add assertions for each palette's `deep` on the surface and on the raised surface at 4.5:1 in both modes. Verify the same pass/fail split.
+- [x] 2.3 Add the separation assertion: every palette's tint against the raised surface at 1.2:1 or more, in both modes. Verify a deliberately near-identical tint fails it, then restore the real value.
+- [x] 2.4 Add assertions for `structural` on the surface and on the raised surface at 4.5:1 in both modes. Verify both pass with the value from task 1.2.
+- [x] 2.5 Retarget the two existing accent-as-text assertions to `deep`: accent on the surface at `emitted-css.test.ts:65`, and accent on the raised surface at `:96`. Verify no assertion anywhere still requires an accent to be readable as text.
 
 ## 3. Fill and prove the remaining values
 
