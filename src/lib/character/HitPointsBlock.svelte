@@ -138,15 +138,15 @@
 	.current {
 		font-size: 3.25rem;
 		font-weight: 800;
-		color: var(--accent);
+		color: var(--deep);
 	}
 
 	/* A thick bar with fully rounded ends. */
 	.bar {
 		height: 1rem;
-		border: 2px solid var(--accent);
+		border: 2px solid var(--deep);
 		border-radius: 999px;
-		background-color: var(--surface);
+		background-color: var(--tint);
 		overflow: hidden;
 	}
 
@@ -175,21 +175,22 @@
 		font-family: var(--font-display);
 		font-size: 1.25rem;
 		font-weight: 800;
-		border: 3px solid var(--accent);
 		border-radius: 50%;
 		cursor: pointer;
 	}
 
-	/* Damage buttons are outlined. */
+	/* Damage buttons are outlined with the deep color. */
 	.damage button {
-		color: var(--accent);
+		color: var(--deep);
 		background-color: var(--raised);
+		border: 3px solid var(--deep);
 	}
 
 	/* Heal buttons are filled with accent. */
 	.heal button {
 		color: var(--on-accent);
 		background-color: var(--accent);
+		border: 3px solid transparent;
 	}
 
 	.controls button:focus-visible {

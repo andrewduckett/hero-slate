@@ -40,12 +40,12 @@ the call sites; `specs/theming/spec.md` holds the rules.
 
 ## 5. Apply the tokens
 
-- [ ] 5.1 Move all six accent-as-mark call sites to `var(--deep)`, listed in `design.md` D5: `AbilitiesBlock:62`, `SectionsBlock:77`, `RichText:33` and `:28`, `HitPointsBlock:139` and `:183`. Verify a grep for `var(--accent)` across `src/` returns only fills and backgrounds, never a `color` or `border` declaration.
-- [ ] 5.2 Replace the dice pill's `color-mix(in srgb, var(--accent) 45%, transparent)` border with a solid `var(--deep)` and give the pill a `var(--tint)` fill. Verify `RichText.test.ts` passes and no `color-mix` remains in a component that carries text.
-- [ ] 5.3 Restyle pool dots: an unspent dot is a `var(--tint)` fill inside a `var(--deep)` ring, and a spent dot is transparent inside a `var(--structural)` ring. Verify `ResourcePoolsBlock.test.ts` still asserts the filled and empty states by `data-pool-dot`.
-- [ ] 5.4 Restyle section cards to a `var(--tint)` title strip with a `var(--deep)` title, replacing the solid accent strip. Verify `SectionsBlock.test.ts` passes unchanged.
-- [ ] 5.5 Restyle ability tiles to a `var(--structural)` border with a `var(--deep)` modifier. Verify `AbilitiesBlock.test.ts` passes unchanged.
-- [ ] 5.6 Restyle the hit points tracker: a `var(--tint)` bar track and a `var(--deep)` ring, keeping the accent fill. Verify `HitPointsBlock.test.ts` passes unchanged, including the progress role values and the calm state at zero.
+- [x] 5.1 Move all six accent-as-mark call sites to `var(--deep)`, listed in `design.md` D5: `AbilitiesBlock:62`, `SectionsBlock:77`, `RichText:33` and `:28`, `HitPointsBlock:139` and `:183`. Verify a grep for `var(--accent)` across `src/` returns only fills and backgrounds, never a `color` or `border` declaration.
+- [x] 5.2 Replace the dice pill's `color-mix(in srgb, var(--accent) 45%, transparent)` border with a solid `var(--deep)` and give the pill a `var(--tint)` fill. Verify `RichText.test.ts` passes and no `color-mix` remains in a component that carries text.
+- [x] 5.3 Restyle pool dots: an unspent dot is a `var(--tint)` fill inside a `var(--deep)` ring, and a spent dot is transparent inside a `var(--structural)` ring. Verify `ResourcePoolsBlock.test.ts` still asserts the filled and empty states by `data-pool-dot`.
+- [x] 5.4 Restyle section cards to a `var(--tint)` title strip with a `var(--deep)` title, replacing the solid accent strip. Verify `SectionsBlock.test.ts` passes unchanged.
+- [x] 5.5 Restyle ability tiles to a `var(--structural)` border with a `var(--deep)` modifier. Verify `AbilitiesBlock.test.ts` passes unchanged.
+- [x] 5.6 Restyle the hit points tracker: a `var(--tint)` bar track and a `var(--deep)` ring, keeping the accent fill. Verify `HitPointsBlock.test.ts` passes unchanged, including the progress role values and the calm state at zero.
 
 ## 6. Verify the whole change
 
