@@ -49,7 +49,7 @@ the call sites; `specs/theming/spec.md` holds the rules.
 
 ## 6. Verify the whole change
 
-- [ ] 6.1 Run `npm test` and confirm all 26 files and every added assertion pass.
-- [ ] 6.2 Run `npm run build` and confirm it completes and writes `./build`.
-- [ ] 6.3 Open `/sunny` and `/urven` in the dev server in both light and dark mode. Confirm each sheet shows more than one hue, that the tracker reads red on both characters, and that no text or border has become hard to read.
-- [ ] 6.4 Confirm `sunny.yaml` and `urven.yaml` are unchanged, since this change adds no character data field.
+- [x] 6.1 Run `npm test` and confirm all 26 files and every added assertion pass.
+- [x] 6.2 Run `npm run build` and confirm it completes and writes `./build`.
+- [x] 6.3 Open `/sunny` and `/urven` in the dev server in both light and dark mode. Confirm each sheet shows more than one hue, that the tracker reads red on both characters, and that no text or border has become hard to read.
+- [x] 6.4 Confirm `sunny.yaml` and `urven.yaml` are unchanged, since this change adds no character data field.
