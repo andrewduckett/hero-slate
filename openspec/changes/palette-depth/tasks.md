@@ -27,8 +27,8 @@ the call sites; `specs/theming/spec.md` holds the rules.
 
 ## 3. Fill and prove the remaining values
 
-- [ ] 3.1 Fill `fire`, `ocean`, `berry`, `sun`, and `neutral` with the light and dark values from `design.md` D3, and warm `raised` to `#fffdf6`. Verify `npm test` passes every assertion added in Group 2.
-- [ ] 3.2 Verify the suite reports the expected tightest results, so a later retune cannot silently erode the margin: dark `forest` muted-on-tint at 4.71:1, light `fire` deep-on-tint at 5.33:1, light `fire` tint-on-raised at 1.21:1.
+- [x] 3.1 Fill `fire`, `ocean`, `berry`, `sun`, and `neutral` with the light and dark values from `design.md` D3, and warm `raised` to `#fffdf6`. Verify `npm test` passes every assertion added in Group 2.
+- [x] 3.2 Verify the suite reports the expected tightest results, so a later retune cannot silently erode the margin: dark `forest` muted-on-tint at 4.71:1, light `fire` deep-on-tint at 5.33:1, light `fire` tint-on-raised at 1.21:1.
 
 ## 4. Add colour roles
 

@@ -107,7 +107,7 @@ export const PALETTE: Record<PaletteName, Palette> = {
  */
 export const BASE: Base = {
 	surface: { light: '#f7f2e8', dark: '#14171a' },
-	raised: { light: '#ffffff', dark: '#1e2327' },
+	raised: { light: '#fffdf6', dark: '#1e2327' },
 	foreground: { light: '#1a1d21', dark: '#e6e9ec' },
 	muted: { light: '#5c5a55', dark: '#a9b0b8' },
 	structural: { light: '#6b4a2b', dark: '#b9a68a' }
