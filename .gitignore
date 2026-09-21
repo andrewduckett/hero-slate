@@ -33,3 +33,7 @@ pnpm-debug.log*
 
 # Scratch and working files (see AGENTS.md)
 .workspace/
+
+# Python
+__pycache__/
+*.pyc
