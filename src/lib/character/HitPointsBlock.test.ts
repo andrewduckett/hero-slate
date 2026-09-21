@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import HitPointsBlock from './HitPointsBlock.svelte';
 import type { StateStore } from '$lib/state/store';
+import { ROLE_PALETTE } from '$lib/theme/roles';
 
 /** A store spy whose reads and writes resolve immediately. */
 function fakeStore(): StateStore & { write: ReturnType<typeof vi.fn> } {
@@ -131,5 +132,23 @@ describe('HitPointsBlock — control order', () => {
 			el.getAttribute('data-hp-adjust')
 		);
 		expect(order).toEqual(['-5', '-1', '+1', '+5']);
+	});
+});
+
+describe('HitPointsBlock — health role', () => {
+	it('carries the fire palette on a forest character', () => {
+		const { container } = render(HitPointsBlock, {
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'sunny' }
+		});
+		const tracker = container.querySelector('.hit-points');
+		expect(tracker?.getAttribute('data-palette')).toBe(ROLE_PALETTE.health);
+	});
+
+	it('carries the fire palette on a neutral character', () => {
+		const { container } = render(HitPointsBlock, {
+			props: { hitPoints: { max: 12 }, storedCurrent: 12, store: fakeStore(), id: 'neutral' }
+		});
+		const tracker = container.querySelector('.hit-points');
+		expect(tracker?.getAttribute('data-palette')).toBe(ROLE_PALETTE.health);
 	});
 });

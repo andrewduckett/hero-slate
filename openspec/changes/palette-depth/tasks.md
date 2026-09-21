@@ -32,11 +32,11 @@ the call sites; `specs/theming/spec.md` holds the rules.
 
 ## 4. Add colour roles
 
-- [ ] 4.1 Add a role module defining the four roles and their palette names — health to `fire`, armor to `ocean`, speed to `forest`, initiative to `sun` — as stated in `design.md` D4. Verify a unit test asserts each role resolves to a name in `PALETTE_NAMES`.
-- [ ] 4.2 Implement label matching for the three combat roles: compare an authored label against that role's label list, ignoring case and leading or trailing whitespace. Verify unit tests cover an exact match, a differing case, a padded label, and that no label appears in two role lists.
-- [ ] 4.3 Implement the fallback: a combat entry matching no role resolves to the character's palette. Verify a unit test renders a `Carrying Capacity` entry on a `forest` character and asserts the forest palette, with the label and value still shown and no error raised.
-- [ ] 4.4 Wire `CombatBlock.svelte` to set `data-palette` per entry from its resolved role. Verify a component test renders Sunny's three entries and asserts armor is `ocean`, speed is `forest`, and initiative is `sun`, on a `forest` character.
-- [ ] 4.5 Wire `HitPointsBlock.svelte` to the health role. Verify a component test asserts the tracker carries the `fire` palette for both a `forest` and a `neutral` character.
+- [x] 4.1 Add a role module defining the four roles and their palette names — health to `fire`, armor to `ocean`, speed to `forest`, initiative to `sun` — as stated in `design.md` D4. Verify a unit test asserts each role resolves to a name in `PALETTE_NAMES`.
+- [x] 4.2 Implement label matching for the three combat roles: compare an authored label against that role's label list, ignoring case and leading or trailing whitespace. Verify unit tests cover an exact match, a differing case, a padded label, and that no label appears in two role lists.
+- [x] 4.3 Implement the fallback: a combat entry matching no role resolves to the character's palette. Verify a unit test renders a `Carrying Capacity` entry on a `forest` character and asserts the forest palette, with the label and value still shown and no error raised.
+- [x] 4.4 Wire `CombatBlock.svelte` to set `data-palette` per entry from its resolved role. Verify a component test renders Sunny's three entries and asserts armor is `ocean`, speed is `forest`, and initiative is `sun`, on a `forest` character.
+- [x] 4.5 Wire `HitPointsBlock.svelte` to the health role. Verify a component test asserts the tracker carries the `fire` palette for both a `forest` and a `neutral` character.
 
 ## 5. Apply the tokens
 

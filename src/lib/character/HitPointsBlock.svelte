@@ -12,6 +12,7 @@
 	import { onMount, untrack } from 'svelte';
 	import { resolveHitPoints } from './hitPoints';
 	import type { StateStore } from '$lib/state/store';
+	import { ROLE_PALETTE } from '$lib/theme/roles';
 
 	let {
 		hitPoints,
@@ -76,6 +77,7 @@
 	<section
 		class="hit-points"
 		data-block="hit-points"
+		data-palette={ROLE_PALETTE.health}
 		aria-label="Hit points"
 		data-hp-state={down ? 'down' : undefined}
 		style:opacity={down ? 0.55 : 1}

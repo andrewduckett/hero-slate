@@ -57,7 +57,7 @@
 			<div class="group">
 				<h2 class="group-heading" data-group-heading>Stats</h2>
 				<AbilitiesBlock abilities={result.character.abilities} />
-				<CombatBlock combat={result.character.combat} />
+				<CombatBlock combat={result.character.combat} palette={result.character.color} />
 			</div>
 		{/if}
 		{#if hasHealth}
