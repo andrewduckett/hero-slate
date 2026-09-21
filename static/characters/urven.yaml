@@ -38,11 +38,11 @@ sections:
     color: berry
     rows:
       - title: Attack
-        body: "wwipe with your claws: [[d20+8]] to hit, [[1d8+5]] damage"
-      - title: Grapple an enemy
-        body: "[[d20+8]] to hit, must succeed on a Str/Dex (it chooses which) saving throw [[DC 13]]."
-      - title: Stun an enemy
-        body: "[[d20+8]] to hit, must succeed on a Con saving throw [[DC 13]]."
+        body: "swipe with your claws: [[d20+8]] to hit, [[1d8+5]] damage"
+      - title: Grapple
+        body: "[[DC 13]] Str/Dex (it chooses which) saving throw."
+      - title: Stun
+        body: "[[DC 13]] Con saving throw."
       - title: Shadow Step
         body: teleport up to 60 ft. to an unoccupied space that you can see that's also in Dim Light or Darkness. You have Advantage on the next melee attack you make before the end of the current turn.
   - title: Strengths
