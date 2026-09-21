@@ -26,6 +26,10 @@ export interface Palette {
 	accent: ModePair;
 	/** The color of text or icons drawn on the accent; the contrast-checked pairing. */
 	onAccent: ModePair;
+	/** A soft background wash drawn on the raised surface. */
+	tint: ModePair;
+	/** The family color used as text, icon, or border on any surface or on the tint. */
+	deep: ModePair;
 }
 
 /** The base colors shared across all characters: page, cards, and text. */
@@ -38,6 +42,8 @@ export interface Base {
 	foreground: ModePair;
 	/** Secondary text, such as labels and raw scores. */
 	muted: ModePair;
+	/** A warm shared color for tile borders and secondary labels. */
+	structural: ModePair;
 }
 
 /**
@@ -57,28 +63,40 @@ export type PaletteName = (typeof PALETTE_NAMES)[number];
  */
 export const PALETTE: Record<PaletteName, Palette> = {
 	forest: {
-		accent: { light: '#1a7a40', dark: '#7fd8a0' },
-		onAccent: { light: '#ffffff', dark: '#06301a' }
+		accent: { light: '#2f5d3a', dark: '#7fd8a0' },
+		onAccent: { light: '#ffffff', dark: '#06301a' },
+		tint: { light: '#cfe3bf', dark: '#2c4636' },
+		deep: { light: '#2f5d3a', dark: '#7fd8a0' }
 	},
 	fire: {
 		accent: { light: '#c0392b', dark: '#ff9f8a' },
-		onAccent: { light: '#ffffff', dark: '#3a0d06' }
+		onAccent: { light: '#ffffff', dark: '#3a0d06' },
+		tint: { light: '#fbe2df', dark: '#4a2f2a' },
+		deep: { light: '#a8342e', dark: '#ff9f8a' }
 	},
 	ocean: {
-		accent: { light: '#1a66d6', dark: '#8fc4ff' },
-		onAccent: { light: '#ffffff', dark: '#062146' }
+		accent: { light: '#2d79a6', dark: '#8fc4ff' },
+		onAccent: { light: '#ffffff', dark: '#062146' },
+		tint: { light: '#d8e9f1', dark: '#2b3c4f' },
+		deep: { light: '#1f5d80', dark: '#8fc4ff' }
 	},
 	berry: {
-		accent: { light: '#a83278', dark: '#f0a6d0' },
-		onAccent: { light: '#ffffff', dark: '#3d0a29' }
+		accent: { light: '#b5356a', dark: '#f0a6d0' },
+		onAccent: { light: '#ffffff', dark: '#3d0a29' },
+		tint: { light: '#f8dcea', dark: '#46303e' },
+		deep: { light: '#8e2953', dark: '#f0a6d0' }
 	},
 	sun: {
-		accent: { light: '#8a5a12', dark: '#ffd86b' },
-		onAccent: { light: '#ffffff', dark: '#3a2905' }
+		accent: { light: '#e9a23b', dark: '#ffd86b' },
+		onAccent: { light: '#3a2905', dark: '#3a2905' },
+		tint: { light: '#f5e5c9', dark: '#453a24' },
+		deep: { light: '#7d5010', dark: '#ffd86b' }
 	},
 	neutral: {
-		accent: { light: '#444b53', dark: '#c9d1d9' },
-		onAccent: { light: '#ffffff', dark: '#14171a' }
+		accent: { light: '#4a4a42', dark: '#c9d1d9' },
+		onAccent: { light: '#ffffff', dark: '#14171a' },
+		tint: { light: '#e8e3d6', dark: '#383d42' },
+		deep: { light: '#4a4a42', dark: '#c9d1d9' }
 	}
 };
 
@@ -91,7 +109,8 @@ export const BASE: Base = {
 	surface: { light: '#f7f2e8', dark: '#14171a' },
 	raised: { light: '#ffffff', dark: '#1e2327' },
 	foreground: { light: '#1a1d21', dark: '#e6e9ec' },
-	muted: { light: '#5c5a55', dark: '#a9b0b8' }
+	muted: { light: '#5c5a55', dark: '#a9b0b8' },
+	structural: { light: '#6b4a2b', dark: '#b9a68a' }
 };
 
 /** The palette a bad or missing color falls back to. */

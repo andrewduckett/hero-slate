@@ -12,10 +12,10 @@ the call sites; `specs/theming/spec.md` holds the rules.
 
 ## 1. Extend the token contract
 
-- [ ] 1.1 Add `tint` and `deep` to the `Palette` interface and `structural` to `Base` in `src/lib/theme/palette.ts`, each a `ModePair`. Verify `npx tsc --noEmit` reports errors only for the six palette entries that now lack the new fields, and none in unrelated files.
-- [ ] 1.2 Fill `forest` and the `structural` base value only, using the light and dark tables in `design.md` D3. Leave the other five names incomplete on purpose. Verify the module compiles and `npm test` still runs.
-- [ ] 1.3 Emit `--tint`, `--deep`, and `--structural` from `src/lib/theme/generate.ts`, inside the per-palette and per-mode blocks it already writes. Verify `src/lib/theme/generate.test.ts` asserts each new custom property appears in both the light block and the dark block.
-- [ ] 1.4 Run `npm run generate:palette` and verify `src/lib/theme/palette.css` now carries `--tint` and `--deep` under every `[data-palette=...]` selector and `--structural` under `:root`, in both modes.
+- [x] 1.1 Add `tint` and `deep` to the `Palette` interface and `structural` to `Base` in `src/lib/theme/palette.ts`, each a `ModePair`. Verify `npx tsc --noEmit` reports errors only for the six palette entries that now lack the new fields, and none in unrelated files.
+- [x] 1.2 Fill `forest` and the `structural` base value only, using the light and dark tables in `design.md` D3. Leave the other five names incomplete on purpose. Verify the module compiles and `npm test` still runs.
+- [x] 1.3 Emit `--tint`, `--deep`, and `--structural` from `src/lib/theme/generate.ts`, inside the per-palette and per-mode blocks it already writes. Verify `src/lib/theme/generate.test.ts` asserts each new custom property appears in both the light block and the dark block.
+- [x] 1.4 Run `npm run generate:palette` and verify `src/lib/theme/palette.css` now carries `--tint` and `--deep` under every `[data-palette=...]` selector and `--structural` under `:root`, in both modes.
 
 ## 2. Write the contrast rules as failing tests
 

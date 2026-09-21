@@ -24,17 +24,20 @@ function baseRule(mode: 'light' | 'dark'): string {
 		`\t--surface: ${BASE.surface[mode]};`,
 		`\t--raised: ${BASE.raised[mode]};`,
 		`\t--foreground: ${BASE.foreground[mode]};`,
-		`\t--muted: ${BASE.muted[mode]};`
+		`\t--muted: ${BASE.muted[mode]};`,
+		`\t--structural: ${BASE.structural[mode]};`
 	].join('\n');
 }
 
-/** Emit a single `[data-palette="<name>"]` accent rule for one mode. */
+/** Emit a single `[data-palette="<name>"]` rule for one mode. */
 function paletteRule(name: (typeof PALETTE_NAMES)[number], mode: 'light' | 'dark'): string {
 	const p = PALETTE[name];
 	return [
 		`[data-palette="${name}"] {`,
 		`\t--accent: ${p.accent[mode]};`,
 		`\t--on-accent: ${p.onAccent[mode]};`,
+		`\t--tint: ${p.tint[mode]};`,
+		`\t--deep: ${p.deep[mode]};`,
 		`}`
 	].join('\n');
 }
