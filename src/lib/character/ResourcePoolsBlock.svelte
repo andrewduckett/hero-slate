@@ -83,17 +83,18 @@
 		inline-size: 2.75rem;
 		block-size: 2.75rem;
 		padding: 0;
-		border: 4px solid var(--accent);
 		border-radius: 50%;
 		cursor: pointer;
 	}
 
 	button[data-pool-dot='filled'] {
-		background-color: var(--accent);
+		background-color: var(--tint);
+		border: 4px solid var(--deep);
 	}
 
 	button[data-pool-dot='empty'] {
-		background-color: var(--raised);
+		background-color: transparent;
+		border: 4px solid var(--structural);
 	}
 
 	button:focus-visible {

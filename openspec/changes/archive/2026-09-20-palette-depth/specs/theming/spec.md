@@ -1,10 +1,4 @@
-# theming Specification
-
-## Purpose
-
-Gives a character a readable accent color from a fixed named palette, and switches the whole sheet between light and dark to match the device. A child must be able to read the sheet in any room light, and config authors pick colors by name, never by raw hex.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Named palette
 
@@ -39,80 +33,6 @@ Each of the four SHALL have both a light-mode value and a dark-mode value, so ea
 - **THEN** a name may define any value that meets its contrast rule
 - **AND** the palette does not require every name to use the same `onAccent`
 
-### Requirement: Color values are opaque sRGB
-
-The system SHALL express every theme color value as an opaque sRGB color in one canonical format. No value SHALL carry transparency. This keeps a computed contrast ratio equal to what the browser paints, so the contrast tests below are meaningful.
-
-#### Scenario: A value with transparency is not allowed
-
-- **WHEN** the palette module is checked
-- **THEN** every color value is an opaque sRGB color in the canonical format
-- **AND** no value uses an alpha channel
-
-### Requirement: Base surface and foreground
-
-The system SHALL define a base surface color and a base foreground color. They are shared across all characters and are independent of the accent palette. Each SHALL have a light-mode value and a dark-mode value. The surface SHALL apply as the page background. The foreground SHALL be the default body text color. In each mode, the foreground SHALL meet a contrast ratio of at least 4.5:1 against the surface. A test SHALL compute this ratio from the values emitted to the stylesheet.
-
-#### Scenario: Foreground meets contrast on the surface
-
-- **WHEN** a test computes the contrast of the foreground against the surface in each mode
-- **THEN** the ratio is at least 4.5:1 in light mode
-- **AND** the ratio is at least 4.5:1 in dark mode
-
-#### Scenario: Light mode uses a light surface
-
-- **WHEN** the device prefers a light color scheme
-- **THEN** the page background renders the light-mode surface and body text renders the light-mode foreground
-
-#### Scenario: Dark mode uses a dark surface
-
-- **WHEN** the device prefers a dark color scheme
-- **THEN** the page background renders the dark-mode surface and body text renders the dark-mode foreground
-
-### Requirement: Accent and on-accent meet a contrast minimum
-
-The system SHALL pair each palette's accent and on-accent for readable text. Text in the on-accent color on the accent background SHALL meet a contrast ratio of at least 4.5:1. This SHALL hold for the light-mode pair of every palette name. It SHALL also hold for the dark-mode pair of every palette name. The `neutral` palette is included. A test SHALL compute each ratio from the values emitted to the stylesheet.
-
-#### Scenario: Every palette pair passes the contrast check
-
-- **WHEN** a test computes the contrast ratio of on-accent against accent for each palette name in each mode
-- **THEN** every pairing is at least 4.5:1
-
-### Requirement: Color name resolution
-
-The theming layer SHALL receive a character's `color` as either a string or `undefined`. The data provider rejects a non-string `color` before the character loads, so the theming layer never receives one (see character-data `Definition validation`). The theming layer SHALL treat the value as a palette name only when the string exactly matches a name in the fixed set. Any other string SHALL resolve to the `neutral` default. This includes an unknown name, an empty string, and a raw color value such as a `#ff0000` hex string or an `rgb(...)` string. An `undefined` value SHALL also resolve to `neutral`. The system SHALL NOT interpret a raw color value as a color.
-
-#### Scenario: An exact name resolves to itself
-
-- **WHEN** the theming layer resolves the string `ocean`
-- **THEN** it resolves to the `ocean` palette
-
-#### Scenario: A hex string is not honored as a color
-
-- **WHEN** the theming layer resolves the string `#ff0000`
-- **THEN** it resolves to the `neutral` palette
-- **AND** the raw hex value is not applied as an accent
-
-#### Scenario: An unknown or empty string resolves to neutral
-
-- **WHEN** the theming layer resolves an unknown name, or an empty string, or `undefined`
-- **THEN** it resolves to the `neutral` palette
-
-### Requirement: Automatic light and dark
-
-The system SHALL follow the device's light or dark preference without a user-facing toggle. When the device prefers dark, the sheet SHALL use each palette's dark-mode values and the dark-mode surface. When the device prefers light, the sheet SHALL use each palette's light-mode values and the light-mode surface. When the device preference changes while the sheet is open, the sheet SHALL switch modes without a reload and without any user action.
-
-#### Scenario: Mode change while the sheet is open
-
-- **WHEN** the device switches from light to dark while a sheet is open
-- **THEN** the surface, the body text, the header accent, and the header text update to the dark-mode values
-- **AND** the sheet does not reload and shows no toggle control
-
-#### Scenario: No user toggle is present
-
-- **WHEN** a player views the sheet
-- **THEN** the sheet exposes no control to switch light or dark by hand
-
 ### Requirement: Character color applies to the sheet header
 
 The system SHALL read a character's `color` field, resolve it, and apply the resolved palette to the identity header. The header SHALL show its background in the resolved accent and its name and descriptor text in the resolved on-accent, so the header text always uses the contrast-checked pairing. The applied values SHALL change with the device preference between the light-mode and dark-mode pair.
@@ -131,52 +51,7 @@ The character's color SHALL NOT theme a block that holds a fixed color role. It 
 - **THEN** the hit points tracker renders in the health role's color, not the forest palette
 - **AND** the armor class, speed, and initiative values each render in their own role's color
 
-### Requirement: Neutral fallback never blocks rendering
-
-The system SHALL fall back to the `neutral` palette when a character omits `color`, or names a value that resolves to neutral. An unknown or missing color SHALL NOT raise an error and SHALL NOT block the sheet from rendering. Only a fixed palette name SHALL ever be applied to the rendered sheet, so no unmatched color value reaches the page.
-
-#### Scenario: Missing color falls back to neutral
-
-- **WHEN** a character has no `color` field
-- **THEN** the sheet renders in the `neutral` palette
-- **AND** no error is raised
-
-#### Scenario: Unknown color still renders the header
-
-- **WHEN** a character has `color: rainbow`, which is not a palette name
-- **THEN** the sheet renders in the `neutral` palette
-- **AND** the sheet still renders its identity header
-
-### Requirement: Raised surface and muted text
-
-The system SHALL define two more base colors, shared across all characters: a raised
-surface and a muted text color. The raised surface is the background of cards and
-tiles. The muted text color is for secondary text, such as labels and raw scores.
-Each SHALL have a light-mode value and a dark-mode value. Each SHALL be an opaque
-sRGB color in the canonical format. In each mode, these pairs SHALL each meet a
-contrast ratio of at least 4.5:1:
-
-- the foreground on the raised surface
-- the muted text on the surface
-- the muted text on the raised surface
-
-A test SHALL compute each ratio from the values emitted to the stylesheet.
-
-#### Scenario: Body text is readable on a card
-
-- **WHEN** a test computes the contrast of the foreground against the raised surface in each mode
-- **THEN** the ratio is at least 4.5:1 in light mode and in dark mode
-
-#### Scenario: Muted text is readable on both surfaces
-
-- **WHEN** a test computes the contrast of the muted text against the surface and against the raised surface in each mode
-- **THEN** every ratio is at least 4.5:1
-
-#### Scenario: New base colors have both modes
-
-- **WHEN** the palette module is checked
-- **THEN** the raised surface and the muted text each define a light-mode and a dark-mode value
-- **AND** no value uses an alpha channel
+## ADDED Requirements
 
 ### Requirement: Soft tint background
 
@@ -293,26 +168,12 @@ This release SHALL NOT read a role's colour from character config. Roles are not
 - **THEN** the sheet still renders that block in its fixed role color
 - **AND** no error is raised
 
-### Requirement: Self-hosted typefaces
+## REMOVED Requirements
 
-The system SHALL serve every web font it uses from the site's own origin. The page
-SHALL NOT request a font, or a font stylesheet, from any other host. Each font face
-SHALL name a fallback font family, so text still renders when a font file fails to
-load. Each font face SHALL show fallback text while its font loads rather than hide
-the text. The build SHALL ship each font's licence alongside the font files.
+### Requirement: Accent text is readable on the raised surface
 
-#### Scenario: Fonts load from the site itself
+**Reason**: The rule forced each `accent` to serve as both a solid fill and a text color. One value cannot do both jobs across the palette. Meeting it drove `sun` to a brown and `berry` to a magenta, so those names stopped describing their colors.
 
-- **WHEN** a test reads every font-face source in the app's stylesheets
-- **THEN** each source is a path on the site's own origin
-- **AND** no source or stylesheet import names another host
+**Migration**: The `Deep text and border color` requirement replaces it. Every palette now defines a separate `deep` value, and that value carries the 4.5:1 rule on both the surface and the raised surface. Any code that drew accent-colored text or borders SHALL draw them in `deep` instead.
 
-#### Scenario: Text renders when a font fails
-
-- **WHEN** a font file fails to load
-- **THEN** the sheet still shows its text in the fallback font family
-
-#### Scenario: Licences ship with the fonts
-
-- **WHEN** the static build completes
-- **THEN** the build output contains each font file and its licence file
+The emitted-stylesheet suite holds two accent-as-text assertions, not one: accent on the surface, and accent on the raised surface. Only the second had a requirement behind it. The implementer SHALL retarget both to `deep`, because `Deep text and border color` states that the system no longer requires an accent to be readable as text on any background.

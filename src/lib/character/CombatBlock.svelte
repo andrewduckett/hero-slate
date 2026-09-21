@@ -4,16 +4,20 @@
 	// `combat` field itself and renders nothing when no valid entry remains. All
 	// text comes from Svelte text bindings, so authored values can never inject markup.
 	import { resolveCombat, type ResolvedCombat } from './combat';
+	import { resolveCombatPalette } from '$lib/theme/roles';
+	import { resolvePalette } from '$lib/theme/resolve';
+	import type { PaletteName } from '$lib/theme/palette';
 
-	let { combat }: { combat: unknown } = $props();
+	let { combat, palette }: { combat: unknown; palette?: string } = $props();
 
 	const entries: ResolvedCombat[] = $derived(resolveCombat(combat));
+	const fallback: PaletteName = $derived(resolvePalette(palette));
 </script>
 
 {#if entries.length > 0}
 	<section class="combat" aria-label="Combat" data-block="combat">
 		{#each entries as entry}
-			<div class="combat-entry">
+			<div class="combat-entry" data-palette={resolveCombatPalette(entry.label, fallback)}>
 				<span class="label">{entry.label}</span>
 				<span class="value">{entry.value}</span>
 			</div>

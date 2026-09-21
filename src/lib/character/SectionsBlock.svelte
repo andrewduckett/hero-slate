@@ -51,8 +51,8 @@
 		font-weight: 800;
 		letter-spacing: 0.04em;
 		text-transform: uppercase;
-		background-color: var(--accent);
-		color: var(--on-accent);
+		background-color: var(--tint);
+		color: var(--deep);
 	}
 
 	.rows {
@@ -74,7 +74,7 @@
 		font-size: 1rem;
 		font-weight: 800;
 		line-height: 1.2;
-		color: var(--accent);
+		color: var(--deep);
 	}
 
 	.row-body {

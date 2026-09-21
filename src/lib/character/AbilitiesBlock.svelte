@@ -32,7 +32,7 @@
 		gap: var(--space-3);
 	}
 
-	/* A raised tile with an accent top border. */
+	/* A raised tile with a structural top border. */
 	.ability {
 		display: flex;
 		flex-direction: column;
@@ -40,7 +40,7 @@
 		gap: var(--space-1);
 		padding: var(--space-3) var(--space-2);
 		background-color: var(--raised);
-		border-top: 0.3rem solid var(--accent);
+		border-top: 0.3rem solid var(--structural);
 		border-radius: var(--radius-m);
 		box-shadow: var(--shadow);
 		text-align: center;
@@ -59,7 +59,7 @@
 		font-size: 2.25rem;
 		font-weight: 800;
 		line-height: 1;
-		color: var(--accent);
+		color: var(--deep);
 	}
 
 	.score {
