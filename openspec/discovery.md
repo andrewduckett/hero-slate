@@ -373,7 +373,7 @@ name and confirmed (update mode matches the existing id).
   - **Added**: 2026-09-23
   - **Change**: dndbeyond-ingest-skeleton
 
-- [ ] 17. `feature-pools-and-slots` — interview offers class-feature pools and spell slots as trackers
+- [x] 17. `feature-pools-and-slots` — interview offers class-feature pools and spell slots as trackers
   - **Persona served**: Andrew (Author)
   - **Journey segment**: Author "write YAML" (richer trackers)
   - **MoSCoW**: Could
@@ -485,3 +485,5 @@ name and confirmed (update mode matches the existing id).
   the Author journey note: "Write YAML" stays `partial`, now naming story 17's pools and
   spell slots as shipped alongside story 16's fields, with Your Turn/skills, spells, and
   update-in-place (stories 18–20) as the remaining gaps.
+- 2026-09-23 — Follow-up: checked off story 17 on the checklist (missed when the change
+  archived, the same gap story 16 had).
