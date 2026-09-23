@@ -1,7 +1,7 @@
 # Discovery: Simple Character Sheet Web App
 
 > Status: complete
-> Created: 2026-09-18 · Last revised: 2026-09-20 (added `palette-depth`, `theme-preference`, `landscape-layout`)
+> Created: 2026-09-18 · Last revised: 2026-09-23 (added the D&D Beyond ingest authoring epic, stories 16–20)
 
 > Release plan produced by the discovery skill. Resume or revise by re-running the skill.
 > To build: run `/opsx:propose` and ask it to use the next unchecked story below.
@@ -17,6 +17,16 @@
   state-store behind interfaces to allow a future hosted DB.
 - Repo state at discovery time: greenfield — only the OpenSpec scaffold and `PRD.md`
   exist; no application code. Every journey stage annotates as `gap` today.
+- 2026-09-23 — Conversation request: an **agent skill that ingests a D&D Beyond
+  character and walks the author through building a Hero Slate config YAML**. Read the
+  sheet, detect whether a config already exists (exists → update drifted values only,
+  keep authored structure; new → always emit Identity + Stats + Health, then walk opt-in
+  sections: feature pools, spell slots, Your Turn, proficient skills, spell lists), draw
+  an ASCII preview, then write the YAML on agreement. Decisions taken this session: fold
+  into this discovery as an Author-tooling epic; ingest via the DDB character URL/ID JSON
+  API (`character-service.dndbeyond.com`); suggest-and-confirm palette/section colors;
+  one pool per spell-slot level; a private character is handled by telling the author to
+  set it public and retry.
 
 ## Scope, goals, non-goals
 
@@ -101,6 +111,11 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
 5. **Deep-link / home-screen** — clean path + PWA install icon — gap
 6. **Iterate** — stale-while-revalidate so edits appear next online open — gap
 
+> **Write YAML — still `gap`, now targeted.** The 2026-09-23 authoring epic (stories
+> 16–20) turns this stage from hand-editing into a guided ingest: paste a D&D Beyond
+> URL, answer an interview, approve an ASCII preview, get a `static/characters/<id>.yaml`.
+> The stage stays `gap` until story 16 ships, then becomes `supported`.
+
 ## MoSCoW
 
 ### Must
@@ -136,11 +151,22 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
 - **Landscape layout** (story 10) — Player: track in play; the table setup is a tablet
   on its side, and one narrow column wastes the wide axis.
 
+- **D&D Beyond ingest — skeleton + update-in-place** (stories 16, 20; epic added
+  2026-09-23) — Author: write YAML. The app works with hand-written config, so this is
+  not a Must; but hand-authoring a full sheet is the Author's heaviest step and drifts
+  stale every level-up. The skeleton (URL → minimal valid sheet) unblocks the epic;
+  update-in-place keeps a shipped sheet current without clobbering authored prose.
+
 ### Could
 
 - Pool number±view fallback for large counts (>12).
 - Tap/roll micro-animations and visual polish.
 - Install-icon / splash polish beyond the basics.
+
+- **D&D Beyond ingest — richer section mappers** (stories 17–19; epic added 2026-09-23) —
+  Author: write YAML. Each opt-in section type (feature pools + spell slots; Your Turn +
+  skills; spell lists) is incremental richness on top of the skeleton. Valuable but each
+  is a hand-authorable section, so none is a Must.
 
 ### Won't (this release)
 
@@ -319,6 +345,75 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-18
   - **Change**: _not yet proposed_
 
+### Epic: D&D Beyond → Hero Slate authoring skill (added 2026-09-23)
+
+A project-level agent skill (`.claude/skills/dndbeyond-to-slate/`, checked into this repo) that
+turns a D&D Beyond character into a Hero Slate config through a guided interview. Not app
+runtime code and not behind the data-provider — it is authoring tooling that *emits* a
+`static/characters/<id>.yaml`. It must honour the real schema (`src/lib/data/yaml.ts`) and
+the single source of truth for palette names (`src/lib/theme/palette.ts`,
+`PALETTE_NAMES = forest, fire, ocean, berry, sun, neutral`); it must not fork either.
+Shared decisions for every story below: ingest via the DDB character URL/ID JSON API
+(`https://character-service.dndbeyond.com/character/v5/character/{id}`); a private
+character → tell the author to set it public and retry; colours are suggested and
+confirmed in the ASCII preview, never silently chosen; the logical id is slugged from the
+name and confirmed (update mode matches the existing id).
+
+- [ ] 16. `dndbeyond-ingest-skeleton` — paste a DDB URL, get a minimal valid sheet after an ASCII-preview OK
+  - **Persona served**: Andrew (Author)
+  - **Journey segment**: Author "write YAML" (the whole ingest path, thinnest slice)
+  - **MoSCoW**: Should
+  - **Why this story / why now**: walking skeleton for the epic — the thinnest end-to-end path (URL → fetch JSON → map core → preview → write) that every richer story thickens. Establishes the skill scaffold, JSON fetch/parse, the field-mapping approach, the ASCII renderer, and the file-write step.
+  - **Depends on**: nothing new (reads the schema shipped by stories 1–6)
+  - **Scope**: in: skill scaffold + `SKILL.md`; fetch + parse the DDB JSON from a URL/ID; map **Identity** (name, level = summed class levels, class, suggested `color`), **Stats** (six abilities; AC/speed; initiative from DEX), **Health** (`hitPoints.max`); render an ASCII preview of the sheet for approval; on OK, write `static/characters/<id>.yaml` (id slugged from name, confirmed); detect an existing config for that id and **stop without clobbering**, pointing at story 20. / out: any opt-in sections (pools, slots, Your Turn, skills, spells); real update-in-place; private-character auth beyond the "set it public" message.s
+  - **Relevant code**: new `.claude/skills/dndbeyond-to-slate/`; reads `src/lib/data/yaml.ts` (schema/validation), `src/lib/theme/palette.ts` (`PALETTE_NAMES`); writes `static/characters/<id>.yaml`; example targets `static/characters/urven.yaml`, `sunny.yaml`.
+  - **Added**: 2026-09-23
+  - **Change**: _not yet proposed_
+
+- [ ] 17. `feature-pools-and-slots` — interview offers class-feature pools and spell slots as trackers
+  - **Persona served**: Andrew (Author)
+  - **Journey segment**: Author "write YAML" (richer trackers)
+  - **MoSCoW**: Could
+  - **Why this story / why now**: first richness on the skeleton — the pools a player actually taps in play (ki, sorcery points, rage, spell slots). One pool per spell-slot level, matching the bidirectional-dot tracker.
+  - **Depends on**: story 16
+  - **Scope**: in: read DDB limited-use class features and spell/pact slots; offer each as an opt-in `pools[]` entry `{id,label,color,max}`; one pool per spell-slot level (e.g. "L1 Slots", "L2 Slots"); suggest + confirm each pool's colour and label in the preview. / out: rest mechanics; non-pool resources; Your Turn/skills/spells sections (later stories).
+  - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; emits `pools[]` per `src/lib/data/yaml.ts`; DDB source fields for `classFeatures`/`limitedUse`/`spellSlots`/`pactMagic`.
+  - **Added**: 2026-09-23
+  - **Change**: _not yet proposed_
+
+- [ ] 18. `your-turn-and-skills` — interview offers a "Your Turn" actions section and a proficient-skills "Strengths" section
+  - **Persona served**: Andrew (Author)
+  - **Journey segment**: Author "write YAML" (the philosophy payload: prompts, not a catalog)
+  - **MoSCoW**: Could
+  - **Why this story / why now**: turns DDB's action list and skill proficiencies into the two freeform sections the product is built around — short prompts with styled dice/bonus pills, not a rules table.
+  - **Depends on**: stories 16, 6 (`custom-sections-richtext` renderer)
+  - **Scope**: in: offer a "Your Turn" section from attacks/key actions with `[[d20+8]]`/`[[1d8+5]]`/`[[DC 13]]` pills; offer a "Strengths" section from proficient skills with `[[+6]]` bonus pills and an emoji per skill; suggest + confirm section colours; author edits prose before write. / out: spell-list sections (story 19); pools/slots (story 17); interactive rolling.
+  - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; emits `sections[]{title,color,rows[]{title,body}}` per `src/lib/data/yaml.ts`; `[[…]]` markup per `src/lib/richtext/*`; DDB `actions`/`modifiers`/skill-proficiency fields.
+  - **Added**: 2026-09-23
+  - **Change**: _not yet proposed_
+
+- [ ] 19. `spell-list-sections` — interview offers the character's spells as freeform sections
+  - **Persona served**: Andrew (Author)
+  - **Journey segment**: Author "write YAML" (spellcasters)
+  - **MoSCoW**: Could
+  - **Why this story / why now**: rounds out the epic for spellcasters — the remaining large DDB block. Kept separate from Your Turn so the interview stays legible and each mapper ships independently.
+  - **Depends on**: stories 16, 18
+  - **Scope**: in: read DDB known/prepared spells; offer them as opt-in section(s) (e.g. grouped by level or cantrips-vs-leveled, author's choice); short prompt-style rows with dice pills where a spell has an attack/DC; suggest + confirm colours. / out: spell-slot pools (story 17); a full spell reference/description dump (prompts, not a catalog).
+  - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; emits `sections[]` per `src/lib/data/yaml.ts`; DDB `spells`/`classSpells` fields.
+  - **Added**: 2026-09-23
+  - **Change**: _not yet proposed_
+
+- [ ] 20. `update-in-place` — re-run on an existing character updates drifted values, keeps authored structure
+  - **Persona served**: Andrew (Author)
+  - **Journey segment**: Author "iterate" (keep a shipped sheet current)
+  - **MoSCoW**: Should
+  - **Why this story / why now**: characters level up; hand-maintaining the sheet is exactly the toil this epic removes. Comes last because it must know the full section vocabulary (stories 16–19) to preserve authored prose while refreshing numbers. Replaces the skeleton's "stop, don't clobber" guard with a real merge.
+  - **Depends on**: stories 16, 17, 18, 19
+  - **Scope**: in: detect an existing `static/characters/<id>.yaml`; diff DDB values against it (level, `hitPoints.max`, ability values, `combat` values, pool/slot `max`); show the ASCII preview with changed values highlighted; on OK, update only those values and leave section structure, titles, colours, and prose untouched. / out: restructuring authored sections; adding new sections on update (author re-runs new-mode for that); resolving genuine authoring conflicts automatically (surface them, ask).
+  - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; parses + rewrites `static/characters/<id>.yaml` preserving unknown/authored keys; schema in `src/lib/data/yaml.ts`.
+  - **Added**: 2026-09-23
+  - **Change**: _not yet proposed_
+
 ## Open Questions
 
 - None blocking. Reversible defaults set during the design interview: Svelte (vs Preact),
@@ -328,6 +423,14 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   paths + SPA fallback; pick when scaffolding.
 - **Palette definition** (resolve in story 2): the concrete set of color names and their
   light/dark values.
+- **Ingest epic — skill location** (resolve in story 16): project-level
+  `.claude/skills/dndbeyond-to-slate/` (checked in, travels with the repo) is the default; a
+  user-level skill is the alternative if the skill should not ship in the product repo.
+- **Ingest epic — DDB JSON shape** (resolve in story 16): confirm the exact
+  `character-service` v5 response fields for level, AC, initiative, limited-use features,
+  and slots against a real character before committing the mapping. Reversible defaults
+  already set: suggest-and-confirm colours, one pool per spell-slot level, id slugged from
+  name, private → "set it public and retry".
 
 ## Change Log
 
@@ -344,3 +447,12 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   bespoke page it replaces. Renumbered stories 8–12 to 11–15 and updated their
   dependency references. `theme-preference` reverses the no-toggle constraint recorded
   in `AGENTS.md` and in stories 2 and 7; that story owns the amendment.
+- 2026-09-23 — Revision: added the **D&D Beyond → Hero Slate authoring epic** (stories
+  16–20) serving the Author's "write YAML" stage, from a conversation request. New
+  capability run through MoSCoW: skeleton (16) and update-in-place (20) as Should, the
+  section mappers (17–19) as Could; the app still ships with hand-written config, so none
+  is a Must. Decisions taken: fold into this discovery; ingest via the DDB character
+  URL/ID JSON API; suggest-and-confirm colours; one pool per spell-slot level; private
+  character → set public and retry. No existing stories renumbered or superseded (the
+  epic appends after story 15). Reconciled the checklist: stories 1–9 archived, 10–15
+  still unproposed.
