@@ -45,3 +45,15 @@ const globalRef = globalThis as unknown as {
 
 globalRef.Storage = MemoryStorage;
 globalRef.localStorage = new MemoryStorage() as unknown as Storage;
+
+// jsdom ships no `matchMedia`. Provide a stub that returns no dark preference
+// and no-ops the listener methods, so any component that reads the device
+// color scheme in tests gets a safe default without throwing.
+const globalWithMM = globalThis as unknown as { matchMedia: unknown };
+if (!globalWithMM.matchMedia) {
+	globalWithMM.matchMedia = (_query: string) => ({
+		matches: false,
+		addEventListener: () => {},
+		removeEventListener: () => {}
+	});
+}

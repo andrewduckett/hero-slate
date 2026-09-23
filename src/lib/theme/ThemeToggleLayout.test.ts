@@ -10,34 +10,28 @@ vi.mock('$lib/theme/preference', () => ({
 	getEffectiveMode: vi.fn(() => 'dark')
 }));
 
-// Suppress CSS import errors from the layout.
 vi.mock('$lib/theme/palette.css', () => ({}));
 vi.mock('$lib/theme/fonts.css', () => ({}));
 vi.mock('$lib/theme/base.css', () => ({}));
 
-import Layout from '../../routes/+layout.svelte';
+// The toggle is now in AppHeader, which both +page.svelte and CharacterView
+// use. Test that it is present and functional on the no-character index route.
+import IndexPage from '../../routes/+page.svelte';
 
 beforeEach(() => {
 	vi.clearAllMocks();
 	delete document.documentElement.dataset.theme;
-	vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({
-		matches: true,
-		addEventListener: vi.fn(),
-		removeEventListener: vi.fn()
-	}));
 });
 
 describe('toggle on a route with no character', () => {
-	it('the mode toggle is present in the layout without a character', () => {
-		render(Layout);
-		const button = screen.getByRole('button');
-		expect(button).toBeTruthy();
+	it('the mode toggle is present on the index page', () => {
+		render(IndexPage);
+		expect(screen.getByRole('button')).toBeTruthy();
 	});
 
-	it('the toggle switches the mode on a no-character route', async () => {
-		render(Layout);
-		const button = screen.getByRole('button');
-		await fireEvent.click(button);
+	it('the toggle switches the mode on the index page', async () => {
+		render(IndexPage);
+		await fireEvent.click(screen.getByRole('button'));
 		expect(document.documentElement.dataset.theme).toBe('light');
 	});
 });

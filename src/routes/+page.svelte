@@ -1,2 +1,5 @@
-<h1>Hero Slate</h1>
-<p>Open a character by its link, for example <code>/sunny</code>.</p>
+<script lang="ts">
+	import AppHeader from '$lib/AppHeader.svelte';
+</script>
+
+<AppHeader title="Hero Slate" subtitle="Open a character by its link, for example /sunny." />

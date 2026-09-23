@@ -12,6 +12,7 @@
 	import { resolveCombat } from '$lib/character/combat';
 	import { resolveHitPoints } from '$lib/character/hitPoints';
 	import { resolvePools } from '$lib/character/pools';
+	import AppHeader from '$lib/AppHeader.svelte';
 
 	type ViewState = GetCharacterResult | { status: 'loading' };
 
@@ -45,12 +46,11 @@
 	<!-- The sheet root carries the resolved palette; the CSS maps it to a single
 	     --accent / --on-accent for the active light or dark mode. -->
 	<article data-palette={resolvePalette(result.character.color)}>
-		<header data-block="header" style="background-color: var(--accent); color: var(--on-accent);">
-			<h1>{result.character.name}</h1>
-			{#if formatIdentity(result.character)}
-				<p>{formatIdentity(result.character)}</p>
-			{/if}
-		</header>
+		<AppHeader
+			title={result.character.name}
+			subtitle={formatIdentity(result.character) || undefined}
+			palette={resolvePalette(result.character.color)}
+		/>
 		<!-- Blocks render in one fixed order: stats, hit points, pools, then the
 		     authored sections. Each group heading sits directly before its blocks. -->
 		{#if hasStats}
@@ -90,27 +90,6 @@
 	article {
 		display: grid;
 		gap: var(--space-5);
-	}
-
-	/* The identity header: a rounded accent card. Its colors come from the
-	   inline accent / on-accent style above. */
-	header {
-		padding: var(--space-5) var(--space-5) var(--space-4);
-		border-radius: var(--radius-l);
-		box-shadow: var(--shadow);
-	}
-
-	h1 {
-		margin: 0;
-		font-size: clamp(2rem, 8vw, 2.75rem);
-		font-weight: 800;
-		letter-spacing: -0.01em;
-	}
-
-	header p {
-		margin: var(--space-1) 0 0;
-		font-size: 1.125rem;
-		font-weight: 700;
 	}
 
 	.group {
