@@ -60,7 +60,7 @@
 
 ## 10. Skill
 
-- [ ] 10.1 Write `.claude/skills/dndbeyond-to-slate/SKILL.md`, with frontmatter (`name`, `description`) and the eight-step guided flow from the spec. Cover these points:
+- [x] 10.1 Write `.claude/skills/dndbeyond-to-slate/SKILL.md`, with frontmatter (`name`, `description`) and the eight-step guided flow from the spec. Cover these points:
   - the exact commands, and what the skill says for each exit code
   - asking the Author for any `null` fact
   - proposing the id, the color, and whether to keep the name's emoji
