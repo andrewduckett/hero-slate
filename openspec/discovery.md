@@ -380,7 +380,7 @@ name and confirmed (update mode matches the existing id).
   - **Scope**: in: read DDB limited-use class features and spell/pact slots; offer each as an opt-in `pools[]` entry `{id,label,color,max}`; one pool per spell-slot level (e.g. "L1 Slots", "L2 Slots"); suggest + confirm each pool's colour and label in the preview. / out: rest mechanics; non-pool resources; Your Turn/skills/spells sections (later stories).
   - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; emits `pools[]` per `src/lib/data/yaml.ts`; DDB source fields for `classFeatures`/`limitedUse`/`spellSlots`/`pactMagic`.
   - **Added**: 2026-09-23
-  - **Change**: _not yet proposed_
+  - **Change**: feature-pools-and-slots
 
 - [ ] 18. `your-turn-and-skills` — interview offers a "Your Turn" actions section and a proficient-skills "Strengths" section
   - **Persona served**: Andrew (Author)
