@@ -1,8 +1,8 @@
 ## 1. Setup
 
-- [ ] 1.1 Add `vite-node` to `devDependencies` at the version in `package-lock.json` (3.2.4). Verify that `npm ci` succeeds and `npx --silent vite-node --version` prints that version.
-- [ ] 1.2 Copy Urven's recorded D&D Beyond response to `src/lib/ingest/ddb/fixtures/urven.json`. Verify the file parses as JSON and `data.name` is `🐻‍❄️ Urven, the Silent Maw`.
-- [ ] 1.3 Export `ID_GRAMMAR` from `src/lib/data/yaml.ts`, and extract its identity checks into an exported named function that `toFoundOrInvalid` calls. Verify that the existing `yaml` provider tests pass unchanged.
+- [x] 1.1 Add `vite-node` to `devDependencies` at the version in `package-lock.json` (3.2.4). Verify that `npm ci` succeeds and `npx --silent vite-node --version` prints that version.
+- [x] 1.2 Copy Urven's recorded D&D Beyond response to `src/lib/ingest/ddb/fixtures/urven.json`. Verify the file parses as JSON and `data.name` is `🐻‍❄️ Urven, the Silent Maw`.
+- [x] 1.3 Export `ID_GRAMMAR` from `src/lib/data/yaml.ts`, and extract its identity checks into an exported named function that `toFoundOrInvalid` calls. Verify that the existing `yaml` provider tests pass unchanged.
 
 ## 2. Character reference (test first)
 
