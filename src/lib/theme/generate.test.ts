@@ -14,34 +14,34 @@ describe('palette.css generation', () => {
 		}
 	});
 
-	it('emits a dark-mode media block', () => {
-		expect(generatePaletteCss()).toContain('@media (prefers-color-scheme: dark)');
+	it('emits a light-mode media block (@media prefers-color-scheme: light)', () => {
+		expect(generatePaletteCss()).toContain('@media (prefers-color-scheme: light)');
 	});
 
-	it('emits --tint and --deep in both the light and dark blocks for every name', () => {
+	it('emits --tint and --deep in both the dark base and light media blocks for every name', () => {
 		const css = generatePaletteCss();
-		const darkMarker = '@media (prefers-color-scheme: dark) {';
-		const darkAt = css.indexOf(darkMarker);
-		const light = css.slice(0, darkAt);
-		const dark = css.slice(darkAt + darkMarker.length);
+		const lightMarker = '@media (prefers-color-scheme: light) {';
+		const lightAt = css.indexOf(lightMarker);
+		const dark = css.slice(0, lightAt);
+		const light = css.slice(lightAt + lightMarker.length);
 		for (const name of PALETTE_NAMES) {
 			const selector = `[data-palette="${name}"]`;
-			for (const block of [light, dark]) {
+			for (const [label, block] of [['dark base', dark], ['light media', light]] as const) {
 				const match = new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{([^}]*)\\}`).exec(block);
-				expect(match, `${name} block present`).not.toBeNull();
-				expect(match![1], `${name} --tint`).toContain('--tint:');
-				expect(match![1], `${name} --deep`).toContain('--deep:');
+				expect(match, `${name} ${label} block present`).not.toBeNull();
+				expect(match![1], `${name} ${label} --tint`).toContain('--tint:');
+				expect(match![1], `${name} ${label} --deep`).toContain('--deep:');
 			}
 		}
 	});
 
-	it('emits --structural in both the light and dark :root blocks', () => {
+	it('emits --structural in both the dark base :root and the light media :root blocks', () => {
 		const css = generatePaletteCss();
-		const darkMarker = '@media (prefers-color-scheme: dark) {';
-		const darkAt = css.indexOf(darkMarker);
-		const light = css.slice(0, darkAt);
-		const dark = css.slice(darkAt + darkMarker.length);
-		for (const [label, block] of [['light', light], ['dark', dark]] as const) {
+		const lightMarker = '@media (prefers-color-scheme: light) {';
+		const lightAt = css.indexOf(lightMarker);
+		const dark = css.slice(0, lightAt);
+		const light = css.slice(lightAt + lightMarker.length);
+		for (const [label, block] of [['dark base', dark], ['light media', light]] as const) {
 			const match = /:root\s*\{([^}]*)\}/.exec(block);
 			expect(match, `${label} :root present`).not.toBeNull();
 			expect(match![1], `${label} --structural`).toContain('--structural:');

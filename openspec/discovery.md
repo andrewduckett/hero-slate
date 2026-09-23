@@ -171,7 +171,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **MoSCoW**: Must
   - **Why this story / why now**: config references color names from story 1 onward; later stories (sections, picker) need the palette + dark mode to render correctly. Do it early.
   - **Depends on**: story 1
-  - **Scope**: in: named palette → CSS custom-property tokens (light + dark values); `prefers-color-scheme` auto switch; apply a character's `color` to the sheet chrome; readable-contrast defaults. / out: per-row/section colors (arrive with story 6), user-facing theme toggle.
+  - **Scope**: in: named palette → CSS custom-property tokens (light + dark values); `prefers-color-scheme` auto switch; apply a character's `color` to the sheet chrome; readable-contrast defaults. / out: per-row/section colors (arrive with story 6), user-facing theme toggle (added in story 9).
   - **Relevant code**: `src/lib/theme/palette.*`, global CSS tokens, sheet header component.
   - **Added**: 2026-09-18
   - **Change**: `named-palette-theming` (implemented, archived 2026-09-19)
@@ -226,7 +226,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **MoSCoW**: Should
   - **Why this story / why now**: stories 1–6 shipped behavior with almost no styling — browser-default serif, full-bleed header, no spacing. The sheet a child reads should look at least as polished as the bespoke page it replaces (`static.home.duckett.fun/sunny/`). Do it before the picker so picker cards can reuse the new card style.
   - **Depends on**: stories 2, 3, 4, 5, 6
-  - **Scope**: in: restyle every existing block (header, ability tiles, combat tiles, HP tracker, pool dots, section cards) with a fresh look; reorder blocks to the example's order — header, stats (abilities then combat), health, pools, sections; self-hosted display + body web fonts served as static assets; any new color tokens added to `palette.ts` and AA-checked in light and dark; move Sunny's "Strengths" section before "Your Turn" in `sunny.yaml`. / out: new data fields (story, quote, callout, spell/animal cards), changes to tracker behavior (e.g. tappable hearts), a theme toggle.
+  - **Scope**: in: restyle every existing block (header, ability tiles, combat tiles, HP tracker, pool dots, section cards) with a fresh look; reorder blocks to the example's order — header, stats (abilities then combat), health, pools, sections; self-hosted display + body web fonts served as static assets; any new color tokens added to `palette.ts` and AA-checked in light and dark; move Sunny's "Strengths" section before "Your Turn" in `sunny.yaml`. / out: new data fields (story, quote, callout, spell/animal cards), changes to tracker behavior (e.g. tappable hearts), a theme toggle (added in story 9).
   - **Relevant code**: `src/lib/CharacterView.svelte` (block order), `src/lib/character/*Block.svelte`, `src/lib/theme/palette.ts` + generated `palette.css`, `src/routes/+layout.svelte`, `static/fonts/`, `static/characters/sunny.yaml`.
   - **Added**: 2026-09-19
   - **Change**: `sheet-restyle` (archived 2026-09-19)
@@ -248,7 +248,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **MoSCoW**: Should
   - **Why this story / why now**: the app follows the device preference and offers no control. A player who wants the other mode cannot get it without changing a device setting. Dark is the preferred default at the table. **This reverses a durable constraint**: `AGENTS.md`, story 2, and story 7 all state that light/dark is a pure `prefers-color-scheme` media query with no toggle. Update that text as part of this story.
   - **Depends on**: stories 2, 8
-  - **Scope**: in: dark as the default when the device states no preference; a toggle control; the chosen mode persisted per device through the existing state store; a `data-theme` selector path alongside the media query; no flash of the wrong mode on load, given a prerendered shell with `ssr = false`; contrast tests cover both selector paths; amend the no-toggle wording in `AGENTS.md` and in stories 2 and 7. / out: a per-character mode; a system/light/dark tri-state if a simple toggle serves; new palette values.
+  - **Scope**: in: dark as the default when the device states no preference; a toggle control; the chosen mode persisted per device in one global stored value under its own key — not the character-state store, since the mode belongs to no character (see ADR 0008); a `data-theme` selector path alongside the media query; no flash of the wrong mode on load, given a prerendered shell with `ssr = false`; contrast tests cover both selector paths; amend the no-toggle wording in `AGENTS.md` and in stories 2 and 7. / out: a per-character mode; a system/light/dark tri-state if a simple toggle serves; new palette values.
   - **Relevant code**: `src/lib/theme/generate.ts`, generated `palette.css`, `src/routes/+layout.svelte`, `src/app.html`, `src/lib/state/*`, `src/lib/theme/emitted-css.test.ts`, `AGENTS.md`.
   - **Added**: 2026-09-20
   - **Change**: _not yet proposed_
