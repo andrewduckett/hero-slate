@@ -9,7 +9,7 @@ ADR review completed for this change. I read every in-force ADR under `docs/deci
 
 I re-read `design.md` and judged each decision against the ADR bar. One decision qualifies: D1, which splits the ingest so that tested tools compute facts and the agent writes the sheet. It is a system boundary. Reversing it would change every later ingest story, and nothing in the code explains why the split exists.
 
-The other decisions are recorded in `design.md` and are cheap to reverse:
+`design.md` records the other decisions, which are cheap to reverse:
 - D2: the code layout under `src/lib/ingest/ddb/`
 - D3: running the tools with `vite-node`
 - D4: three commands, with the id coming from the draft's file name

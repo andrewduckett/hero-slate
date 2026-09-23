@@ -48,4 +48,9 @@ CHANGES_APPLIED: n/a
 - 📌 **Use `tsx`**: declined.
 - 📌 **Document D&D Beyond stat ids**: accepted.
 
-_Round-2 author response pending._
+Author responses to round 2. Each response is either fixed or rebutted. The round-3 reviewer re-checks each one.
+
+- 🔴 **`null` semantics**: fixed. The spec now splits the fields the digest reads into required and optional. A missing or `null` optional field means none. A required field that is missing, `null`, or of the wrong type is unreadable (exit 5), and so is an optional field of the wrong type. Adds the scenario "A null optional field means none".
+- 🟡 **`proficiencyBonus` scope creep**: fixed. Removed from the proposal and the spec, including the Urven scenario. Story 18 can add it.
+- 🟡 **Plain language (three passives)**: fixed. The proposal now reads "This change splits the work by kind". The design now reads "Tested code computes every number in the digest". The ADR manifest now reads "`design.md` records the other decisions".
+- 📌 **Multiple Unarmored Defense sources**: accepted. When more than one applies, the Armor Class requirement uses the higher result.

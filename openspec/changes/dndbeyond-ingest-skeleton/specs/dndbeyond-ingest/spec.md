@@ -42,7 +42,9 @@ The digest, preview, and write tools SHALL end every failed run with a distinct 
 | 4 | The character reference is unreadable, or the character does not exist | digest |
 | 5 | A network failure, or a response the digest tool cannot read | digest |
 
-The digest tool SHALL fetch the character from the D&D Beyond character service. A private character's message SHALL tell the Author to set the character to Public on D&D Beyond and retry. The digest tool SHALL treat a field it reads as unreadable when the field is missing or has an unexpected type. It SHALL never treat such a field as empty or zero.
+The digest tool SHALL fetch the character from the D&D Beyond character service. A private character's message SHALL tell the Author to set the character to Public on D&D Beyond and retry. The digest tool SHALL sort the fields it reads into two kinds:
+- **Required fields**: `name`, `classes` (a non-empty list, each with a level), `stats` (all six abilities), `baseHitPoints`, the base walking speed, `modifiers`, and `inventory`. A required field that is missing, `null`, or of an unexpected type makes the response unreadable (exit 5).
+- **Optional fields**: bonus and override scores, `bonusHitPoints`, `overrideHitPoints`, `characterValues`, any single modifier group such as `modifiers.item`, and a subclass. D&D Beyond uses `null` or leaves such a field out to mean "none". The digest tool SHALL read a missing or `null` optional field as none. It SHALL treat an optional field that is present, not `null`, and of an unexpected type as unreadable (exit 5).
 
 #### Scenario: A private character
 
@@ -72,13 +74,18 @@ The digest tool SHALL fetch the character from the D&D Beyond character service.
 - **THEN** the tool exits with code 5
 - **AND** its message names `inventory`
 
+#### Scenario: A null optional field means none
+
+- **WHEN** the service answers with HTTP 200 and `bonusHitPoints` is `null`
+- **THEN** the digest adds no bonus hit points
+- **AND** the tool exits with code 0
+
 ### Requirement: Digest of character facts
 
 On success, the digest tool SHALL print a JSON digest of facts to standard output and exit with code 0. The digest SHALL contain these facts:
 - `name`: the character name exactly as D&D Beyond stores it, including any emoji
 - `classes`: each class with its name, its subclass name when present, and its level
 - `level`: the sum of all class levels
-- `proficiencyBonus`: the bonus for the total level
 - `abilities`: the six final ability scores, in the order Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma
 - `armorClass`, `speed`, `initiative`, and `hitPointsMax`
 
@@ -90,7 +97,7 @@ Wherever this spec uses an ability *modifier*, the modifier is the ability score
 
 - **WHEN** the tool digests the recorded D&D Beyond response for Urven
 - **THEN** `name` is `🐻‍❄️ Urven, the Silent Maw`
-- **AND** `level` is 6 and `proficiencyBonus` is 3
+- **AND** `level` is 6
 - **AND** the ability scores are Strength 14, Dexterity 20, Constitution 16, Intelligence 10, Wisdom 14, and Charisma 11
 - **AND** `armorClass` is 17, `speed` is 45, `initiative` is 5, and `hitPointsMax` is 54
 
@@ -149,7 +156,7 @@ The digest SHALL compute Armor Class from these sources:
 - flat Armor Class bonuses from equipped items
 - a D&D Beyond Armor Class override, which replaces the computed value
 
-When the character has an Armor Class source outside this list, the digest SHALL report `armorClass` as `null`. It SHALL add a reason that names the unrecognized source. It SHALL NOT report a guessed number.
+When more than one Unarmored Defense rule applies, such as for a monk and barbarian multiclass, the digest SHALL use the higher result. When the character has an Armor Class source outside this list, the digest SHALL report `armorClass` as `null`. It SHALL add a reason that names the unrecognized source. It SHALL NOT report a guessed number.
 
 #### Scenario: Monk Unarmored Defense
 

@@ -14,7 +14,7 @@ Constraints that shape the approach:
 
 **Goals:**
 
-- Every number in the digest is computed by tested code, never by the agent.
+- Tested code computes every number in the digest. The agent computes none of them.
 - The preview uses the same resolvers as the app, so the preview matches the rendered sheet.
 - Stories 17–20 can extend the digest, the cross-check, and the skill without restructuring this design.
 

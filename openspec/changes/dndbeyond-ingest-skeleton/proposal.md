@@ -5,14 +5,14 @@ Writing a character's YAML by hand is the Author's heaviest step, and every leve
 ## What Changes
 
 - A new project-level agent skill, `.claude/skills/dndbeyond-to-slate/`, guides the Author from a character reference to a new `static/characters/<id>.yaml`. A character reference is a D&D Beyond character URL or its numeric id.
-- The work is split by kind:
+- This change splits the work by kind:
   - **A script computes facts.** It fetches the character JSON and returns a small digest of final values.
   - **The agent writes the sheet.** It drafts the YAML using its own judgement, with the digest as its source for numbers.
 - The `digest` command fetches the character from the D&D Beyond character service and computes the story-16 facts:
   - the name, exactly as D&D Beyond stores it, emoji included
   - each class and its level, and the total level
   - the six final ability scores, including feat and species bonuses and any overrides
-  - Armor Class, walking speed, initiative, proficiency bonus, and maximum hit points
+  - Armor Class, walking speed, initiative, and maximum hit points
 - The digest covers the common Armor Class cases: armor with its DEX cap, shields, monk and barbarian unarmored defense, flat item bonuses, and D&D Beyond overrides. For any other source it reports the value as unknown and gives the reason, and does not guess. The skill then asks the Author for the number.
 - The `digest` command reports each failure with a distinct exit code and a one-line message:
   - a private character: the message tells the Author to make it public and retry
