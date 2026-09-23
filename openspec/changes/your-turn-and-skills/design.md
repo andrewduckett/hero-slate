@@ -78,6 +78,8 @@ A number field has three states:
 | Unknown | `null` | text | The action has this number, but the digest cannot prove it. |
 | Not applicable | `null` | `null` | The action has no such number, such as Shadow Step's to-hit. |
 
+`activation` maps D&D Beyond's activation codes: 1 is an action, 3 a bonus action, and 4 a reaction. Urven's fixture shows all three: Stunning Strike, Flurry of Blows, and Deflect Attack. Any other code gives `null`, because the digest does not know its meaning. A weapon's activation is `action`.
+
 An action with no numbers at all still appears. The agent can offer it as a prose row, as Urven's Shadow Step row shows.
 
 ### D6. Feature to-hit uses the named ability, or martial arts
