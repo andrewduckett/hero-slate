@@ -31,4 +31,4 @@
 
 - [x] 6.1 Run `npm test` and confirm the whole suite passes, including the reworked emitted-CSS, generator, tightest-ratios, inline-script, preference, and toggle tests.
 - [x] 6.2 Run `npm run build` and confirm the static build succeeds with the regenerated `palette.css`.
-- [ ] 6.3 Load a sheet in the dev preview and confirm by observation (manual verification required): the sheet opens per the device (dark when the device prefers dark or states nothing); the toggle switches modes with no reload and no flash on refresh; the choice survives a reload and carries across characters.
+- [x] 6.3 Load a sheet in the dev preview and confirm by observation (manual verification required): the sheet opens per the device (dark when the device prefers dark or states nothing); the toggle switches modes with no reload and no flash on refresh; the choice survives a reload and carries across characters.
