@@ -17,11 +17,11 @@
 
 ## 4. Digest (test first)
 
-- [ ] 4.1 Write failing tests for required and optional fields in `src/lib/ingest/ddb/digest.ts`. A missing or wrong-typed required field is unreadable, and the message names it (for example, `inventory` as an object). A missing or `null` optional field means none (for example, `bonusHitPoints: null`). A wrong-typed optional field that is not `null` is unreadable. Verify that the tests fail.
-- [ ] 4.2 Write failing tests for identity facts. `name` is returned verbatim, emoji included. `classes` lists each class with its subclass and level. `level` is the sum of class levels, including a Monk 3 / Rogue 2 multiclass. Verify that the tests fail.
-- [ ] 4.3 Write failing tests for final ability scores with handmade fragments. Cover: base plus bonus score; `<ability>-score` `bonus` modifiers matched by `subType` while `statId` is `null`; an override replacing the result; and a `set` modifier applying only when higher. Verify that the tests fail.
-- [ ] 4.4 Write failing tests for derived facts. Cover: hit points from base, bonus, Constitution modifier times level, and `hit-points-per-level`, and the override; speed from walking speed, flat bonuses, and Unarmored Movement with and without armor or shield; initiative from the Dexterity modifier plus flat bonuses. Verify that the tests fail.
-- [ ] 4.5 Implement `digest.ts` to pass 4.1–4.4, with the modifier rule `floor((score - 10) / 2)` and the `subType` mapping from design D8. Verify that the tests pass.
+- [x] 4.1 Write failing tests for required and optional fields in `src/lib/ingest/ddb/digest.ts`. A missing or wrong-typed required field is unreadable, and the message names it (for example, `inventory` as an object). A missing or `null` optional field means none (for example, `bonusHitPoints: null`). A wrong-typed optional field that is not `null` is unreadable. Verify that the tests fail.
+- [x] 4.2 Write failing tests for identity facts. `name` is returned verbatim, emoji included. `classes` lists each class with its subclass and level. `level` is the sum of class levels, including a Monk 3 / Rogue 2 multiclass. Verify that the tests fail.
+- [x] 4.3 Write failing tests for final ability scores with handmade fragments. Cover: base plus bonus score; `<ability>-score` `bonus` modifiers matched by `subType` while `statId` is `null`; an override replacing the result; and a `set` modifier applying only when higher. Verify that the tests fail.
+- [x] 4.4 Write failing tests for derived facts. Cover: hit points from base, bonus, Constitution modifier times level, and `hit-points-per-level`, and the override; speed from walking speed, flat bonuses, and Unarmored Movement with and without armor or shield; initiative from the Dexterity modifier plus flat bonuses. Verify that the tests fail.
+- [x] 4.5 Implement `digest.ts` to pass 4.1–4.4, with the modifier rule `floor((score - 10) / 2)` and the `subType` mapping from design D8. Verify that the tests pass.
 
 ## 5. Armor Class (test first)
 
