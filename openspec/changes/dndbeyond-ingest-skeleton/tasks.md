@@ -41,8 +41,8 @@
 
 ## 8. Preview (test first)
 
-- [ ] 8.1 Write failing tests for `src/lib/ingest/ddb/preview.ts`. The preview draws identity, abilities with computed modifiers (Dexterity 20 shows +5), combat, and hit points. It leaves out entries the app would drop. It lists `pools` and `sections` under "Not previewed" without drawing their contents. It uses ASCII borders with no right-hand border. Verify that the tests fail.
-- [ ] 8.2 Implement `preview.ts` to pass 8.1, using `resolveAbilities`, `resolveCombat`, and the `resolveHitPoints` rule. Verify that the tests pass.
+- [x] 8.1 Write failing tests for `src/lib/ingest/ddb/preview.ts`. The preview draws identity, abilities with computed modifiers (Dexterity 20 shows +5), combat, and hit points. It leaves out entries the app would drop. It lists `pools` and `sections` under "Not previewed" without drawing their contents. It uses ASCII borders with no right-hand border. Verify that the tests fail.
+- [x] 8.2 Implement `preview.ts` to pass 8.1, using `resolveAbilities`, `resolveCombat`, and the `resolveHitPoints` rule. Verify that the tests pass.
 
 ## 9. Command-line entry
 
