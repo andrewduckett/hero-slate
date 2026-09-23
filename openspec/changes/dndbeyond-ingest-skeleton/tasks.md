@@ -70,13 +70,13 @@
   - a note on the editorial intent: a simplified sheet, not a copy
 
   Verify that the skill appears in the agent's skill list.
-- [ ] 10.2 Scripted manual walkthrough, which validates the skill-flow scenarios. Run the skill on Urven's URL, targeting a new id such as `urven-test`. Change the proposed color once, and approve. Confirm by observation:
+- [x] 10.2 Scripted manual walkthrough, which validates the skill-flow scenarios. Run the skill on Urven's URL, targeting a new id such as `urven-test`. Change the proposed color once, and approve. Confirm by observation:
   - the preview runs again after the color change
   - nothing is written before approval
   - the write tool creates `static/characters/urven-test.yaml`, and it matches the approved draft
 
   Then delete the test file.
-- [ ] 10.3 Walkthrough of a private character: run the skill on a private character. Confirm by observation that it relays the "set it to Public and retry" message and drafts nothing.
+- [x] 10.3 Walkthrough of a private character: run the skill on a private character. Confirm by observation that it relays the "set it to Public and retry" message and drafts nothing.
 
 ## 11. Documentation and full verification
 
