@@ -1,114 +1,4 @@
-# dndbeyond-ingest Specification
-
-## Purpose
-
-The D&D Beyond ingest helps the Author turn a D&D Beyond character into a new Hero Slate character file. The digest tool computes the character's facts. An agent drafts a simplified sheet from those facts. The Author approves a preview, and then the write tool saves the draft.
-
-## Requirements
-
-### Requirement: Character reference input
-
-A *character reference* is the text the Author gives to name a D&D Beyond character. The digest tool SHALL accept a character reference in any of these forms:
-- a character URL such as `https://www.dndbeyond.com/characters/154922980`
-- the same URL with a trailing slash, a trailing path segment, or a query string
-- a bare numeric character id such as `154922980`
-
-The digest tool SHALL extract the numeric character id from the character reference. The id SHALL consist only of the digits 0 to 9. It SHALL reject any other input as an unreadable character reference, without making a network request.
-
-#### Scenario: A character URL is accepted
-
-- **WHEN** the Author gives `https://www.dndbeyond.com/characters/154922980`
-- **THEN** the tool requests character `154922980`
-
-#### Scenario: A bare id is accepted
-
-- **WHEN** the Author gives `154922980`
-- **THEN** the tool requests character `154922980`
-
-#### Scenario: An unrelated URL is rejected before any request
-
-- **WHEN** the Author gives `https://example.com/characters/154922980`
-- **THEN** the tool reports an unreadable character reference
-- **AND** it makes no network request
-
-### Requirement: Failures are distinct and actionable
-
-The digest, preview, and write tools SHALL end every failed run with a distinct non-zero exit code and at least one line of explanation on standard error. The digest tool SHALL write nothing to standard output on failure. The exit codes SHALL be:
-
-| Code | Meaning | Tools |
-|------|---------|-------|
-| 0 | Success | all |
-| 1 | The draft has at least one error | preview, write |
-| 2 | The character is private, or the service refused access | digest |
-| 3 | The target character file already exists | preview, write |
-| 4 | The character reference is unreadable, or the character does not exist | digest |
-| 5 | A network failure, or a response the digest tool cannot read | digest |
-
-The digest tool SHALL fetch the character from the D&D Beyond character service. A private character's message SHALL tell the Author to set the character to Public on D&D Beyond and retry. The digest tool SHALL sort the fields it reads into two kinds:
-- **Required fields**: `name`, `classes` (a non-empty list, each with a level), `stats` (all six abilities), `baseHitPoints`, the base walking speed, `modifiers`, and `inventory`. A required field that is missing, `null`, or of an unexpected type makes the response unreadable (exit 5).
-- **Optional fields**: bonus and override scores, `bonusHitPoints`, `overrideHitPoints`, `characterValues`, any single modifier group such as `modifiers.item`, and a subclass. D&D Beyond uses `null` or leaves such a field out to mean "none". The digest tool SHALL read a missing or `null` optional field as none. It SHALL treat an optional field that is present, not `null`, and of an unexpected type as unreadable (exit 5).
-
-#### Scenario: A private character
-
-- **WHEN** the service answers with HTTP 403
-- **THEN** the tool exits with code 2
-- **AND** its message tells the Author to set the character to Public and retry
-
-#### Scenario: A missing character
-
-- **WHEN** the service answers with HTTP 404
-- **THEN** the tool exits with code 4
-
-#### Scenario: A network failure
-
-- **WHEN** the request fails before any response arrives
-- **THEN** the tool exits with code 5
-
-#### Scenario: An unexpected response shape
-
-- **WHEN** the service answers with HTTP 200 but the body lacks the character data the digest needs
-- **THEN** the tool exits with code 5
-- **AND** its message names the missing part
-
-#### Scenario: A field with the wrong type
-
-- **WHEN** the service answers with HTTP 200 and `inventory` is an object instead of a list
-- **THEN** the tool exits with code 5
-- **AND** its message names `inventory`
-
-#### Scenario: A null optional field means none
-
-- **WHEN** the service answers with HTTP 200 and `bonusHitPoints` is `null`
-- **THEN** the digest adds no bonus hit points
-- **AND** the tool exits with code 0
-
-### Requirement: Digest of character facts
-
-On success, the digest tool SHALL print a JSON digest of facts to standard output and exit with code 0. The digest SHALL contain these facts:
-- `name`: the character name exactly as D&D Beyond stores it, including any emoji
-- `classes`: each class with its name, its subclass name when present, and its level
-- `level`: the sum of all class levels
-- `abilities`: the six final ability scores, in the order Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma
-- `armorClass`, `speed`, `initiative`, and `hitPointsMax`
-- `limitedUses`, `spellSlots`, and `pactMagic`, each with the reasons its own requirement defines
-
-The digest SHALL NOT change the name. It SHALL NOT suggest a palette color or a logical id. It SHALL NOT suggest a pool id, label, or color.
-
-Wherever this spec uses an ability *modifier*, the modifier is the ability score minus 10, divided by 2, and rounded down. This is the same rule the app uses to show modifiers.
-
-#### Scenario: Urven's digest
-
-- **WHEN** the tool digests the recorded D&D Beyond response for Urven
-- **THEN** `name` is `🐻‍❄️ Urven, the Silent Maw`
-- **AND** `level` is 6
-- **AND** the ability scores are Strength 14, Dexterity 20, Constitution 16, Intelligence 10, Wisdom 14, and Charisma 11
-- **AND** `armorClass` is 17, `speed` is 45, `initiative` is 5, and `hitPointsMax` is 54
-
-#### Scenario: A multiclass character
-
-- **WHEN** a character has Monk level 3 and Rogue level 2
-- **THEN** `classes` lists both classes with their levels
-- **AND** `level` is 5
+## ADDED Requirements
 
 ### Requirement: Pool source fields are optional
 
@@ -238,72 +128,35 @@ For a Warlock, the digest SHALL read the Warlock's slot row at its class level. 
 - **WHEN** the tool digests the recorded D&D Beyond response for Zip
 - **THEN** `pactMagic` and `pactMagicReason` are both `null`
 
-### Requirement: Final ability scores
+## MODIFIED Requirements
 
-The digest SHALL compute each ability score as follows:
-- An override score, when D&D Beyond has one, replaces the computed score.
-- Otherwise the score is the base score, plus any bonus score, plus every flat bonus that D&D Beyond lists for that ability from species, class, background, feats, and items.
-- A "set" effect that raises a score to a fixed value, such as a magic belt, applies only when its value is higher than the computed score.
+### Requirement: Digest of character facts
 
-#### Scenario: Feat bonuses add to the base score
+On success, the digest tool SHALL print a JSON digest of facts to standard output and exit with code 0. The digest SHALL contain these facts:
+- `name`: the character name exactly as D&D Beyond stores it, including any emoji
+- `classes`: each class with its name, its subclass name when present, and its level
+- `level`: the sum of all class levels
+- `abilities`: the six final ability scores, in the order Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma
+- `armorClass`, `speed`, `initiative`, and `hitPointsMax`
+- `limitedUses`, `spellSlots`, and `pactMagic`, each with the reasons its own requirement defines
 
-- **WHEN** Dexterity has a base of 17 and two feat bonuses of 1 and 2
-- **THEN** the digest reports Dexterity 20
+The digest SHALL NOT change the name. It SHALL NOT suggest a palette color or a logical id. It SHALL NOT suggest a pool id, label, or color.
 
-#### Scenario: An override wins
+Wherever this spec uses an ability *modifier*, the modifier is the ability score minus 10, divided by 2, and rounded down. This is the same rule the app uses to show modifiers.
 
-- **WHEN** Strength has a base of 10 and an override of 19
-- **THEN** the digest reports Strength 19
+#### Scenario: Urven's digest
 
-#### Scenario: A set effect applies only when higher
+- **WHEN** the tool digests the recorded D&D Beyond response for Urven
+- **THEN** `name` is `🐻‍❄️ Urven, the Silent Maw`
+- **AND** `level` is 6
+- **AND** the ability scores are Strength 14, Dexterity 20, Constitution 16, Intelligence 10, Wisdom 14, and Charisma 11
+- **AND** `armorClass` is 17, `speed` is 45, `initiative` is 5, and `hitPointsMax` is 54
 
-- **WHEN** Strength computes to 16 and an equipped item sets Strength to 21
-- **THEN** the digest reports Strength 21
+#### Scenario: A multiclass character
 
-### Requirement: Derived combat facts
-
-The digest SHALL compute these facts from the final ability scores:
-- `hitPointsMax`: the override, when D&D Beyond has one. Otherwise the base hit points, plus any bonus hit points, plus the Constitution modifier times the total level, plus any flat per-level hit point bonuses times the total level.
-- `speed`: the base walking speed, plus flat speed bonuses. The monk Unarmored Movement bonus counts only when the character wears no armor and holds no shield.
-- `initiative`: the Dexterity modifier, plus flat initiative bonuses.
-
-#### Scenario: Urven's hit points
-
-- **WHEN** base hit points are 36, Constitution is 16, and the total level is 6
-- **THEN** `hitPointsMax` is 54
-
-#### Scenario: Unarmored Movement adds to speed
-
-- **WHEN** a monk with a walking speed of 30 has Unarmored Movement bonuses of 10 and 5 and wears no armor
-- **THEN** `speed` is 45
-
-### Requirement: Armor Class covers the common cases
-
-The digest SHALL compute Armor Class from these sources:
-- worn armor with its Dexterity cap, or 10 plus the Dexterity modifier when no armor is worn
-- an equipped shield
-- monk Unarmored Defense (10 plus the Dexterity and Wisdom modifiers, with no armor and no shield)
-- barbarian Unarmored Defense (10 plus the Dexterity and Constitution modifiers, with no armor)
-- flat Armor Class bonuses from equipped items
-- a D&D Beyond Armor Class override, which replaces the computed value
-
-When more than one Unarmored Defense rule applies, such as for a monk and barbarian multiclass, the digest SHALL use the higher result. When the character has an Armor Class source outside this list, the digest SHALL report `armorClass` as `null`. It SHALL add a reason that names the unrecognized source. It SHALL NOT report a guessed number.
-
-#### Scenario: Monk Unarmored Defense
-
-- **WHEN** a monk wears no armor and holds no shield, with Dexterity 20 and Wisdom 14
-- **THEN** `armorClass` is 17
-
-#### Scenario: Armor with a Dexterity cap and a shield
-
-- **WHEN** a character wears medium armor with base Armor Class 14 and a Dexterity cap of 2, has Dexterity 18, and holds a shield
-- **THEN** `armorClass` is 18
-
-#### Scenario: An unrecognized source gives an unknown value
-
-- **WHEN** a character has an Armor Class effect the digest does not recognize
-- **THEN** `armorClass` is `null`
-- **AND** the digest includes a reason naming that effect
+- **WHEN** a character has Monk level 3 and Rogue level 2
+- **THEN** `classes` lists both classes with their levels
+- **AND** `level` is 5
 
 ### Requirement: Draft validation
 
@@ -345,16 +198,6 @@ The preview tool SHALL list every error and warning. It SHALL exit with code 1 w
 
 - **WHEN** two draft pools share the id `slots-1`
 - **THEN** the preview warns that the app would drop a `pools` entry
-
-### Requirement: No overwrite of an existing character
-
-The preview tool and the write tool SHALL each stop with exit code 3 when `static/characters/<id>.yaml` already exists for the target logical id. The message SHALL say that the ingest does not support updating an existing sheet yet. The preview tool SHALL run this check before it draws anything, so the Author never approves a draft that the write tool would refuse.
-
-#### Scenario: The target id is taken
-
-- **WHEN** the Author previews a draft for id `urven` and `static/characters/urven.yaml` exists
-- **THEN** the tool exits with code 3
-- **AND** it draws no preview
 
 ### Requirement: The preview shows the draft as the app will render it
 
@@ -462,35 +305,6 @@ The preview tool SHALL read a combat value written as a signed string, such as `
 
 - **WHEN** the digest reports `armorClass` as `null`
 - **THEN** the preview does not compare Armor Class
-
-### Requirement: The write tool saves only a valid, approved draft
-
-The write tool SHALL be the only way the ingest saves a character file. Given a draft file, it SHALL:
-- take the target logical id from the draft's file name, without the `.yaml` extension
-- run every draft validation check again, and stop with exit code 1 on any error
-- stop with exit code 3 when `static/characters/<id>.yaml` already exists
-- create `static/characters/<id>.yaml` with exactly the bytes of the draft file
-- refuse to replace a file that appears between its check and its write
-
-The write tool SHALL ignore the draft's directory when it builds the target path. Because the logical id must also match the provider's id grammar, the write tool SHALL only ever write a `.yaml` file directly inside `static/characters/`.
-
-#### Scenario: A valid draft is written byte for byte
-
-- **WHEN** the write tool receives a valid draft `.workspace/urven-2.yaml` and no `static/characters/urven-2.yaml` exists
-- **THEN** it creates `static/characters/urven-2.yaml` with the same bytes as the draft
-- **AND** it exits with code 0
-
-#### Scenario: A draft with errors is not written
-
-- **WHEN** the write tool receives a draft with no `name`
-- **THEN** it exits with code 1
-- **AND** it creates no file
-
-#### Scenario: A file name outside the id grammar is refused
-
-- **WHEN** the write tool receives a draft named `Urven.yaml`
-- **THEN** it reports that the id `Urven` does not match the id grammar
-- **AND** it exits with code 1 and creates no file
 
 ### Requirement: Guided skill flow
 

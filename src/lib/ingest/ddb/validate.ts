@@ -10,6 +10,9 @@ import { parse as parseYaml } from 'yaml';
 import { ID_GRAMMAR, checkIdentity } from '$lib/data/yaml';
 import { PALETTE_NAMES } from '$lib/theme/palette';
 import { validEntries } from '$lib/character/entries';
+import { resolvePools } from '$lib/character/pools';
+
+const MAX_POOL_DOTS = 12;
 
 export interface ValidationResult {
 	errors: string[];
@@ -69,6 +72,23 @@ export function validateDraft(text: string, targetId: string): ValidationResult 
 
 	if (isMapping(parsed.hitPoints) && 'max' in parsed.hitPoints && !isPositiveInteger(parsed.hitPoints.max)) {
 		warnings.push('hitPoints.max is present but is not an integer greater than 0');
+	}
+
+	if (Array.isArray(parsed.pools)) {
+		if (resolvePools(parsed.pools, null).length < parsed.pools.length) {
+			warnings.push('pools has an entry the app would drop');
+		}
+		for (const pool of parsed.pools) {
+			if (typeof pool !== 'object' || pool === null || Array.isArray(pool)) continue;
+			const { label, max, color } = pool as Record<string, unknown>;
+			const poolLabel = typeof label === 'string' ? label : 'a pool';
+			if (typeof max === 'number' && Number.isInteger(max) && max > MAX_POOL_DOTS) {
+				warnings.push(`${poolLabel} has a maximum of ${max}, and the app shows at most ${MAX_POOL_DOTS} dots`);
+			}
+			if (typeof color === 'string' && !(PALETTE_NAMES as readonly string[]).includes(color)) {
+				warnings.push(`pool color "${color}" is not a palette name and will fall back to neutral`);
+			}
+		}
 	}
 
 	return { errors, warnings };

@@ -11,6 +11,8 @@
  * code a flat sequence of checks instead of nested early returns.
  */
 import { computeArmorClass } from './armorClass';
+import { computeLimitedUses, type LimitedUse, type LimitedUseEntry, type LimitedUseSource } from './limitedUses';
+import { computeSpellSlots, computePactMagic, type SpellSlotEntry, type SpellcastingClassInput } from './spellSlots';
 
 export const ABILITY_ORDER = [
 	'strength',
@@ -41,6 +43,11 @@ export interface Digest {
 	speed: number;
 	initiative: number;
 	hitPointsMax: number;
+	limitedUses: LimitedUse[];
+	spellSlots: SpellSlotEntry[] | null;
+	spellSlotsReason: string | null;
+	pactMagic: SpellSlotEntry | null;
+	pactMagicReason: string | null;
 }
 
 export type DigestResult = { status: 'ok'; digest: Digest } | { status: 'unreadable'; message: string };
@@ -88,21 +95,45 @@ function ability(id: unknown): AbilityKey | undefined {
 	return typeof id === 'number' ? ABILITY_ORDER[id - 1] : undefined;
 }
 
-function readClasses(raw: unknown): { classes: DigestClass[]; level: number } {
+/** Whether a class or subclass definition marks itself able to cast spells; missing or wrong-typed means no. */
+function readCanCastSpells(definition: Record<string, unknown> | undefined): boolean {
+	return typeof definition?.canCastSpells === 'boolean' ? definition.canCastSpells : false;
+}
+
+/** A definition's `spellRules.levelSpellSlots`, an optional field left raw for `spellSlots.ts` to read. */
+function readSlotTable(definition: Record<string, unknown> | undefined): unknown {
+	if (!definition) return undefined;
+	const spellRules = optionalField(definition.spellRules, 'classes', (v) => asRecord(v, 'classes'));
+	return spellRules?.levelSpellSlots;
+}
+
+function readClasses(raw: unknown): { classes: DigestClass[]; level: number; spellcasting: SpellcastingClassInput[] } {
 	const list = requiredArray(raw, 'classes');
 	if (list.length === 0) fail('classes');
 
-	const classes = list.map((entry) => {
+	const classes: DigestClass[] = [];
+	const spellcasting: SpellcastingClassInput[] = [];
+
+	for (const entry of list) {
 		const record = asRecord(entry, 'classes');
 		const level = requiredNumber(record.level, 'classes');
 		const definition = optionalField(record.definition, 'classes', (v) => asRecord(v, 'classes'));
 		const name = typeof definition?.name === 'string' ? definition.name : '';
 		const subclassDefinition = optionalField(record.subclassDefinition, 'classes', (v) => asRecord(v, 'classes'));
 		const subclass = typeof subclassDefinition?.name === 'string' ? subclassDefinition.name : undefined;
-		return subclass !== undefined ? { name, subclass, level } : { name, level };
-	});
+		classes.push(subclass !== undefined ? { name, subclass, level } : { name, level });
 
-	return { classes, level: classes.reduce((sum, c) => sum + c.level, 0) };
+		spellcasting.push({
+			name,
+			level,
+			canCastSpells: readCanCastSpells(definition),
+			slotTable: readSlotTable(definition),
+			subclassCanCastSpells: readCanCastSpells(subclassDefinition),
+			subclassSlotTable: readSlotTable(subclassDefinition)
+		});
+	}
+
+	return { classes, level: classes.reduce((sum, c) => sum + c.level, 0), spellcasting };
 }
 
 /** Read the six base scores from `stats` (required: all six abilities present and numeric). */
@@ -146,6 +177,57 @@ function readModifiers(raw: unknown): Modifier[] {
 		}
 	}
 	return all;
+}
+
+const LIMITED_USE_GROUPS: { key: 'class' | 'race' | 'background' | 'feat'; source: LimitedUseSource }[] = [
+	{ key: 'class', source: 'class' },
+	{ key: 'race', source: 'species' },
+	{ key: 'background', source: 'background' },
+	{ key: 'feat', source: 'feat' }
+];
+
+/**
+ * The `limitedUse` field, read leniently: `null`/missing means no limited
+ * use at all; an object is passed through for `limitedUses.ts` to read
+ * field by field. A field of an unexpected type there is one entry's
+ * problem (an unknown maximum), never the whole digest's, so a rule that
+ * misses the object shape entirely just yields an empty ruleset.
+ */
+function readRule(value: unknown): Record<string, unknown> | undefined {
+	if (value === undefined || value === null) return undefined;
+	return typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
+}
+
+function actionName(record: Record<string, unknown>): string {
+	return typeof record.name === 'string' ? record.name : '';
+}
+
+function spellName(record: Record<string, unknown>): string {
+	const definition = optionalField(record.definition, 'spells', (v) => asRecord(v, 'spells'));
+	return typeof definition?.name === 'string' ? definition.name : '';
+}
+
+/** Read the `class`, `race`, `background`, and `feat` groups of `actions` or `spells`; skip `item`. */
+function readLimitedUseEntries(
+	raw: unknown,
+	field: 'actions' | 'spells',
+	nameOf: (record: Record<string, unknown>) => string
+): LimitedUseEntry[] {
+	const group = optionalField(raw, field, (v) => asRecord(v, field));
+	if (group === undefined) return [];
+
+	const entries: LimitedUseEntry[] = [];
+	for (const { key, source } of LIMITED_USE_GROUPS) {
+		const items =
+			optionalField(group[key], `${field}.${key}`, (v) => requiredArray(v, `${field}.${key}`)) ?? [];
+		for (const item of items) {
+			const record = asRecord(item, `${field}.${key}`);
+			const rule = readRule(record.limitedUse);
+			if (rule === undefined) continue;
+			entries.push({ name: nameOf(record), source, rule });
+		}
+	}
+	return entries;
 }
 
 function readBaseSpeed(data: Record<string, unknown>): number {
@@ -206,7 +288,7 @@ export function computeDigest(body: unknown): DigestResult {
 		const data = asRecord(outer.data, 'data');
 
 		const name = requiredString(data.name, 'name');
-		const { classes, level } = readClasses(data.classes);
+		const { classes, level, spellcasting } = readClasses(data.classes);
 
 		const baseScores = readBaseScores(data.stats, 'stats');
 		const bonusStats = optionalField(data.bonusStats, 'bonusStats', (v) => readAbilityAdjustments(v, 'bonusStats')) ?? {};
@@ -242,6 +324,15 @@ export function computeDigest(body: unknown): DigestResult {
 		const armorClass = acResult.value;
 		const armorClassReason = acResult.reason;
 
+		const limitedUseEntries = [
+			...readLimitedUseEntries(data.actions, 'actions', actionName),
+			...readLimitedUseEntries(data.spells, 'spells', spellName)
+		];
+		const limitedUses = computeLimitedUses(limitedUseEntries, abilities, level);
+
+		const { spellSlots, spellSlotsReason } = computeSpellSlots(spellcasting);
+		const { pactMagic, pactMagicReason } = computePactMagic(spellcasting);
+
 		return {
 			status: 'ok',
 			digest: {
@@ -253,7 +344,12 @@ export function computeDigest(body: unknown): DigestResult {
 				armorClassReason,
 				speed,
 				initiative,
-				hitPointsMax
+				hitPointsMax,
+				limitedUses,
+				spellSlots,
+				spellSlotsReason,
+				pactMagic,
+				pactMagicReason
 			}
 		};
 	} catch (error) {
