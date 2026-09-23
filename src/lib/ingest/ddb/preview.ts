@@ -10,8 +10,9 @@
 import { resolveAbilities } from '$lib/character/abilities';
 import { resolveCombat } from '$lib/character/combat';
 import { resolveHitPoints } from '$lib/character/hitPoints';
+import { resolvePools } from '$lib/character/pools';
 
-const STORY_16_BLOCKS = new Set(['id', 'name', 'level', 'class', 'color', 'abilities', 'combat', 'hitPoints']);
+const DRAWN_BLOCKS = new Set(['id', 'name', 'level', 'class', 'color', 'abilities', 'combat', 'hitPoints', 'pools']);
 
 function border(): string {
 	return '+' + '-'.repeat(40);
@@ -56,7 +57,16 @@ export function renderPreview(draft: Record<string, unknown>): string[] {
 		lines.push(`|   Max: ${hitPoints.max}`);
 	}
 
-	const otherBlocks = Object.keys(draft).filter((key) => !STORY_16_BLOCKS.has(key));
+	const pools = resolvePools(draft.pools, null);
+	if (pools.length > 0) {
+		lines.push('|');
+		lines.push('| Pools');
+		for (const pool of pools) {
+			lines.push(`|   ${pool.label}: ${'o'.repeat(pool.max)}`);
+		}
+	}
+
+	const otherBlocks = Object.keys(draft).filter((key) => !DRAWN_BLOCKS.has(key));
 	if (otherBlocks.length > 0) {
 		lines.push('|');
 		lines.push(`| Not previewed: ${otherBlocks.join(', ')}`);

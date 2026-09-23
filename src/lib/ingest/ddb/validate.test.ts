@@ -112,4 +112,39 @@ describe('validateDraft — warnings', () => {
 		expect(result.errors).toEqual([]);
 		expect(result.warnings).toEqual([]);
 	});
+
+	it('warns that the app would drop a pool above the 12-dot limit, naming it', () => {
+		const body = ['name: Sunny', 'pools:', '  - id: sorcery', '    label: Sorcery Points', '    max: 15'].join('\n');
+		const result = validateDraft(body, 'sunny');
+		expect(result.errors).toEqual([]);
+		expect(result.warnings.some((w) => /would drop/i.test(w))).toBe(true);
+		expect(result.warnings.some((w) => w.includes('Sorcery Points') && w.includes('15') && w.includes('12'))).toBe(
+			true
+		);
+	});
+
+	it('warns that the app would drop a pool that repeats an earlier id', () => {
+		const body = [
+			'name: Sunny',
+			'pools:',
+			'  - id: slots-1',
+			'    label: L1 Slots',
+			'    max: 3',
+			'  - id: slots-1',
+			'    label: L1 Slots Again',
+			'    max: 2'
+		].join('\n');
+		const result = validateDraft(body, 'sunny');
+		expect(result.errors).toEqual([]);
+		expect(result.warnings.some((w) => /would drop/i.test(w))).toBe(true);
+	});
+
+	it('warns when a pool color is not a palette name', () => {
+		const body = ['name: Sunny', 'pools:', '  - id: ki', '    label: Ki', '    color: purple', '    max: 5'].join(
+			'\n'
+		);
+		const result = validateDraft(body, 'sunny');
+		expect(result.errors).toEqual([]);
+		expect(result.warnings.some((w) => w.includes('purple'))).toBe(true);
+	});
 });

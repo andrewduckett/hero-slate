@@ -37,7 +37,7 @@ describe('renderPreview', () => {
 		expect(text).not.toContain('10');
 	});
 
-	it('lists pools and sections under Not previewed, without drawing their contents', () => {
+	it('lists sections, but not pools, under Not previewed', () => {
 		const draft = {
 			name: 'Sunny',
 			pools: [{ id: 'ki', label: 'Ki', max: 5 }],
@@ -45,11 +45,23 @@ describe('renderPreview', () => {
 		};
 		const text = renderPreview(draft).join('\n');
 		expect(text).toMatch(/not previewed/i);
-		expect(text).toContain('pools');
+		expect(text).not.toContain('pools');
 		expect(text).toContain('sections');
-		expect(text).not.toContain('Ki');
 		expect(text).not.toContain('Your Turn');
 		expect(text).not.toContain('swipe!');
+	});
+
+	it('draws a pool as its label followed by one dot per use', () => {
+		const draft = { name: 'Sunny', pools: [{ id: 'focus', label: 'Focus Points', max: 6 }] };
+		const text = renderPreview(draft).join('\n');
+		expect(text).toContain('Focus Points');
+		expect(text).toContain('o'.repeat(6));
+	});
+
+	it('does not draw a pool the app would drop', () => {
+		const draft = { name: 'Sunny', pools: [{ id: 'sorcery', label: 'Sorcery Points', max: 13 }] };
+		const text = renderPreview(draft).join('\n');
+		expect(text).not.toContain('Sorcery Points');
 	});
 
 	it('draws the character name', () => {
