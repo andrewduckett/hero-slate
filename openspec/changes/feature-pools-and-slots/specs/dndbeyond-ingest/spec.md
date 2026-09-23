@@ -237,7 +237,7 @@ When the skill gives the preview tool a digest, the preview tool SHALL compare d
   2. by a slot label, to the spell slots at that label's level
   3. by a pact label, to the Pact Magic slot count
 
-A *slot label* is a label that takes one of these five forms, where `N` is a single digit from 1 to 9 and `Nth` is its ordinal (`1st`, `2nd`, `3rd`, then `4th` to `9th`):
+A *slot label* is a label that takes one of these five forms. `N` is a single digit from 1 to 9, and `Nth` is its ordinal (`1st`, `2nd`, `3rd`, then `4th` to `9th`):
 - `LN Slots`
 - `Level N Slots`
 - `Level N Spell Slots`
