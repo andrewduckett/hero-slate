@@ -55,7 +55,7 @@
 
   Verify that the tests fail.
 - [x] 9.2 Implement `cli.ts` to pass 9.1, with a thin `main` that wires real `fs`, `fetch`, `process.argv`, and `process.exit`. Verify that the tests pass.
-- [ ] 9.3 Acceptance check: copy `static/characters/urven.yaml` to `.workspace/urven-check.yaml`. Run `digest` on the saved Urven fixture, then run `preview .workspace/urven-check.yaml --digest <file>`. Verify that it reports no errors and no cross-check warnings.
+- [x] 9.3 Acceptance check: copy `static/characters/urven.yaml` to `.workspace/urven-check.yaml`. Run `digest` on the saved Urven fixture, then run `preview .workspace/urven-check.yaml --digest <file>`. Verify that it reports no errors and no cross-check warnings.
 - [ ] 9.4 Live check: run `npx --silent vite-node src/lib/ingest/ddb/cli.ts digest https://www.dndbeyond.com/characters/154922980`. Verify that it exits 0 and prints the same facts as 5.3.
 
 ## 10. Skill

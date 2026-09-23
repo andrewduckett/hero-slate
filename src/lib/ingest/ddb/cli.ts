@@ -163,6 +163,9 @@ async function main(): Promise<void> {
 	process.exit(result.exitCode);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Under vite-node, process.argv[1] is vite-node's own binary path, not this
+// script, so a `argv[1] === import.meta.url` entry guard never fires. Skip
+// only when Vitest imports this module for its tests; run otherwise.
+if (!process.env.VITEST) {
 	main();
 }
