@@ -4,10 +4,13 @@ import { resolve } from 'node:path';
 import { contrastRatio } from './contrast';
 
 const css = readFileSync(resolve(process.cwd(), 'src/lib/theme/palette.css'), 'utf8');
-const darkMarker = '@media (prefers-color-scheme: dark) {';
-const at = css.indexOf(darkMarker);
-const light = css.slice(0, at);
-const dark = css.slice(at + darkMarker.length);
+
+// Dark is the base :root (before the light media query block).
+// Light is inside @media (prefers-color-scheme: light).
+const lightMarker = '@media (prefers-color-scheme: light) {';
+const lightAt = css.indexOf(lightMarker);
+const dark = css.slice(0, lightAt);
+const light = css.slice(lightAt + lightMarker.length);
 
 function tokens(scope: string, selector: string): Record<string, string> {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

@@ -35,9 +35,12 @@ milestone status live in `openspec/discovery.md`.
   a palette and falls back to `neutral`, so a bad name never breaks a sheet.
 - **Theme tokens have one source of truth.** `src/lib/theme/palette.ts` is the
   only place color values live; `palette.css` is **generated** from it and must
-  never be hand-edited. Light/dark is a pure `prefers-color-scheme` media query
-  with no toggle, and every accent/on-accent and foreground/surface pair meets
-  WCAG AA — enforced by tests that read the emitted CSS.
+  never be hand-edited. A manual toggle exists on every route; a player's
+  per-device choice persists via `src/lib/theme/preference.ts` and overrides the
+  device preference until the player chooses again; dark is the resting default
+  when no choice is stored and no device preference is stated. Every
+  accent/on-accent and foreground/surface pair meets WCAG AA — enforced by tests
+  that read the emitted CSS.
 
 ## Toolchain
 
