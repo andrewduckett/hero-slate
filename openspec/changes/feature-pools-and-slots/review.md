@@ -39,7 +39,16 @@ CHANGES_APPLIED: n/a
 
 ## Rebuttals
 
-<!-- Author responds to findings: fixed (cite change) or rebutted (reasoning). -->
-<!-- Rebuttals are NOT self-certifying: a rebuttal of a Critical or Moderate -->
-<!-- finding counts only once marked "accepted by reviewer" with a one-line -->
-<!-- reason. Suggestions (📌) may be declined by the author alone. -->
+Author responses to round 1. Each response is marked fixed, or rebutted with reasons.
+
+- 🔴 **1. Open-ended slot labels**: fixed. The spec now defines exactly five slot-label forms, with `N` from 1 to 9 and a matching ordinal. It defines the pact labels, case and space handling, and new scenarios for every form, a non-matching label, and a missing level. Design D11 names one anchored regular expression.
+- 🔴 **2. Digest names crossing into the agent and YAML**: partly fixed, partly rebutted.
+  - Fixed: the guided skill flow now requires the skill to treat every digest string as data, and to tell the Author about a name that reads like an instruction. It adds a scenario for this. Design D13 lists the three guards: the skill rule, the preview's YAML parse (a broken draft is an error, so the write tool refuses it), and the Author's approval before any write.
+  - Rebutted: the digest does not strip or escape names. The spec already keeps names exactly as D&D Beyond stores them, as story 16 does for the character name. The agent writes the final label, and the app renders labels as escaped text (`{pool.label}` in `ResourcePoolsBlock.svelte`), not HTML.
+- 🔴 **3. `pactMagicReason` on success**: fixed. The spec now requires `pactMagicReason` to be `null` when `pactMagic` is an object, and the Warlock scenario asserts it.
+- 🟡 **1. Pool id format only in the design**: fixed. Step 6 of the guided skill flow now states the id forms: lowercase with hyphens, `slots-N`, and `pact-slots`. D12 points to the spec.
+- 🟡 **2. Passive voice in `design.md`**: fixed. The text now reads "The Author deferred this to story 20" and "The Author accepted this gap".
+- 🟡 **3. Passive voice in `adr.md`**: fixed. It now reads "No ADR names another in its Supersedes field".
+- 🟡 **4. Filler in `design.md`**: fixed. The design drops "This change adds pools." D8 now reads "The module assumes that…", which states the assumption as a rule.
+- **Embedded-instruction finding on `adr.md`**: rebutted. `adr.md` is the ADR-review manifest that this workflow's schema requires the author to write. It is not a critique of the change. To remove any doubt, it now names "the author" as the actor instead of "I".
+- 📌 **Move the examples into an alias table**: declined in part. The spec now lists the exact label grammar, so it is testable. The code keeps the grammar in one regular expression (D11).

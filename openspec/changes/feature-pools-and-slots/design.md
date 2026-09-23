@@ -2,7 +2,7 @@
 
 Story 16 built the ingest as pure modules under `src/lib/ingest/ddb/`, plus one command-line entry, `cli.ts`. The digest (`digest.ts`) reads and type-checks the raw D&D Beyond response. It hands typed values to a focused module for one hard sum; `armorClass.ts` is the example. The preview (`preview.ts`), validation (`validate.ts`), and cross-check (`crosscheck.ts`) reuse the app's own resolvers.
 
-This change adds pools. The app already reads pools through `resolvePools` in `src/lib/character/pools.ts`. That resolver drops any pool whose `max` is not an integer from 1 through 12, and any pool that repeats an earlier id.
+The app already reads pools through `resolvePools` in `src/lib/character/pools.ts`. That resolver drops any pool whose `max` is not an integer from 1 through 12, and any pool that repeats an earlier id.
 
 Two recorded responses shape the design:
 - **Urven**, a level 6 Monk, in `fixtures/urven.json`. The Monk cannot cast spells, but its class data still carries a one-third-caster slot table.
@@ -87,7 +87,7 @@ A spellcaster beside a class that cannot cast is still a single-class lookup. D&
 
 The module finds a Warlock by its class definition name, `Warlock`, together with `canCastSpells`. D&D Beyond has no separate Pact Magic flag that we know of.
 
-We expect the Warlock's `levelSpellSlots` row to hold its pact slots at a single spell level, such as `[0, 0, 2, 0, 0, …]` for a level 5 Warlock. When exactly one level in the row has slots, the module reports that level and count. Any other shape gives `null` with a reason.
+The module assumes that a Warlock's `levelSpellSlots` row holds its pact slots at a single spell level, such as `[0, 0, 2, 0, 0, …]` for a level 5 Warlock. When exactly one level in the row has slots, the module reports that level and count. Any other shape gives `null` with a reason.
 
 No fixture confirms this shape. The fail-safe means a wrong guess shows up as "unknown" and the Author types the number. It never becomes a wrong number on the sheet.
 
@@ -107,17 +107,30 @@ Neither check copies the resolver's rules. The first only explains one of its dr
 
 `crosscheck.ts` compares only pools that `resolvePools` keeps. For each one, it tries three matches in order and uses the first that fits:
 1. The label, trimmed and lowercased, equals a limited use's name, also trimmed and lowercased.
-2. The label matches a slot pattern that carries a level from 1 to 9, such as `L1 Slots`, `Level 1 Slots`, `1st Level Slots`, or `Level 1 Spell Slots`. A known `spellSlots` list gives that level's count, or 0 when the level is absent.
-3. The label is `Pact Slots` or `Pact Magic`, ignoring case. A known `pactMagic` gives its slot count.
+2. The label is a slot label, as the spec defines its five forms. A known `spellSlots` list gives that level's count, or 0 when the level is absent.
+3. The label is a pact label, `Pact Slots` or `Pact Magic`. A known `pactMagic` gives its slot count.
+
+`crosscheck.ts` tests the slot forms with one anchored regular expression. It checks each ordinal suffix against its digit, so `1th` does not match.
 
 A `null` digest fact skips the comparison. A digest file written before this change has no pool facts, so the cross-check treats missing fields as `null`. Old digest files keep working.
 
 - *Alternative: match by pool id.* Rejected. Ids are the Author's choice and carry no fixed meaning.
-- *Alternative: an alias table, such as Ki for Focus Points.* Deferred to story 20, as the Author decided.
+- *Alternative: an alias table, such as Ki for Focus Points.* The Author deferred this to story 20.
 
 ### D12. The skill proposes pool ids from labels
 
-The skill proposes each pool id as the label in lowercase with hyphens, for example `focus-points`. For slot pools it proposes `slots-1` to `slots-9`, and `pact-slots` for Pact Magic. Ids must be unique, because the app keys each pool's per-device count by id. The validation warning (D10) catches a repeated id.
+The skill follows the id forms in the spec's guided flow, for example `focus-points`, `slots-1`, and `pact-slots`. Fixed forms for slots keep ids stable when the Author relabels a slot pool. Ids must be unique, because the app keys each pool's per-device count by id. The validation warning (D10) catches a repeated id.
+
+### D13. Digest text is data at every step
+
+D&D Beyond names are free text that any user can type. They reach the agent through the digest file, and they reach the sheet through the agent's draft. Three guards cover this path:
+- The skill tells the agent to treat digest strings as data, and to tell the Author about a name that reads like an instruction.
+- The preview tool parses the draft before it draws anything. A name that breaks the YAML is an error, and the write tool refuses the draft.
+- The Author approves the preview before the write tool saves anything.
+
+The app renders pool labels as text, not HTML, so a label cannot inject markup into the sheet.
+
+- *Alternative: strip or escape names in the digest.* Rejected. The spec keeps names exactly as D&D Beyond stores them, and the Author chooses the final label anyway. Escaping would hide what D&D Beyond actually says.
 
 ## Risks / Trade-offs
 
@@ -125,7 +138,7 @@ The skill proposes each pool id as the label in lowercase with hyphens, for exam
 - [`resetType` 3 as dawn is unconfirmed] → The reset is only context for the agent. A wrong word never reaches the sheet.
 - [High-level pools exceed 12 dots, such as Sorcery Points up to 20] → The skill and the validation both tell the Author. Raising the app's limit is a separate app change.
 - [D&D Beyond marks some minor features as limited use] → The skill offers each pool as opt-in, so the Author declines the noise.
-- [A renamed pool escapes the cross-check] → This is accepted for now. Story 20 adds real diffing.
+- [A renamed pool escapes the cross-check] → The Author accepted this gap. Story 20 adds real diffing.
 - [The Zip fixture is a real character's data] → The character is public on D&D Beyond, and the Author approved committing it.
 
 ## Migration Plan

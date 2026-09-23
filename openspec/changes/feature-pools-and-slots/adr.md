@@ -5,15 +5,16 @@
 
 ## Review Summary
 
-ADR review completed for this change. I read every in-force ADR under `docs/decisions/` and built the supersession graph. No ADR is superseded, and the highest sequence number in use is 0009.
+ADR review completed for this change. The author read every in-force ADR under `docs/decisions/` and built the supersession graph. No ADR names another in its Supersedes field, and the highest sequence number in use is 0009.
 
-I re-read `design.md` and judged each decision against the ADR bar. None qualifies. Each decision is local to one ingest module, is cheap to reverse, or applies a principle an existing ADR already records:
+The author then judged each decision in `design.md` against the ADR bar. None qualifies. Each decision is local to one ingest module, is cheap to reverse, or applies a principle an existing ADR already records:
 - D1 and D2: the two new modules, and an unknown maximum for one misshapen rule
 - D3 and D5: the limited-use formula and the reset words
 - D4: skipping item sources
 - D6 to D8: reading D&D Beyond's per-class slot tables, unknown multiclass slots, and a fail-safe Pact Magic lookup
 - D9 to D11: the preview, validation, and cross-check reusing the app's pool resolver
 - D12: pool ids proposed from labels
+- D13: treating digest text as data
 
 Three in-force ADRs bear on this change. The change follows each of them:
 - **ADR 0009** (the ingest tools compute facts, and the agent writes the sheet): the digest computes every pool maximum. It reports a value as unknown instead of guessing, as for multiclass slots and unreadable Pact Magic.
