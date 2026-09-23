@@ -101,20 +101,21 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
   Write YAML ─► Commit to ─► Build & ─► Character ─► Deep-link / ─► Iterate
   (char+manifest)  GitHub     deploy     in picker    home-screen     (edits propagate)
       │             │           │           │             │              │
-     gap        partial        gap         gap           gap            gap
+   partial       partial        gap         gap           gap            gap
 ```
 
-1. **Write YAML** — one file per character + manifest line — gap
+1. **Write YAML** — one file per character + manifest line — partial (story 16 ships a guided ingest for identity, abilities, combat, and hit points; pools, sections, spells, and update-in-place are stories 17–20, still gaps)
 2. **Commit to GitHub** — existing GitHub flow — partial (GitHub exists; repo not wired to a build)
 3. **Build & deploy** — Cloudflare Pages builds Vite app, SPA fallback — gap
 4. **Character in picker** — manifest drives home cards — gap
 5. **Deep-link / home-screen** — clean path + PWA install icon — gap
 6. **Iterate** — stale-while-revalidate so edits appear next online open — gap
 
-> **Write YAML — still `gap`, now targeted.** The 2026-09-23 authoring epic (stories
-> 16–20) turns this stage from hand-editing into a guided ingest: paste a D&D Beyond
-> URL, answer an interview, approve an ASCII preview, get a `static/characters/<id>.yaml`.
-> The stage stays `gap` until story 16 ships, then becomes `supported`.
+> **Write YAML — now `partial`.** Story 16 (`dndbeyond-ingest-skeleton`) shipped the
+> walking skeleton of the authoring epic: paste a D&D Beyond URL, answer a few
+> questions, approve an ASCII preview, get a `static/characters/<id>.yaml` with
+> identity, abilities, combat, and hit points. The stage becomes `supported` once
+> stories 17–20 add pools/slots, Your Turn/skills, spells, and update-in-place.
 
 ## MoSCoW
 
@@ -359,13 +360,13 @@ character → tell the author to set it public and retry; colours are suggested 
 confirmed in the ASCII preview, never silently chosen; the logical id is slugged from the
 name and confirmed (update mode matches the existing id).
 
-- [ ] 16. `dndbeyond-ingest-skeleton` — paste a DDB URL, get a minimal valid sheet after an ASCII-preview OK
+- [x] 16. `dndbeyond-ingest-skeleton` — paste a DDB URL, get a minimal valid sheet after an ASCII-preview OK
   - **Persona served**: Andrew (Author)
   - **Journey segment**: Author "write YAML" (the whole ingest path, thinnest slice)
   - **MoSCoW**: Should
   - **Why this story / why now**: walking skeleton for the epic — the thinnest end-to-end path (URL → fetch JSON → map core → preview → write) that every richer story thickens. Establishes the skill scaffold, JSON fetch/parse, the field-mapping approach, the ASCII renderer, and the file-write step.
   - **Depends on**: nothing new (reads the schema shipped by stories 1–6)
-  - **Scope**: in: skill scaffold + `SKILL.md`; fetch + parse the DDB JSON from a URL/ID; map **Identity** (name, level = summed class levels, class, suggested `color`), **Stats** (six abilities; AC/speed; initiative from DEX), **Health** (`hitPoints.max`); render an ASCII preview of the sheet for approval; on OK, write `static/characters/<id>.yaml` (id slugged from name, confirmed); detect an existing config for that id and **stop without clobbering**, pointing at story 20. / out: any opt-in sections (pools, slots, Your Turn, skills, spells); real update-in-place; private-character auth beyond the "set it public" message.s
+  - **Scope**: in: skill scaffold + `SKILL.md`; fetch + parse the DDB JSON from a URL/ID; map **Identity** (name, level = summed class levels, class, suggested `color`), **Stats** (six abilities; AC/speed; initiative from DEX), **Health** (`hitPoints.max`); render an ASCII preview of the sheet for approval; on OK, write `static/characters/<id>.yaml` (id slugged from name, confirmed); detect an existing config for that id and **stop without clobbering**, pointing at story 20. / out: any opt-in sections (pools, slots, Your Turn, skills, spells); real update-in-place; private-character auth beyond the "set it public" message.
   - **Relevant code**: new `.claude/skills/dndbeyond-to-slate/`; reads `src/lib/data/yaml.ts` (schema/validation), `src/lib/theme/palette.ts` (`PALETTE_NAMES`); writes `static/characters/<id>.yaml`; example targets `static/characters/urven.yaml`, `sunny.yaml`.
   - **Added**: 2026-09-23
   - **Change**: dndbeyond-ingest-skeleton
@@ -473,3 +474,8 @@ name and confirmed (update mode matches the existing id).
   both ingest-epic open questions: the skill's location (project-level, checked in) and the
   D&D Beyond JSON shape (ability-score `subType` mapping, Unarmored Defense, and the
   residual uncertainty around the barbarian case and the Armor Class override).
+- 2026-09-23 — Follow-up: checked off story 16 on the checklist (missed when the change
+  archived) and updated the Author journey map — "Write YAML" moves from `gap` to
+  `partial`, since story 16 covers identity/abilities/combat/hit points but not
+  pools/sections/spells/update-in-place (stories 17–20). Fixed a stray typo in story 16's
+  scope line.
