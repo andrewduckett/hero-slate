@@ -12,7 +12,7 @@ I re-read `design.md` and judged each decision against the ADR bar. One decision
 The other decisions are recorded in `design.md` and are cheap to reverse:
 - D2: the code layout under `src/lib/ingest/ddb/`
 - D3: running the tools with `vite-node`
-- D4: two commands, with the id taken from the draft's file name
+- D4: three commands, with the id coming from the draft's file name
 - D5: the preview reusing the app's resolvers
 - D6: the label alias table
 - D7: the Armor Class allowlist

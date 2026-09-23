@@ -44,4 +44,14 @@ CHANGES_APPLIED: n/a
 
 ## Rebuttals
 
-_Pending author response._
+Author responses to round 1. Each response is either fixed or rebutted. The round-2 reviewer re-checks each one.
+
+- 🔴 **Agent writes to `static/`**: fixed. A tested `write` command now saves the draft. It re-runs every check, uses exclusive create, and builds the path only from `static/characters/` and the validated id. Changed: spec (new requirement "The write tool saves only a valid, approved draft", exit-code table, skill flow step 8), design D4, proposal, ADR 0009.
+- 🔴 **Modifier formula undefined**: fixed. The spec now defines the modifier as `floor((score - 10) / 2)`, matching `src/lib/character/modifier.ts`.
+- 🔴 **Pools and sections in the preview are scope creep**: fixed. Preview and validation now cover identity, abilities, combat, and hit points only. Other top-level blocks are listed under "Not previewed". Changed: spec, design D5, proposal.
+- 🔴 **Skill-flow scenarios are not mechanically assertable**: partly rebutted. They describe agent behavior, which an automated test cannot drive. The spec now says a scripted manual walkthrough validates them. The OpenSpec spec instruction allows a scenario to be "explicitly validated". Every requirement a test can assert now belongs to a tool, not the skill.
+- 🔴 **Plain language**: fixed. The 32-word sentence is split. The passive "is parsed" and "the id is taken" are rewritten with named actors. Narrative phrases ("as the proposal first said", "Rejected earlier in exploration", "The spike showed") are removed or restated as facts in Context. "Character reference" is now defined once and used throughout. The digest's output is consistently called "facts".
+- 🟡 **D&D Beyond shape depth**: fixed. The spec now requires the digest to treat a field with an unexpected type as unreadable (exit 5), never as empty or zero, and adds a scenario.
+- 🟡 **Digest file not in the skill flow**: fixed. Skill flow step 2 now saves the digest to a workspace file, and step 7 passes it to the preview.
+- 📌 **Use `tsx`**: declined. `vite-node` is already installed through Vitest, and this repo showed it resolves `$lib` and extensionless imports. `tsx` would add a package to save about one second per interactive run.
+- 📌 **Document D&D Beyond stat ids**: accepted. Design Context now records that ids 1–6 stand for Strength through Charisma, which the Urven response confirms.

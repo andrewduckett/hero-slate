@@ -1,17 +1,17 @@
 ## Purpose
 
-The D&D Beyond ingest helps the Author turn a D&D Beyond character into a new Hero Slate character file. A tool computes the character's facts. An agent writes a simplified sheet from those facts, and the Author approves a preview before anything is written.
+The D&D Beyond ingest helps the Author turn a D&D Beyond character into a new Hero Slate character file. The digest tool computes the character's facts. An agent drafts a simplified sheet from those facts. The Author approves a preview, and then the write tool saves the draft.
 
 ## ADDED Requirements
 
 ### Requirement: Character reference input
 
-The digest tool SHALL accept a D&D Beyond character reference in any of these forms:
+A *character reference* is the text the Author gives to name a D&D Beyond character. The digest tool SHALL accept a character reference in any of these forms:
 - a character URL such as `https://www.dndbeyond.com/characters/154922980`
 - the same URL with a trailing slash, a trailing path segment, or a query string
 - a bare numeric character id such as `154922980`
 
-The tool SHALL extract the numeric character id from the reference. It SHALL reject any other input as an unreadable reference, without making a network request.
+The digest tool SHALL extract the numeric character id from the character reference. It SHALL reject any other input as an unreadable character reference, without making a network request.
 
 #### Scenario: A character URL is accepted
 
@@ -26,21 +26,23 @@ The tool SHALL extract the numeric character id from the reference. It SHALL rej
 #### Scenario: An unrelated URL is rejected before any request
 
 - **WHEN** the Author gives `https://example.com/characters/154922980`
-- **THEN** the tool reports an unreadable reference
+- **THEN** the tool reports an unreadable character reference
 - **AND** it makes no network request
 
-### Requirement: Fetch failures are distinct and actionable
+### Requirement: Failures are distinct and actionable
 
-The digest tool SHALL fetch the character from the D&D Beyond character service. It SHALL end every failed run with a distinct non-zero exit code and one line of explanation on standard error. It SHALL write nothing to standard output on failure. The exit codes SHALL be:
+The digest, preview, and write tools SHALL end every failed run with a distinct non-zero exit code and at least one line of explanation on standard error. The digest tool SHALL write nothing to standard output on failure. The exit codes SHALL be:
 
-| Code | Meaning |
-|------|---------|
-| 0 | Success |
-| 2 | The character is private, or the service refused access |
-| 4 | The reference is unreadable, or the character does not exist |
-| 5 | A network failure, or a response the tool cannot read |
+| Code | Meaning | Tools |
+|------|---------|-------|
+| 0 | Success | all |
+| 1 | The draft has at least one error | preview, write |
+| 2 | The character is private, or the service refused access | digest |
+| 3 | The target character file already exists | preview, write |
+| 4 | The character reference is unreadable, or the character does not exist | digest |
+| 5 | A network failure, or a response the digest tool cannot read | digest |
 
-A private character's message SHALL tell the Author to set the character to Public on D&D Beyond and retry.
+The digest tool SHALL fetch the character from the D&D Beyond character service. A private character's message SHALL tell the Author to set the character to Public on D&D Beyond and retry. The digest tool SHALL treat a field it reads as unreadable when the field is missing or has an unexpected type. It SHALL never treat such a field as empty or zero.
 
 #### Scenario: A private character
 
@@ -64,9 +66,15 @@ A private character's message SHALL tell the Author to set the character to Publ
 - **THEN** the tool exits with code 5
 - **AND** its message names the missing part
 
+#### Scenario: A field with the wrong type
+
+- **WHEN** the service answers with HTTP 200 and `inventory` is an object instead of a list
+- **THEN** the tool exits with code 5
+- **AND** its message names `inventory`
+
 ### Requirement: Digest of character facts
 
-On success, the digest tool SHALL print a JSON digest to standard output and exit with code 0. The digest SHALL contain:
+On success, the digest tool SHALL print a JSON digest of facts to standard output and exit with code 0. The digest SHALL contain these facts:
 - `name`: the character name exactly as D&D Beyond stores it, including any emoji
 - `classes`: each class with its name, its subclass name when present, and its level
 - `level`: the sum of all class levels
@@ -75,6 +83,8 @@ On success, the digest tool SHALL print a JSON digest to standard output and exi
 - `armorClass`, `speed`, `initiative`, and `hitPointsMax`
 
 The digest SHALL NOT change the name. It SHALL NOT suggest a palette color or a logical id.
+
+Wherever this spec uses an ability *modifier*, the modifier is the ability score minus 10, divided by 2, and rounded down. This is the same rule the app uses to show modifiers.
 
 #### Scenario: Urven's digest
 
@@ -166,17 +176,17 @@ The preview tool SHALL read a drafted character file and check it before it draw
 - The file sets an `id` that differs from the target logical id.
 
 These are **warnings**:
-- `color` on the character, a pool, a section, or a row is not a palette name. The app would fall back to neutral.
-- An entry in `abilities`, `combat`, `pools`, or `sections` would be silently dropped by the app.
+- The character's `color` is not a palette name. The app would fall back to neutral.
+- The app would silently drop an entry in `abilities` or `combat`.
 - `hitPoints.max` is present but is not an integer greater than 0.
 
-The preview tool SHALL list every error and warning. It SHALL exit with a non-zero code when there is at least one error.
+The preview tool SHALL list every error and warning. It SHALL exit with code 1 when there is at least one error.
 
 #### Scenario: A missing name is an error
 
 - **WHEN** the draft has no `name`
 - **THEN** the preview reports an error
-- **AND** it exits with a non-zero code
+- **AND** it exits with code 1
 
 #### Scenario: An unknown color is a warning
 
@@ -186,7 +196,7 @@ The preview tool SHALL list every error and warning. It SHALL exit with a non-ze
 
 ### Requirement: No overwrite of an existing character
 
-The preview tool SHALL stop with exit code 3 when `static/characters/<id>.yaml` already exists for the target logical id. Its message SHALL say that updating an existing sheet is not supported yet. The check SHALL run before the Author is asked to approve anything.
+The preview tool and the write tool SHALL each stop with exit code 3 when `static/characters/<id>.yaml` already exists for the target logical id. The message SHALL say that updating an existing sheet is not supported yet. The preview tool SHALL run this check before it draws anything, so the Author never approves a draft that cannot be written.
 
 #### Scenario: The target id is taken
 
@@ -196,27 +206,28 @@ The preview tool SHALL stop with exit code 3 when `static/characters/<id>.yaml` 
 
 ### Requirement: The preview shows the draft as the app will render it
 
-The preview tool SHALL draw an ASCII preview of the draft file itself, not of the digest. It SHALL use the same rules the app uses to read each block. It SHALL show every block the app would render: identity, abilities with their modifiers, combat, hit points, pools, and sections. It SHALL NOT show entries the app would drop.
+The preview tool SHALL draw an ASCII preview of the draft file itself, not of the digest. It SHALL use the same rules the app uses to read each block. It SHALL draw identity, abilities with their modifiers, combat, and hit points. It SHALL NOT draw entries the app would drop. For any other top-level block in the draft, such as `pools` or `sections`, it SHALL list the block's name under "Not previewed" and SHALL NOT draw it.
 
 #### Scenario: A computed modifier appears in the preview
 
 - **WHEN** the draft lists Dexterity with value 20
 - **THEN** the preview shows Dexterity 20 with modifier +5
 
-#### Scenario: Authored sections appear in the preview
+#### Scenario: Other blocks are listed, not drawn
 
-- **WHEN** the draft includes a section titled "Your Turn" with valid rows
-- **THEN** the preview shows that section and its rows
+- **WHEN** the draft includes `pools` and `sections`
+- **THEN** the preview lists `pools` and `sections` under "Not previewed"
+- **AND** it does not draw their contents
 
 ### Requirement: Advisory cross-check against the digest
 
-When the Author gives the preview tool a digest, the tool SHALL compare the draft's numbers with the digest's facts. It SHALL compare:
+When the skill gives the preview tool a digest, the preview tool SHALL compare draft entries with digest facts. It SHALL compare:
 - `level`
 - each ability, matched by its label (ignoring case) or a common abbreviation such as `Str` or `STR`
 - the combat entries for Armor Class (`Armor Class` or `AC`), speed (`Speed`), and initiative (`Initiative` or `Init`)
 - `hitPoints.max`
 
-A combat value written as a signed string, such as `"+5"`, SHALL equal the number 5. For each mismatch, the tool SHALL print a warning with the label, the draft value, and the digest value. The tool SHALL NOT compare the name. It SHALL skip labels it does not recognize and digest facts that are `null`. Mismatches SHALL NOT block the preview or change its exit code.
+The preview tool SHALL read a combat value written as a signed string, such as `"+5"`, as the number 5. For each mismatch, the tool SHALL print a warning with the label, the draft value, and the digest value. The tool SHALL NOT compare the name. It SHALL skip labels it does not recognize and digest facts that are `null`. Mismatches SHALL NOT block the preview or change its exit code.
 
 #### Scenario: Urven's authored sheet matches its digest
 
@@ -239,32 +250,64 @@ A combat value written as a signed string, such as `"+5"`, SHALL equal the numbe
 - **WHEN** the digest reports `armorClass` as `null`
 - **THEN** the preview does not compare Armor Class
 
+### Requirement: The write tool saves only a valid, approved draft
+
+The write tool SHALL be the only way the ingest saves a character file. Given a draft file, it SHALL:
+- take the target logical id from the draft's file name, without the `.yaml` extension
+- run every draft validation check again, and stop with exit code 1 on any error
+- stop with exit code 3 when `static/characters/<id>.yaml` already exists
+- create `static/characters/<id>.yaml` with exactly the bytes of the draft file
+- refuse to replace a file that appears between its check and its write
+
+The write tool SHALL ignore the draft's directory when it builds the target path. Because the logical id must also match the provider's id grammar, the write tool SHALL only ever write a `.yaml` file directly inside `static/characters/`.
+
+#### Scenario: A valid draft is written byte for byte
+
+- **WHEN** the write tool receives a valid draft `.workspace/urven-2.yaml` and no `static/characters/urven-2.yaml` exists
+- **THEN** it creates `static/characters/urven-2.yaml` with the same bytes as the draft
+- **AND** it exits with code 0
+
+#### Scenario: A draft with errors is not written
+
+- **WHEN** the write tool receives a draft with no `name`
+- **THEN** it exits with code 1
+- **AND** it creates no file
+
+#### Scenario: A file name outside the id grammar is refused
+
+- **WHEN** the write tool receives a draft named `Urven.yaml`
+- **THEN** it reports that the id `Urven` does not match the id grammar
+- **AND** it exits with code 1 and creates no file
+
 ### Requirement: Guided skill flow
 
-The skill SHALL guide the Author from a D&D Beyond reference to a written character file in this order:
-1. Ask the Author for the reference, and run the digest.
-2. On a digest failure, relay the tool's message, and stop.
-3. When a digest fact is `null`, ask the Author for that value, and do not guess it.
-4. Draft the character in the workspace directory. The draft covers the name, level, class, color, abilities, combat, and hit points.
+The skill SHALL guide the Author from a character reference to a written character file in this order:
+1. Ask the Author for the character reference.
+2. Run the digest tool, and save its output to a digest file in the workspace directory.
+3. On a digest failure, relay the tool's message, and stop.
+4. When a digest fact is `null`, ask the Author for that value, and do not guess it.
 5. Propose a logical id, a palette color, and whether to keep the name's emoji. The Author confirms or changes each one.
-6. Run the preview with the digest, and show the Author its output, including every warning.
-7. Write `static/characters/<id>.yaml` only after the preview shows no errors and the Author approves it.
+6. Draft the character in the workspace directory, in a file named `<id>.yaml`. The draft covers the name, level, class, color, abilities, combat, and hit points.
+7. Run the preview tool with the draft and the digest file. Show the Author its full output, including every warning.
+8. After the Author approves a preview with no errors, run the write tool on the same draft.
 
-The skill SHALL write the same file the Author approved. It SHALL run the preview again after any change to the draft. It SHALL NOT overwrite an existing character file.
+The skill SHALL run the preview tool again after any change to the draft, and ask for approval again. The skill SHALL save the character file only through the write tool.
+
+These scenarios describe agent behavior. A scripted manual walkthrough of the skill validates them, not an automated test.
 
 #### Scenario: The Author changes the color
 
 - **WHEN** the Author asks for `ocean` instead of the proposed color
-- **THEN** the skill updates the draft and runs the preview again
+- **THEN** the skill updates the draft and runs the preview tool again
 - **AND** it asks for approval of the new preview
 
 #### Scenario: No write without approval
 
 - **WHEN** the preview shows no errors but the Author has not approved it
-- **THEN** the skill writes nothing to `static/characters/`
+- **THEN** the skill does not run the write tool
 
 #### Scenario: A private character stops the flow
 
-- **WHEN** the digest exits with code 2
+- **WHEN** the digest tool exits with code 2
 - **THEN** the skill tells the Author to set the character to Public and retry
 - **AND** it drafts nothing

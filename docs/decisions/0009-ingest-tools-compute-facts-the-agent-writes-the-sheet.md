@@ -29,6 +29,7 @@ We split the ingest by the kind of work, and put a checked boundary between the 
 - **Tested tools compute the facts.** A digest tool fetches the character and reduces it to a small set of final values: ability scores, Armor Class, speed, initiative, maximum hit points, and levels. When the tool meets an input it does not understand, it reports the value as unknown. It never guesses.
 - **The agent writes the sheet.** It drafts the YAML using its own judgement, and takes its numbers from the digest. It decides what to include, what to rename, how to phrase things, and which colors to suggest. The Author confirms those choices.
 - **A preview tool checks the draft before anything is written.** It reads the draft with the app's own rules, and draws the sheet as the app will show it. It warns when a draft number disagrees with the digest. The warnings are advisory, because the Author may change a number on purpose.
+- **A write tool saves the approved draft.** It runs the same checks again, copies the draft exactly, and never overwrites an existing character. The agent never writes a character file itself.
 
 We considered two alternatives.
 
@@ -42,5 +43,5 @@ We considered two alternatives.
 - The agent is free to reword, reflavour, and select, and the preview catches numeric drift the Author did not intend.
 - Later features extend the same shape. New trackers and sections add facts to the digest and checks to the preview. Keeping a sheet up to date after a level-up reuses the same comparison between the sheet and the digest.
 - The digest follows an unofficial D&D Beyond data format. If that format changes, the digest fails loudly rather than producing wrong numbers. We accept that live runs can break until the mapping is updated.
-- The guarantee that the Author approves what gets written depends on the skill following its steps. Nothing stops an agent from writing a file without a preview. We accept that for an authoring tool used by one person, and can add a write step owned by the tools if it proves a problem.
-- The ingest writes the character file directly, because it is an authoring tool, like a text editor. It is not a sheet consumer, so it does not go through the character-data interface that screens use. If character storage moves to a hosted database, only the ingest's final write step must change. The digest, the draft, and the preview stay as they are.
+- The tools guarantee that every saved file passes the checks and is exactly the draft. They cannot prove that the Author approved it. That step depends on the skill following its instructions, which we accept for an authoring tool used by one person.
+- The ingest writes the character file directly, because it is an authoring tool, like a text editor. It is not a sheet consumer, so it does not go through the character-data interface that screens use. If character storage moves to a hosted database, only the write tool must change. The digest, the draft, and the preview stay as they are.
