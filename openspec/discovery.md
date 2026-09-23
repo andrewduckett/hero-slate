@@ -231,7 +231,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-19
   - **Change**: `sheet-restyle` (archived 2026-09-19)
 
-- [ ] 8. `palette-depth` — palette names get a wash and a readable mark; colour marks meaning, not just the character
+- [x] 8. `palette-depth` — palette names get a wash and a readable mark; colour marks meaning, not just the character
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "see who I am" + "track in play" (legibility and polish)
   - **MoSCoW**: Should
@@ -240,7 +240,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Scope**: in: four tokens per palette name (`accent`, `onAccent`, `tint`, `deep`) in both modes; move the readable-as-text rule from `accent` to `deep`; let light-mode `onAccent` vary per name; retune `sun` and `berry`; one warm structural base colour; a warmer raised surface; fixed colour roles for hit points, armour class, speed, and initiative; apply the tokens across every block; extend the contrast tests to each new pairing. / out: a light/dark toggle or a new default mode (story 9); page width and block layout (story 10); new character data fields; a per-palette ramp beyond four tokens.
   - **Relevant code**: `src/lib/theme/palette.ts`, `generate.ts`, generated `palette.css`, `palette.test.ts`, `emitted-css.test.ts`, `src/lib/character/*Block.svelte`, `src/lib/CharacterView.svelte`, `src/lib/richtext/RichText.svelte`.
   - **Added**: 2026-09-20
-  - **Change**: `palette-depth` (proposed)
+  - **Change**: `palette-depth` (implemented, archived 2026-09-20)
 
 - [x] 9. `theme-preference` — the sheet opens dark, and a control switches modes
   - **Persona served**: Sunny, Andrew-as-Player
