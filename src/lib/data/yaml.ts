@@ -13,7 +13,7 @@ export interface HttpResponse {
 export type FetchLike = (url: string) => Promise<HttpResponse>;
 
 /** Logical ids are lowercase, start alphanumeric, then alphanumeric or hyphen. */
-const ID_GRAMMAR = /^[a-z0-9][a-z0-9-]*$/;
+export const ID_GRAMMAR = /^[a-z0-9][a-z0-9-]*$/;
 
 /**
  * A `CharacterProvider` backed by a YAML asset fetched at runtime.
@@ -86,6 +86,37 @@ function isMapping(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+/**
+ * Validate the identity fields (`name`, `level`, `class`, `color`) a character
+ * body must satisfy. Returns a reason string on the first violation found, or
+ * `undefined` when every field is valid. Shared with the ingest tools so they
+ * apply the same rules the provider does, instead of copying them.
+ */
+export function checkIdentity(body: Record<string, unknown>): string | undefined {
+	// name: required, non-empty string.
+	if (typeof body.name !== 'string' || body.name.length === 0) {
+		return 'name is required and must be a non-empty string';
+	}
+
+	// level: optional; a finite number when present.
+	if (body.level !== undefined && (typeof body.level !== 'number' || !Number.isFinite(body.level))) {
+		return 'level must be a finite number';
+	}
+
+	// class: optional; a string when present.
+	if (body.class !== undefined && typeof body.class !== 'string') {
+		return 'class must be a string';
+	}
+
+	// color: optional; a string when present. The provider does not resolve it
+	// against the palette, so an unknown palette name is valid data here.
+	if (body.color !== undefined && typeof body.color !== 'string') {
+		return 'color must be a string';
+	}
+
+	return undefined;
+}
+
 /** Validate identity fields, reject a conflicting file id, and stamp the request id. */
 function toFoundOrInvalid(id: string, body: Record<string, unknown>): GetCharacterResult {
 	// The file must not claim a different id than the one requested.
@@ -93,25 +124,9 @@ function toFoundOrInvalid(id: string, body: Record<string, unknown>): GetCharact
 		return { status: 'invalid', reason: 'file id conflicts with the request id' };
 	}
 
-	// name: required, non-empty string.
-	if (typeof body.name !== 'string' || body.name.length === 0) {
-		return { status: 'invalid', reason: 'name is required and must be a non-empty string' };
-	}
-
-	// level: optional; a finite number when present.
-	if (body.level !== undefined && (typeof body.level !== 'number' || !Number.isFinite(body.level))) {
-		return { status: 'invalid', reason: 'level must be a finite number' };
-	}
-
-	// class: optional; a string when present.
-	if (body.class !== undefined && typeof body.class !== 'string') {
-		return { status: 'invalid', reason: 'class must be a string' };
-	}
-
-	// color: optional; a string when present. The provider does not resolve it
-	// against the palette, so an unknown palette name is valid data here.
-	if (body.color !== undefined && typeof body.color !== 'string') {
-		return { status: 'invalid', reason: 'color must be a string' };
+	const reason = checkIdentity(body);
+	if (reason !== undefined) {
+		return { status: 'invalid', reason };
 	}
 
 	// Provisional fields pass through unchanged; the request id is authoritative.
