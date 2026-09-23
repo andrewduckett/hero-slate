@@ -104,18 +104,20 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
    partial       partial        gap         gap           gap            gap
 ```
 
-1. **Write YAML** — one file per character + manifest line — partial (story 16 ships a guided ingest for identity, abilities, combat, and hit points; pools, sections, spells, and update-in-place are stories 17–20, still gaps)
+1. **Write YAML** — one file per character + manifest line — partial (story 16 ships a guided ingest for identity, abilities, combat, and hit points; story 17 adds pools and spell slots; sections, spells, and update-in-place are stories 18–20, still gaps)
 2. **Commit to GitHub** — existing GitHub flow — partial (GitHub exists; repo not wired to a build)
 3. **Build & deploy** — Cloudflare Pages builds Vite app, SPA fallback — gap
 4. **Character in picker** — manifest drives home cards — gap
 5. **Deep-link / home-screen** — clean path + PWA install icon — gap
 6. **Iterate** — stale-while-revalidate so edits appear next online open — gap
 
-> **Write YAML — now `partial`.** Story 16 (`dndbeyond-ingest-skeleton`) shipped the
+> **Write YAML — still `partial`.** Story 16 (`dndbeyond-ingest-skeleton`) shipped the
 > walking skeleton of the authoring epic: paste a D&D Beyond URL, answer a few
 > questions, approve an ASCII preview, get a `static/characters/<id>.yaml` with
-> identity, abilities, combat, and hit points. The stage becomes `supported` once
-> stories 17–20 add pools/slots, Your Turn/skills, spells, and update-in-place.
+> identity, abilities, combat, and hit points. Story 17 (`feature-pools-and-slots`)
+> adds the same guided offer-and-confirm flow for `pools`: class-feature limited
+> uses, one pool per spell-slot level, and Pact Magic. The stage becomes `supported`
+> once stories 18–20 add Your Turn/skills, spells, and update-in-place.
 
 ## MoSCoW
 
@@ -479,3 +481,7 @@ name and confirmed (update mode matches the existing id).
   `partial`, since story 16 covers identity/abilities/combat/hit points but not
   pools/sections/spells/update-in-place (stories 17–20). Fixed a stray typo in story 16's
   scope line.
+- 2026-09-23 — Story 17 (`feature-pools-and-slots`) implemented; change linked. Updated
+  the Author journey note: "Write YAML" stays `partial`, now naming story 17's pools and
+  spell slots as shipped alongside story 16's fields, with Your Turn/skills, spells, and
+  update-in-place (stories 18–20) as the remaining gaps.
