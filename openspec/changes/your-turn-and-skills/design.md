@@ -59,7 +59,9 @@ The digest reads proficiency and expertise from the `modifiers` list, by skill s
 
 D&D Beyond lets a player override a skill on the website. The override lands in `characterValues`. We have no fixture that shows its type codes.
 
-The digest treats any `characterValues` entry that points at a skill as a sign of an override. Such an entry has the skill entity type as its `valueTypeId`. That skill's bonus becomes `null`, with a reason. Other skills keep their bonuses.
+The digest treats any `characterValues` entry that points at a skill as a sign of an override. Such an entry has the skill entity type, `1958004211`, as its `valueTypeId`, and the skill's id as its `valueId`. That skill's bonus becomes `null`, with a reason. Other skills keep their bonuses.
+
+`skills.ts` holds a table of D&D Beyond's 18 skill ids. The fixtures confirm 8 of them through the `entityId` on skill modifiers, such as 5 for Stealth and 12 for Insight. The rest follow D&D Beyond's published skill order. If an entry names an id outside the table, every skill becomes unknown. An unconfirmed id in the table is still a risk: if it is wrong, an overridden skill could keep its computed bonus. A later fixture with an override can confirm the table.
 
 - *Why:* a wrong skill bonus looks exactly like a right one on the sheet. "Unknown" asks the Author to type it.
 - *Alternative: apply known override codes.* Rejected until a fixture confirms the codes.

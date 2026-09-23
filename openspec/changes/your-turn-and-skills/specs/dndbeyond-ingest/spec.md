@@ -228,7 +228,10 @@ The digest SHALL report `skills`: one entry for each of the 18 standard skills. 
 - `ability` SHALL be the skill's standard ability, such as Dexterity for Stealth.
 - `proficiency` SHALL be `none`, `half`, `proficient`, or `expertise`. It SHALL be the highest level that the character's modifiers grant for that skill. A half-proficiency modifier on all ability checks SHALL give `half` to every skill that would otherwise have `none`.
 - `bonus` SHALL be the sum of the ability modifier, the proficiency share, and every flat bonus modifier on that skill or on all ability checks. The proficiency share SHALL be 0 for `none`, half the proficiency bonus rounded down for `half`, the proficiency bonus for `proficient`, and twice the proficiency bonus for `expertise`.
-- When the character has a manual value set on D&D Beyond for a skill, that skill's `bonus` SHALL be `null`, and `bonusReason` SHALL say that D&D Beyond holds a manual value the digest does not read. Every other skill SHALL keep its computed `bonus`.
+- A skill has a *manual value* when a `characterValues` entry's `valueTypeId` is the skill entity type, `1958004211`, and its `valueId` is that skill's D&D Beyond id. The same ids appear as `entityId` on skill modifiers, such as 5 for Stealth.
+- For a skill with a manual value, `bonus` SHALL be `null`. Its `bonusReason` SHALL say that D&D Beyond holds a manual value the digest does not read.
+- When such an entry's `valueId` is not a skill id the digest knows, every skill's `bonus` SHALL be `null`, with that reason. The digest cannot tell which skill the value changes.
+- Otherwise, every other skill SHALL keep its computed `bonus`.
 - `bonusReason` SHALL be `null` when `bonus` is known.
 
 The `characterValues` field SHALL be optional, under the rule the digest already applies to optional fields.
@@ -261,6 +264,11 @@ The `characterValues` field SHALL be optional, under the rule the digest already
 - **WHEN** a character has a `bonus` modifier of 1 on Perception
 - **THEN** Perception's bonus is 1 higher than its modifier and proficiency share
 
+#### Scenario: A manual value on an unknown skill id
+
+- **WHEN** a `characterValues` entry has the skill entity type and a `valueId` the digest does not know
+- **THEN** every skill's `bonus` is `null` with a reason
+
 #### Scenario: A manual value gives an unknown bonus
 
 - **WHEN** D&D Beyond holds a manual value for Stealth
@@ -270,7 +278,7 @@ The `characterValues` field SHALL be optional, under the rule the digest already
 
 ### Requirement: Action facts
 
-The digest SHALL report `actions`: one entry for each action in the `class`, `race`, `background`, and `feat` groups of `actions`, and one entry for each distinct equipped weapon name in the inventory. It SHALL NOT read the `item` group of `actions`.
+The digest SHALL report `actions`. It SHALL list one entry for each action in the `class`, `race`, `background`, and `feat` groups of `actions`. It SHALL also list one entry for each distinct equipped weapon name in the inventory. It SHALL NOT read the `item` group of `actions`.
 
 Each entry SHALL carry `name`, `source`, `activation`, `toHit`, `toHitReason`, `damage`, `damageReason`, `saveDc`, `saveDcReason`, and `saveAbility`.
 
@@ -372,14 +380,19 @@ For each equipped weapon, the digest SHALL pick an ability:
 
 It SHALL compute:
 - `toHit`: the picked ability's modifier, plus the proficiency bonus when the character is proficient with the weapon, plus the weapon's magic bonus
+
+The weapon's *magic bonus* is the sum of the `bonus` entries with sub-type `magic` in the weapon definition's `grantedModifiers`. It is 0 when there are none.
 - `damage`: the weapon's damage dice, followed by the picked ability's modifier with its sign, such as `1d4+3`. A modifier of 0 SHALL give the dice alone.
 
-The character SHALL count as proficient when its modifiers grant the weapon's category (simple or martial) or the weapon itself.
+The character SHALL count as proficient when a `proficiency` modifier grants the weapon's category or the weapon itself:
+- `categoryId` 1 is a simple weapon, granted by the sub-type `simple-weapons`.
+- `categoryId` 2 is a martial weapon, granted by the sub-type `martial-weapons`.
+- The weapon itself is granted by its name as a lowercase, hyphenated sub-type, such as `hand-crossbow`.
 
 The digest SHALL report both `toHit` and `damage` as unknown, each with a reason, when any of these is true:
-- The character has any Monk weapon modifier.
-- The weapon is magic, and the digest finds no readable magic bonus on it.
-- The character has a flat bonus modifier on weapon attack or damage rolls.
+- The character has any modifier of type `monk-weapon`.
+- The weapon definition is marked `magic`, and its magic bonus is 0.
+- The character has a `bonus` modifier whose sub-type is `weapon-attacks`, `melee-weapon-attacks`, `ranged-weapon-attacks`, `weapon-damage`, `melee-weapon-damage`, or `ranged-weapon-damage`.
 
 A weapon's `saveDc` and `saveAbility` SHALL be not applicable.
 
