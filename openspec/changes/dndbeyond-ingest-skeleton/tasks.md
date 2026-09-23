@@ -11,9 +11,9 @@
 
 ## 3. Fetch and exit codes (test first)
 
-- [ ] 3.1 Add `src/lib/ingest/ddb/exitCodes.ts` with the spec's exit-code table: 0, 1, 2, 3, 4, and 5. Verify that the module type-checks.
-- [ ] 3.2 Write failing tests for `src/lib/ingest/ddb/fetch.ts`, using an injectable fetch. Cover: 200 with JSON returns the body; 403 maps to exit 2 with a "set it to Public and retry" message; 404 maps to exit 4; a rejected fetch maps to exit 5; 200 with a non-JSON body maps to exit 5. Verify that the tests fail.
-- [ ] 3.3 Implement `fetch.ts` to pass 3.2. It requests `https://character-service.dndbeyond.com/character/v5/character/<id>`. Verify that the tests pass.
+- [x] 3.1 Add `src/lib/ingest/ddb/exitCodes.ts` with the spec's exit-code table: 0, 1, 2, 3, 4, and 5. Verify that the module type-checks.
+- [x] 3.2 Write failing tests for `src/lib/ingest/ddb/fetch.ts`, using an injectable fetch. Cover: 200 with JSON returns the body; 403 maps to exit 2 with a "set it to Public and retry" message; 404 maps to exit 4; a rejected fetch maps to exit 5; 200 with a non-JSON body maps to exit 5. Verify that the tests fail.
+- [x] 3.3 Implement `fetch.ts` to pass 3.2. It requests `https://character-service.dndbeyond.com/character/v5/character/<id>`. Verify that the tests pass.
 
 ## 4. Digest (test first)
 
