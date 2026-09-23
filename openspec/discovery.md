@@ -393,7 +393,7 @@ name and confirmed (update mode matches the existing id).
   - **Scope**: in: offer a "Your Turn" section from attacks/key actions with `[[d20+8]]`/`[[1d8+5]]`/`[[DC 13]]` pills; offer a "Strengths" section from proficient skills with `[[+6]]` bonus pills and an emoji per skill; suggest + confirm section colours; author edits prose before write. / out: spell-list sections (story 19); pools/slots (story 17); interactive rolling.
   - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; emits `sections[]{title,color,rows[]{title,body}}` per `src/lib/data/yaml.ts`; `[[…]]` markup per `src/lib/richtext/*`; DDB `actions`/`modifiers`/skill-proficiency fields.
   - **Added**: 2026-09-23
-  - **Change**: _not yet proposed_
+  - **Change**: your-turn-and-skills
 
 - [ ] 19. `spell-list-sections` — interview offers the character's spells as freeform sections
   - **Persona served**: Andrew (Author)
