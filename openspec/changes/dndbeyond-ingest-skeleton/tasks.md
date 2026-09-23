@@ -46,7 +46,7 @@
 
 ## 9. Command-line entry
 
-- [ ] 9.1 Write failing tests for the pure part of `src/lib/ingest/ddb/cli.ts`, with injected file-system and fetch dependencies. Cover these cases:
+- [x] 9.1 Write failing tests for the pure part of `src/lib/ingest/ddb/cli.ts`, with injected file-system and fetch dependencies. Cover these cases:
   - `digest` prints JSON on success, and prints nothing on stdout on failure.
   - `preview` exits 1 on errors, exits 3 when the target exists, and draws only when neither applies.
   - `preview --digest` adds cross-check warnings.
@@ -54,7 +54,7 @@
   - `write` takes the id from the draft's base name, ignores the draft's directory, refuses `Urven.yaml`, and creates `static/characters/<id>.yaml` byte for byte with the `wx` flag.
 
   Verify that the tests fail.
-- [ ] 9.2 Implement `cli.ts` to pass 9.1, with a thin `main` that wires real `fs`, `fetch`, `process.argv`, and `process.exit`. Verify that the tests pass.
+- [x] 9.2 Implement `cli.ts` to pass 9.1, with a thin `main` that wires real `fs`, `fetch`, `process.argv`, and `process.exit`. Verify that the tests pass.
 - [ ] 9.3 Acceptance check: copy `static/characters/urven.yaml` to `.workspace/urven-check.yaml`. Run `digest` on the saved Urven fixture, then run `preview .workspace/urven-check.yaml --digest <file>`. Verify that it reports no errors and no cross-check warnings.
 - [ ] 9.4 Live check: run `npx --silent vite-node src/lib/ingest/ddb/cli.ts digest https://www.dndbeyond.com/characters/154922980`. Verify that it exits 0 and prints the same facts as 5.3.
 
