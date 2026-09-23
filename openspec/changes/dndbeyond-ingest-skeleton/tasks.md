@@ -6,8 +6,8 @@
 
 ## 2. Character reference (test first)
 
-- [ ] 2.1 Write failing tests for `src/lib/ingest/ddb/reference.ts`. Cover: a character URL, the URL with a trailing slash, the URL with a trailing path segment, the URL with a query string, a bare id, an unrelated host, a non-numeric id, and empty input. The result is the digits-only id or "unreadable". Verify that the tests fail.
-- [ ] 2.2 Implement `reference.ts` to pass 2.1. Verify that `npm test` passes for this file.
+- [x] 2.1 Write failing tests for `src/lib/ingest/ddb/reference.ts`. Cover: a character URL, the URL with a trailing slash, the URL with a trailing path segment, the URL with a query string, a bare id, an unrelated host, a non-numeric id, and empty input. The result is the digits-only id or "unreadable". Verify that the tests fail.
+- [x] 2.2 Implement `reference.ts` to pass 2.1. Verify that `npm test` passes for this file.
 
 ## 3. Fetch and exit codes (test first)
 
