@@ -25,7 +25,7 @@ Writing a character's YAML by hand is the Author's heaviest step, and every leve
   - draws an ASCII preview of the draft itself, so what the Author approves is what gets written
   - warns, without blocking, when a draft number disagrees with the digest (level, ability scores, Armor Class, speed, initiative, maximum hit points); it matches entries by label and its common aliases, and skips a label it does not recognize
 - After the Author approves the preview, the agent copies the draft to `static/characters/<id>.yaml`.
-- `ID_GRAMMAR` is exported from `src/lib/data/yaml.ts`, so the ingest code uses the same id rule as the provider and does not copy it.
+- `src/lib/data/yaml.ts` exports `ID_GRAMMAR` and its identity check, so the ingest code uses the provider's rules and does not copy them.
 - Out of scope: resource pools and spell slots (story 17), Your Turn and skill sections (story 18), spell sections (story 19), updating an existing sheet (story 20), and access to private characters.
 
 ## Capabilities
@@ -41,10 +41,11 @@ Writing a character's YAML by hand is the Author's heaviest step, and every leve
 ## Impact
 
 - **New code:**
-  - `src/lib/ingest/ddb/`: pure, tested modules for the digest, draft validation, the cross-check, the ASCII preview, and id slugging
-  - `scripts/ddb-to-slate.ts`: a thin Node runner with `digest` and `preview` commands, following the pattern of `scripts/generate-palette-css.ts`
+  - `src/lib/ingest/ddb/`: pure, tested modules for the reference parser, the fetch, the digest, draft validation, the cross-check, and the ASCII preview
+  - `src/lib/ingest/ddb/cli.ts`: a thin command-line entry with `digest` and `preview` commands, run with `vite-node` so it can load the app's resolvers (see `design.md`, D2 and D3)
   - `.claude/skills/dndbeyond-to-slate/SKILL.md`: the skill itself
-- **Changed code:** `src/lib/data/yaml.ts` exports `ID_GRAMMAR`. Its behavior is unchanged.
+- **Changed code:** `src/lib/data/yaml.ts` exports `ID_GRAMMAR` and its identity check. Its behavior is unchanged.
+- **Dependencies:** `vite-node` becomes an explicit dev dependency. It is already installed as part of Vitest.
 - **Tests:** a fixture of Urven's full D&D Beyond JSON (about 325 KB, a public character) under `src/lib/ingest/ddb/fixtures/`. The acceptance test: `preview` of `static/characters/urven.yaml` against that fixture gives no warnings for the story-16 fields.
 - **Build:** no route imports `src/lib/ingest/`, so none of it enters the static bundle. The deployed app is unchanged.
 - **External dependency:** the unofficial D&D Beyond character service (`character-service.dndbeyond.com/character/v5/character/{id}`). If D&D Beyond changes its shape, the fixture tests still pass, but live digests may start failing with the unexpected-shape error.
