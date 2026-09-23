@@ -36,8 +36,8 @@
 
 ## 7. Cross-check (test first)
 
-- [ ] 7.1 Write failing tests for `src/lib/ingest/ddb/crosscheck.ts`. Cover: a level mismatch; an ability mismatch matched by full name and by abbreviation (`Str`, `STR`); Armor Class matched as `AC`; initiative written as `"+5"`, which equals 5; a mismatch in maximum hit points; a renamed label that is skipped; a `null` digest fact that is skipped; and a name difference that is never compared. Verify that the tests fail.
-- [ ] 7.2 Implement `crosscheck.ts` to pass 7.1, with the alias table from design D6. Verify that the tests pass.
+- [x] 7.1 Write failing tests for `src/lib/ingest/ddb/crosscheck.ts`. Cover: a level mismatch; an ability mismatch matched by full name and by abbreviation (`Str`, `STR`); Armor Class matched as `AC`; initiative written as `"+5"`, which equals 5; a mismatch in maximum hit points; a renamed label that is skipped; a `null` digest fact that is skipped; and a name difference that is never compared. Verify that the tests fail.
+- [x] 7.2 Implement `crosscheck.ts` to pass 7.1, with the alias table from design D6. Verify that the tests pass.
 
 ## 8. Preview (test first)
 
