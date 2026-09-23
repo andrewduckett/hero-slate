@@ -242,7 +242,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Added**: 2026-09-20
   - **Change**: `palette-depth` (proposed)
 
-- [ ] 9. `theme-preference` — the sheet opens dark, and a control switches modes
+- [x] 9. `theme-preference` — the sheet opens dark, and a control switches modes
   - **Persona served**: Sunny, Andrew-as-Player
   - **Journey segment**: Player "open the sheet" + "see who I am" (control over legibility)
   - **MoSCoW**: Should
@@ -251,7 +251,7 @@ Repo is greenfield; "Relevant code" lists intended paths to create (Vite + Svelt
   - **Scope**: in: dark as the default when the device states no preference; a toggle control; the chosen mode persisted per device in one global stored value under its own key — not the character-state store, since the mode belongs to no character (see ADR 0008); a `data-theme` selector path alongside the media query; no flash of the wrong mode on load, given a prerendered shell with `ssr = false`; contrast tests cover both selector paths; amend the no-toggle wording in `AGENTS.md` and in stories 2 and 7. / out: a per-character mode; a system/light/dark tri-state if a simple toggle serves; new palette values.
   - **Relevant code**: `src/lib/theme/generate.ts`, generated `palette.css`, `src/routes/+layout.svelte`, `src/app.html`, `src/lib/state/*`, `src/lib/theme/emitted-css.test.ts`, `AGENTS.md`.
   - **Added**: 2026-09-20
-  - **Change**: _not yet proposed_
+  - **Change**: `theme-preference` (implemented, archived 2026-09-22)
 
 - [ ] 10. `landscape-layout` — the sheet uses a landscape tablet's width instead of one narrow column
   - **Persona served**: Sunny, Andrew-as-Player
