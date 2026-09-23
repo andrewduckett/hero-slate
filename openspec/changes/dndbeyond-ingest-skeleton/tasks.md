@@ -31,8 +31,8 @@
 
 ## 6. Draft validation (test first)
 
-- [ ] 6.1 Write failing tests for `src/lib/ingest/ddb/validate.ts`. Errors: unparseable YAML; a non-mapping top level; a missing or empty `name`; a non-numeric `level`; a non-string `class` or `color`; an id outside `ID_GRAMMAR`; and a file `id` that differs from the target id. Warnings: a character `color` outside `PALETTE_NAMES`; `abilities` or `combat` entries that `validEntries` would drop; and a `hitPoints.max` that is present but not a positive integer. Verify that the tests fail.
-- [ ] 6.2 Implement `validate.ts` to pass 6.1, reusing the exported identity check, `ID_GRAMMAR`, `PALETTE_NAMES`, and `validEntries`. Verify that the tests pass.
+- [x] 6.1 Write failing tests for `src/lib/ingest/ddb/validate.ts`. Errors: unparseable YAML; a non-mapping top level; a missing or empty `name`; a non-numeric `level`; a non-string `class` or `color`; an id outside `ID_GRAMMAR`; and a file `id` that differs from the target id. Warnings: a character `color` outside `PALETTE_NAMES`; `abilities` or `combat` entries that `validEntries` would drop; and a `hitPoints.max` that is present but not a positive integer. Verify that the tests fail.
+- [x] 6.2 Implement `validate.ts` to pass 6.1, reusing the exported identity check, `ID_GRAMMAR`, `PALETTE_NAMES`, and `validEntries`. Verify that the tests pass.
 
 ## 7. Cross-check (test first)
 
