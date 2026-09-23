@@ -45,4 +45,13 @@ CHANGES_APPLIED: n/a
 - 🟡 **`proficiencyBonus` scope creep**: accepted by reviewer - removal aligns the spec perfectly with story 16's scoped bounds.
 - 🟡 **Plain language (three passives)**: accepted by reviewer - passive voice resolved in all three cited instances.
 
-_Round-3 author response pending._
+Author responses to round 3. Each response is fixed or declined as marked.
+
+- 🔴 **Plain language**: fixed, all nine cited sentences.
+  - `proposal.md`: split the 38-word bullet into two bullets.
+  - `design.md`: "we cannot test the agent's arithmetic", "Vitest already installs `vite-node`", "The build publishes `static/`", and "The cross-check silently skips…".
+  - `spec.md`: "the ingest does not support updating an existing sheet yet" and "a draft that the write tool would refuse".
+  - ADR 0009: "before the write tool saves anything" and "we cannot test the agent's arithmetic".
+- 🔴 **Ability-bonus mapping via `subType`**: fixed. The new design decision D8 maps the six `<ability>-score` subtypes to abilities, because `statId` is `null`. It applies `bonus` as an addition and `set` as a floor, and maps per-level hit points through `hit-points-per-level`. D8 is listed in `adr.md`.
+- 🟡 **Elegant variation**: fixed. The proposal now says "digest tool", "preview tool", and "write tool" throughout, matching the spec. The CLI entry bullet names the commands that run each tool.
+- 📌 **Digits-only id**: accepted. The spec now says the extracted id consists only of the digits 0 to 9.

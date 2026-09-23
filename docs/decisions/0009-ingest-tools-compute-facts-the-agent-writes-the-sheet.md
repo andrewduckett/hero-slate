@@ -28,14 +28,14 @@ We split the ingest by the kind of work, and put a checked boundary between the 
 
 - **Tested tools compute the facts.** A digest tool fetches the character and reduces it to a small set of final values: ability scores, Armor Class, speed, initiative, maximum hit points, and levels. When the tool meets an input it does not understand, it reports the value as unknown. It never guesses.
 - **The agent writes the sheet.** It drafts the YAML using its own judgement, and takes its numbers from the digest. It decides what to include, what to rename, how to phrase things, and which colors to suggest. The Author confirms those choices.
-- **A preview tool checks the draft before anything is written.** It reads the draft with the app's own rules, and draws the sheet as the app will show it. It warns when a draft number disagrees with the digest. The warnings are advisory, because the Author may change a number on purpose.
+- **A preview tool checks the draft before the write tool saves anything.** It reads the draft with the app's own rules, and draws the sheet as the app will show it. It warns when a draft number disagrees with the digest. The warnings are advisory, because the Author may change a number on purpose.
 - **A write tool saves the approved draft.** It runs the same checks again, copies the draft exactly, and never overwrites an existing character. The agent never writes a character file itself.
 
 We considered two alternatives.
 
 **The tool writes the whole sheet.** A deterministic mapper would turn D&D Beyond data straight into YAML, and the agent would only confirm choices. We rejected it because it produces a copy, and a copy is what the product exists to avoid. Every editorial choice would need a new flag or rule.
 
-**The agent reads the raw data and does everything.** This is the simplest to build: one prompt, no code. We rejected it because the arithmetic cannot be tested, errors would differ from run to run, and the raw JSON crowds out the agent's working context.
+**The agent reads the raw data and does everything.** This is the simplest to build: one prompt, no code. We rejected it because we cannot test the agent's arithmetic, errors would differ from run to run, and the raw JSON crowds out the agent's working context.
 
 ## Consequences
 

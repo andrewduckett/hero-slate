@@ -31,7 +31,7 @@ Constraints that shape the approach:
 The digest tool computes numbers. The agent chooses what to include, renames things, writes prose, and picks the colors. The preview tool checks the agent's draft against the app's rules and against the digest.
 
 - *Alternative: the tool writes the whole YAML.* Rejected. The value of a Hero Slate sheet is editorial: reflavoring, renaming, choosing a few actions, and kid-friendly wording. Urven's sheet shows this clearly (see the ADR).
-- *Alternative: the agent reads the raw JSON and does the maths.* Rejected. The sums are easy to get wrong and cannot be tested. 325 KB of JSON also crowds the agent's context.
+- *Alternative: the agent reads the raw JSON and does the maths.* Rejected. The sums are easy to get wrong, and we cannot test the agent's arithmetic. 325 KB of JSON also crowds the agent's context.
 
 ### D2. Code layout: pure modules plus one command-line entry, all under `src/lib/ingest/ddb/`
 
@@ -58,7 +58,7 @@ No route imports `src/lib/ingest/`, so Vite leaves it out of the static build.
 
 ### D3. Run the command-line entry with `vite-node`, as an explicit dev dependency
 
-The skill runs `npx --silent vite-node src/lib/ingest/ddb/cli.ts <command> ...`. `vite-node` reads `vite.config.ts`, so the `$lib` alias and extensionless imports resolve as they do in tests. `vite-node` is already installed as a dependency of Vitest. This change adds it to `devDependencies` at the locked version, so the tool does not rely on a transitive package.
+The skill runs `npx --silent vite-node src/lib/ingest/ddb/cli.ts <command> ...`. `vite-node` reads `vite.config.ts`, so the `$lib` alias and extensionless imports resolve as they do in tests. Vitest already installs `vite-node` as a dependency. This change adds it to `devDependencies` at the locked version, so the tool does not rely on a transitive package.
 
 - *Alternative: rewrite the resolvers' imports with `.ts` extensions.* Rejected. It touches app code for a tooling need, and `$lib` would still fail under plain Node.
 - *Alternative: add `tsx`.* Rejected. `tsx` does not read the Vite alias config, and it adds a new package.
@@ -75,7 +75,7 @@ Both `preview` and `write` take the target logical id from the draft's base name
 
 `write` calls the same validation as `preview`, then creates the target file with Node's exclusive-create flag (`wx`). That flag makes the no-overwrite rule hold even if a file appears after the check. `write` builds the target path only from the fixed `static/characters/` directory and the validated id, so a draft path cannot steer where the file lands.
 
-- *Alternative: the agent copies the approved draft.* Rejected. `static/` is published with the site. A tested write step makes the approve-then-write rule a property of the tools rather than a promise in the skill's instructions.
+- *Alternative: the agent copies the approved draft.* Rejected. The build publishes `static/` with the site. A tested write step makes the approve-then-write rule a property of the tools rather than a promise in the skill's instructions.
 
 ### D5. The preview reads the draft through the app's resolvers
 
@@ -87,11 +87,15 @@ Both `preview` and `write` take the target logical id from the draft's base name
 
 ### D6. The cross-check matches by label aliases and skips what it cannot place
 
-`crosscheck.ts` holds a small alias table. For example, `strength`, `str` → Strength, and `armor class`, `ac` → Armor Class. Matching ignores case and surrounding whitespace. The cross-check reads a signed string such as `"+5"` as a number before it compares. An unmatched label is skipped silently, because renaming is the Author's right. A `null` digest fact is skipped.
+`crosscheck.ts` holds a small alias table. For example, `strength`, `str` → Strength, and `armor class`, `ac` → Armor Class. Matching ignores case and surrounding whitespace. The cross-check reads a signed string such as `"+5"` as a number before it compares. The cross-check silently skips an unmatched label, because renaming is the Author's right. It also skips a `null` digest fact.
 
 ### D7. Armor Class uses an allowlist of understood sources
 
 `armorClass.ts` first collects every Armor Class–affecting input: equipped armor and shields, `armor-class` modifiers, `unarmored-armor-class` sets, and the override in `characterValues`. It computes a value only when every input is on the list the spec names. Otherwise it returns `null` with the first unrecognized source as the reason. An allowlist fails safe: a new kind of effect produces "unknown", not a wrong number.
+
+### D8. Ability bonuses are matched to abilities by their `subType`
+
+D&D Beyond ability bonuses carry `statId: null`. Only their `subType` names the ability, for example `dexterity-score`. `digest.ts` maps the six `<ability>-score` subtypes to the six abilities. It applies `bonus` modifiers as flat additions and `set` modifiers as floors (see the spec). Urven's feat bonuses to Dexterity reach the digest only through this mapping. The per-level hit point bonus uses the same approach, through the `hit-points-per-level` subtype.
 
 ## Risks / Trade-offs
 

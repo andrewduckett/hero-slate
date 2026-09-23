@@ -11,7 +11,7 @@ A *character reference* is the text the Author gives to name a D&D Beyond charac
 - the same URL with a trailing slash, a trailing path segment, or a query string
 - a bare numeric character id such as `154922980`
 
-The digest tool SHALL extract the numeric character id from the character reference. It SHALL reject any other input as an unreadable character reference, without making a network request.
+The digest tool SHALL extract the numeric character id from the character reference. The id SHALL consist only of the digits 0 to 9. It SHALL reject any other input as an unreadable character reference, without making a network request.
 
 #### Scenario: A character URL is accepted
 
@@ -203,7 +203,7 @@ The preview tool SHALL list every error and warning. It SHALL exit with code 1 w
 
 ### Requirement: No overwrite of an existing character
 
-The preview tool and the write tool SHALL each stop with exit code 3 when `static/characters/<id>.yaml` already exists for the target logical id. The message SHALL say that updating an existing sheet is not supported yet. The preview tool SHALL run this check before it draws anything, so the Author never approves a draft that cannot be written.
+The preview tool and the write tool SHALL each stop with exit code 3 when `static/characters/<id>.yaml` already exists for the target logical id. The message SHALL say that the ingest does not support updating an existing sheet yet. The preview tool SHALL run this check before it draws anything, so the Author never approves a draft that the write tool would refuse.
 
 #### Scenario: The target id is taken
 

@@ -16,6 +16,7 @@ I re-read `design.md` and judged each decision against the ADR bar. One decision
 - D5: the preview reusing the app's resolvers
 - D6: the label alias table
 - D7: the Armor Class allowlist
+- D8: matching ability bonuses to abilities by `subType`
 
 ADR 0002 (the character-data provider) and ADR 0007 (colour roles) bear on this change. Neither is contradicted:
 - The ingest is an authoring tool, not a consumer of character data. The new ADR records why it writes the character file directly.
@@ -34,4 +35,4 @@ ADR 0002 (the character-data provider) and ADR 0007 (colour roles) bear on this 
 
 ## New Durable ADRs Created
 
-- `docs/decisions/0009-ingest-tools-compute-facts-the-agent-writes-the-sheet.md` covers the split: tested tools compute the facts, the agent writes the sheet, and a preview checks the draft against the app's rules and the digest before anything is written. It relates to ADR 0002 and does not supersede it.
+- `docs/decisions/0009-ingest-tools-compute-facts-the-agent-writes-the-sheet.md` covers the split: tested tools compute the facts, the agent writes the sheet, a preview checks the draft against the app's rules and the digest, and a write tool saves only a checked draft. It relates to ADR 0002 and does not supersede it.
