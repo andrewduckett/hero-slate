@@ -145,6 +145,98 @@ describe('computeDigest — required and optional fields', () => {
 	});
 });
 
+describe('computeDigest — limited-use source fields', () => {
+	it('reports no limited uses when actions is missing', () => {
+		const result = computeDigest(character());
+		expect(result.status).toBe('ok');
+		if (result.status === 'ok') expect(result.digest.limitedUses).toEqual([]);
+	});
+
+	it('reports actions.class as an object instead of a list as unreadable, naming it', () => {
+		const result = computeDigest(character({ actions: { class: {} } }));
+		expect(result.status).toBe('unreadable');
+		if (result.status === 'unreadable') expect(result.message).toContain('actions.class');
+	});
+
+	it('reads a null action group as none', () => {
+		const result = computeDigest(
+			character({ actions: { class: null, race: [], background: [], feat: [] } })
+		);
+		expect(result.status).toBe('ok');
+		if (result.status === 'ok') expect(result.digest.limitedUses).toEqual([]);
+	});
+
+	it('skips the item group of actions', () => {
+		const result = computeDigest(
+			character({
+				actions: {
+					class: [],
+					race: [],
+					background: [],
+					feat: [],
+					item: [{ name: 'Wand Charge', limitedUse: { maxUses: 3, resetType: 1 } }]
+				}
+			})
+		);
+		expect(result.status).toBe('ok');
+		if (result.status === 'ok') expect(result.digest.limitedUses).toEqual([]);
+	});
+
+	it('skips the item group of spells', () => {
+		const result = computeDigest(
+			character({
+				spells: {
+					class: [],
+					race: [],
+					background: [],
+					feat: [],
+					item: [{ definition: { name: 'Grease' }, limitedUse: { maxUses: 1, resetType: null } }]
+				}
+			})
+		);
+		expect(result.status).toBe('ok');
+		if (result.status === 'ok') expect(result.digest.limitedUses).toEqual([]);
+	});
+
+	it('reports the race group as source "species"', () => {
+		const result = computeDigest(
+			character({
+				actions: {
+					class: [],
+					race: [{ name: 'Fury of the Small', limitedUse: { maxUses: 2, resetType: 2 } }],
+					background: [],
+					feat: []
+				}
+			})
+		);
+		expect(result.status).toBe('ok');
+		if (result.status === 'ok') {
+			expect(result.digest.limitedUses).toEqual([
+				{ name: 'Fury of the Small', source: 'species', max: 2, maxReason: null, reset: 'long rest' }
+			]);
+		}
+	});
+
+	it('reads a spell entry name from its definition', () => {
+		const result = computeDigest(
+			character({
+				spells: {
+					class: [{ definition: { name: 'Find Familiar' }, limitedUse: { maxUses: 1, resetType: 2 } }],
+					race: [],
+					background: [],
+					feat: []
+				}
+			})
+		);
+		expect(result.status).toBe('ok');
+		if (result.status === 'ok') {
+			expect(result.digest.limitedUses).toEqual([
+				{ name: 'Find Familiar', source: 'class', max: 1, maxReason: null, reset: 'long rest' }
+			]);
+		}
+	});
+});
+
 describe('computeDigest — identity facts', () => {
 	it('returns the name verbatim, emoji included', () => {
 		const result = computeDigest(character({ name: '🐻‍❄️ Urven, the Silent Maw' }));
