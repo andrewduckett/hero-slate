@@ -81,5 +81,5 @@
 ## 11. Documentation and full verification
 
 - [x] 11.1 Update `openspec/discovery.md`. Set story 16's `Change` field to `dndbeyond-ingest-skeleton`. Resolve the two ingest-epic open questions: the skill's location, and the D&D Beyond JSON shape, including the `subType` mapping. Verify that the open questions are marked resolved.
-- [ ] 11.2 Run `npm test` and confirm that the whole suite passes.
-- [ ] 11.3 Run `npm run build`. Confirm that the build succeeds, and that no file under `build/` contains ingest code (for example, `grep -r character-service build/` finds nothing).
+- [x] 11.2 Run `npm test` and confirm that the whole suite passes.
+- [x] 11.3 Run `npm run build`. Confirm that the build succeeds, and that no file under `build/` contains ingest code (for example, `grep -r character-service build/` finds nothing).
