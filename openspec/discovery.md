@@ -368,7 +368,7 @@ name and confirmed (update mode matches the existing id).
   - **Scope**: in: skill scaffold + `SKILL.md`; fetch + parse the DDB JSON from a URL/ID; map **Identity** (name, level = summed class levels, class, suggested `color`), **Stats** (six abilities; AC/speed; initiative from DEX), **Health** (`hitPoints.max`); render an ASCII preview of the sheet for approval; on OK, write `static/characters/<id>.yaml` (id slugged from name, confirmed); detect an existing config for that id and **stop without clobbering**, pointing at story 20. / out: any opt-in sections (pools, slots, Your Turn, skills, spells); real update-in-place; private-character auth beyond the "set it public" message.s
   - **Relevant code**: new `.claude/skills/dndbeyond-to-slate/`; reads `src/lib/data/yaml.ts` (schema/validation), `src/lib/theme/palette.ts` (`PALETTE_NAMES`); writes `static/characters/<id>.yaml`; example targets `static/characters/urven.yaml`, `sunny.yaml`.
   - **Added**: 2026-09-23
-  - **Change**: _not yet proposed_
+  - **Change**: dndbeyond-ingest-skeleton
 
 - [ ] 17. `feature-pools-and-slots` — interview offers class-feature pools and spell slots as trackers
   - **Persona served**: Andrew (Author)
@@ -423,14 +423,27 @@ name and confirmed (update mode matches the existing id).
   paths + SPA fallback; pick when scaffolding.
 - **Palette definition** (resolve in story 2): the concrete set of color names and their
   light/dark values.
-- **Ingest epic — skill location** (resolve in story 16): project-level
-  `.claude/skills/dndbeyond-to-slate/` (checked in, travels with the repo) is the default; a
-  user-level skill is the alternative if the skill should not ship in the product repo.
-- **Ingest epic — DDB JSON shape** (resolve in story 16): confirm the exact
-  `character-service` v5 response fields for level, AC, initiative, limited-use features,
-  and slots against a real character before committing the mapping. Reversible defaults
-  already set: suggest-and-confirm colours, one pool per spell-slot level, id slugged from
-  name, private → "set it public and retry".
+- **Ingest epic — skill location** (resolved in story 16, `dndbeyond-ingest-skeleton`):
+  project-level `.claude/skills/dndbeyond-to-slate/`, checked in and travelling with the
+  repo. Confirmed working: a freshly started session in this repo lists the skill among
+  its available skills.
+- **Ingest epic — DDB JSON shape** (resolved in story 16, `dndbeyond-ingest-skeleton`):
+  confirmed against Urven's recorded `character-service` v5 response
+  (`src/lib/ingest/ddb/fixtures/urven.json`, character 154922980, a public character) and a
+  live re-fetch of the same character. `stats`/`bonusStats`/`overrideStats` use ability ids
+  1–6 for Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma. Ability bonuses
+  carry `statId: null`; only a modifier's `subType` names the ability, as the six
+  `<ability>-score` values (for example `dexterity-score`). A `bonus` modifier of that
+  subType adds; a `set` modifier of that subType is a floor, applied only when higher than
+  the computed score. The same approach carries hit-points-per-level bonuses through the
+  `hit-points-per-level` subtype. Monk Unarmored Defense is a `set` modifier with subtype
+  `unarmored-armor-class` and `statId: 5` (Wisdom); barbarian Unarmored Defense uses the
+  same subtype with `statId: 3` (Constitution) — confirmed for the monk case against
+  Urven's real response, and documented from community D&D Beyond tooling for the
+  barbarian case and the Armor Class override in `characterValues` (`typeId: 34`), neither
+  of which appears in Urven's fixture. See `design.md`'s Decisions (D7, D8) and Risks in
+  the `dndbeyond-ingest-skeleton` change for the full mapping and this residual
+  uncertainty.
 
 ## Change Log
 
@@ -456,3 +469,7 @@ name and confirmed (update mode matches the existing id).
   character → set public and retry. No existing stories renumbered or superseded (the
   epic appends after story 15). Reconciled the checklist: stories 1–9 archived, 10–15
   still unproposed.
+- 2026-09-23 — Story 16 (`dndbeyond-ingest-skeleton`) implemented; change linked. Resolved
+  both ingest-epic open questions: the skill's location (project-level, checked in) and the
+  D&D Beyond JSON shape (ability-score `subType` mapping, Unarmored Defense, and the
+  residual uncertainty around the barbarian case and the Armor Class override).
