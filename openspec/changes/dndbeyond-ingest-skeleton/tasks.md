@@ -25,9 +25,9 @@
 
 ## 5. Armor Class (test first)
 
-- [ ] 5.1 Write failing tests for `src/lib/ingest/ddb/armorClass.ts` with handmade fragments. Cover each allowlisted source: no armor; armor with a Dexterity cap; a shield; monk Unarmored Defense; barbarian Unarmored Defense; both Unarmored Defense rules, where the higher wins; a flat item bonus; and the override. Also cover an unrecognized source, which returns `null` with a reason that names it. Verify that the tests fail.
-- [ ] 5.2 Implement `armorClass.ts` to pass 5.1, as the allowlist from design D7, and use it from `digest.ts`. Verify that the tests pass.
-- [ ] 5.3 Add an acceptance test that digests `fixtures/urven.json`. Verify: level 6; Strength 14, Dexterity 20, Constitution 16, Intelligence 10, Wisdom 14, Charisma 11; Armor Class 17; speed 45; initiative 5; maximum hit points 54.
+- [x] 5.1 Write failing tests for `src/lib/ingest/ddb/armorClass.ts` with handmade fragments. Cover each allowlisted source: no armor; armor with a Dexterity cap; a shield; monk Unarmored Defense; barbarian Unarmored Defense; both Unarmored Defense rules, where the higher wins; a flat item bonus; and the override. Also cover an unrecognized source, which returns `null` with a reason that names it. Verify that the tests fail.
+- [x] 5.2 Implement `armorClass.ts` to pass 5.1, as the allowlist from design D7, and use it from `digest.ts`. Verify that the tests pass.
+- [x] 5.3 Add an acceptance test that digests `fixtures/urven.json`. Verify: level 6; Strength 14, Dexterity 20, Constitution 16, Intelligence 10, Wisdom 14, Charisma 11; Armor Class 17; speed 45; initiative 5; maximum hit points 54.
 
 ## 6. Draft validation (test first)
 

@@ -10,6 +10,7 @@
  * caught once at the top of `computeDigest` — this keeps the field-reading
  * code a flat sequence of checks instead of nested early returns.
  */
+import { computeArmorClass } from './armorClass';
 
 export const ABILITY_ORDER = [
 	'strength',
@@ -222,9 +223,8 @@ export function computeDigest(body: unknown): DigestResult {
 		const overrideHitPoints = optionalField(data.overrideHitPoints, 'overrideHitPoints', (v) =>
 			requiredNumber(v, 'overrideHitPoints')
 		);
-		// characterValues is read here only to enforce its optional-field type rule; later
-		// stories may read its contents for other overrides.
-		optionalField(data.characterValues, 'characterValues', (v) => requiredArray(v, 'characterValues'));
+		const characterValues =
+			optionalField(data.characterValues, 'characterValues', (v) => requiredArray(v, 'characterValues')) ?? [];
 
 		const constitutionModifier = abilityModifier(abilities.constitution);
 		const perLevelHitPoints = sumBonus(modifiers, 'hit-points-per-level');
@@ -238,9 +238,9 @@ export function computeDigest(body: unknown): DigestResult {
 
 		const initiative = abilityModifier(abilities.dexterity) + sumBonus(modifiers, 'initiative');
 
-		// Armor Class is computed by armorClass.ts and wired in once that module exists.
-		const armorClass = null;
-		const armorClassReason = 'armor class is not yet computed';
+		const acResult = computeArmorClass(inventory, modifiers, characterValues, abilities);
+		const armorClass = acResult.value;
+		const armorClassReason = acResult.reason;
 
 		return {
 			status: 'ok',
