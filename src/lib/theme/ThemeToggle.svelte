@@ -33,3 +33,27 @@
 >
 	{mode === 'dark' ? '☀' : '🌙'}
 </button>
+
+<style>
+	button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.75rem;
+		min-height: 2.75rem;
+		padding: var(--space-2);
+		font-size: 1.25rem;
+		line-height: 1;
+		background: transparent;
+		border: 2px solid currentColor;
+		border-radius: var(--radius-s);
+		color: inherit;
+		cursor: pointer;
+		flex-shrink: 0;
+	}
+
+	button:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+</style>
