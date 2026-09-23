@@ -101,20 +101,21 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
   Write YAML ─► Commit to ─► Build & ─► Character ─► Deep-link / ─► Iterate
   (char+manifest)  GitHub     deploy     in picker    home-screen     (edits propagate)
       │             │           │           │             │              │
-     gap        partial        gap         gap           gap            gap
+   partial       partial        gap         gap           gap            gap
 ```
 
-1. **Write YAML** — one file per character + manifest line — gap
+1. **Write YAML** — one file per character + manifest line — partial (story 16 ships a guided ingest for identity, abilities, combat, and hit points; pools, sections, spells, and update-in-place are stories 17–20, still gaps)
 2. **Commit to GitHub** — existing GitHub flow — partial (GitHub exists; repo not wired to a build)
 3. **Build & deploy** — Cloudflare Pages builds Vite app, SPA fallback — gap
 4. **Character in picker** — manifest drives home cards — gap
 5. **Deep-link / home-screen** — clean path + PWA install icon — gap
 6. **Iterate** — stale-while-revalidate so edits appear next online open — gap
 
-> **Write YAML — still `gap`, now targeted.** The 2026-09-23 authoring epic (stories
-> 16–20) turns this stage from hand-editing into a guided ingest: paste a D&D Beyond
-> URL, answer an interview, approve an ASCII preview, get a `static/characters/<id>.yaml`.
-> The stage stays `gap` until story 16 ships, then becomes `supported`.
+> **Write YAML — now `partial`.** Story 16 (`dndbeyond-ingest-skeleton`) shipped the
+> walking skeleton of the authoring epic: paste a D&D Beyond URL, answer a few
+> questions, approve an ASCII preview, get a `static/characters/<id>.yaml` with
+> identity, abilities, combat, and hit points. The stage becomes `supported` once
+> stories 17–20 add pools/slots, Your Turn/skills, spells, and update-in-place.
 
 ## MoSCoW
 
@@ -359,16 +360,16 @@ character → tell the author to set it public and retry; colours are suggested 
 confirmed in the ASCII preview, never silently chosen; the logical id is slugged from the
 name and confirmed (update mode matches the existing id).
 
-- [ ] 16. `dndbeyond-ingest-skeleton` — paste a DDB URL, get a minimal valid sheet after an ASCII-preview OK
+- [x] 16. `dndbeyond-ingest-skeleton` — paste a DDB URL, get a minimal valid sheet after an ASCII-preview OK
   - **Persona served**: Andrew (Author)
   - **Journey segment**: Author "write YAML" (the whole ingest path, thinnest slice)
   - **MoSCoW**: Should
   - **Why this story / why now**: walking skeleton for the epic — the thinnest end-to-end path (URL → fetch JSON → map core → preview → write) that every richer story thickens. Establishes the skill scaffold, JSON fetch/parse, the field-mapping approach, the ASCII renderer, and the file-write step.
   - **Depends on**: nothing new (reads the schema shipped by stories 1–6)
-  - **Scope**: in: skill scaffold + `SKILL.md`; fetch + parse the DDB JSON from a URL/ID; map **Identity** (name, level = summed class levels, class, suggested `color`), **Stats** (six abilities; AC/speed; initiative from DEX), **Health** (`hitPoints.max`); render an ASCII preview of the sheet for approval; on OK, write `static/characters/<id>.yaml` (id slugged from name, confirmed); detect an existing config for that id and **stop without clobbering**, pointing at story 20. / out: any opt-in sections (pools, slots, Your Turn, skills, spells); real update-in-place; private-character auth beyond the "set it public" message.s
+  - **Scope**: in: skill scaffold + `SKILL.md`; fetch + parse the DDB JSON from a URL/ID; map **Identity** (name, level = summed class levels, class, suggested `color`), **Stats** (six abilities; AC/speed; initiative from DEX), **Health** (`hitPoints.max`); render an ASCII preview of the sheet for approval; on OK, write `static/characters/<id>.yaml` (id slugged from name, confirmed); detect an existing config for that id and **stop without clobbering**, pointing at story 20. / out: any opt-in sections (pools, slots, Your Turn, skills, spells); real update-in-place; private-character auth beyond the "set it public" message.
   - **Relevant code**: new `.claude/skills/dndbeyond-to-slate/`; reads `src/lib/data/yaml.ts` (schema/validation), `src/lib/theme/palette.ts` (`PALETTE_NAMES`); writes `static/characters/<id>.yaml`; example targets `static/characters/urven.yaml`, `sunny.yaml`.
   - **Added**: 2026-09-23
-  - **Change**: _not yet proposed_
+  - **Change**: dndbeyond-ingest-skeleton
 
 - [ ] 17. `feature-pools-and-slots` — interview offers class-feature pools and spell slots as trackers
   - **Persona served**: Andrew (Author)
@@ -423,14 +424,27 @@ name and confirmed (update mode matches the existing id).
   paths + SPA fallback; pick when scaffolding.
 - **Palette definition** (resolve in story 2): the concrete set of color names and their
   light/dark values.
-- **Ingest epic — skill location** (resolve in story 16): project-level
-  `.claude/skills/dndbeyond-to-slate/` (checked in, travels with the repo) is the default; a
-  user-level skill is the alternative if the skill should not ship in the product repo.
-- **Ingest epic — DDB JSON shape** (resolve in story 16): confirm the exact
-  `character-service` v5 response fields for level, AC, initiative, limited-use features,
-  and slots against a real character before committing the mapping. Reversible defaults
-  already set: suggest-and-confirm colours, one pool per spell-slot level, id slugged from
-  name, private → "set it public and retry".
+- **Ingest epic — skill location** (resolved in story 16, `dndbeyond-ingest-skeleton`):
+  project-level `.claude/skills/dndbeyond-to-slate/`, checked in and travelling with the
+  repo. Confirmed working: a freshly started session in this repo lists the skill among
+  its available skills.
+- **Ingest epic — DDB JSON shape** (resolved in story 16, `dndbeyond-ingest-skeleton`):
+  confirmed against Urven's recorded `character-service` v5 response
+  (`src/lib/ingest/ddb/fixtures/urven.json`, character 154922980, a public character) and a
+  live re-fetch of the same character. `stats`/`bonusStats`/`overrideStats` use ability ids
+  1–6 for Strength, Dexterity, Constitution, Intelligence, Wisdom, Charisma. Ability bonuses
+  carry `statId: null`; only a modifier's `subType` names the ability, as the six
+  `<ability>-score` values (for example `dexterity-score`). A `bonus` modifier of that
+  subType adds; a `set` modifier of that subType is a floor, applied only when higher than
+  the computed score. The same approach carries hit-points-per-level bonuses through the
+  `hit-points-per-level` subtype. Monk Unarmored Defense is a `set` modifier with subtype
+  `unarmored-armor-class` and `statId: 5` (Wisdom); barbarian Unarmored Defense uses the
+  same subtype with `statId: 3` (Constitution) — confirmed for the monk case against
+  Urven's real response, and documented from community D&D Beyond tooling for the
+  barbarian case and the Armor Class override in `characterValues` (`typeId: 34`), neither
+  of which appears in Urven's fixture. See `design.md`'s Decisions (D7, D8) and Risks in
+  the `dndbeyond-ingest-skeleton` change for the full mapping and this residual
+  uncertainty.
 
 ## Change Log
 
@@ -456,3 +470,12 @@ name and confirmed (update mode matches the existing id).
   character → set public and retry. No existing stories renumbered or superseded (the
   epic appends after story 15). Reconciled the checklist: stories 1–9 archived, 10–15
   still unproposed.
+- 2026-09-23 — Story 16 (`dndbeyond-ingest-skeleton`) implemented; change linked. Resolved
+  both ingest-epic open questions: the skill's location (project-level, checked in) and the
+  D&D Beyond JSON shape (ability-score `subType` mapping, Unarmored Defense, and the
+  residual uncertainty around the barbarian case and the Armor Class override).
+- 2026-09-23 — Follow-up: checked off story 16 on the checklist (missed when the change
+  archived) and updated the Author journey map — "Write YAML" moves from `gap` to
+  `partial`, since story 16 covers identity/abilities/combat/hit points but not
+  pools/sections/spells/update-in-place (stories 17–20). Fixed a stray typo in story 16's
+  scope line.
