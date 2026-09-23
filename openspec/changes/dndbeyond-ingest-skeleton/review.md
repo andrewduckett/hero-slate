@@ -55,3 +55,9 @@ Author responses to round 3. Each response is fixed or declined as marked.
 - 🔴 **Ability-bonus mapping via `subType`**: fixed. The new design decision D8 maps the six `<ability>-score` subtypes to abilities, because `statId` is `null`. It applies `bonus` as an addition and `set` as a floor, and maps per-level hit points through `hit-points-per-level`. D8 is listed in `adr.md`.
 - 🟡 **Elegant variation**: fixed. The proposal now says "digest tool", "preview tool", and "write tool" throughout, matching the spec. The CLI entry bullet names the commands that run each tool.
 - 📌 **Digits-only id**: accepted. The spec now says the extracted id consists only of the digits 0 to 9.
+
+## Human Sign-Off
+
+- **Signed off by**: the Author (repository owner), replying "signed off" in the planning session on 2026-09-23.
+- **Scope**: accepts the round-3 fixes listed above in place of a fourth review round, and approves generating `tasks.md`.
+- **Context**: the owner was consulted after three consecutive REVISE verdicts, as the review rules require. The verdict line above stays as the reviewer issued it. This section records the human override.
