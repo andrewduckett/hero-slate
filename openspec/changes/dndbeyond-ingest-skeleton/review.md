@@ -1,28 +1,31 @@
 ## Review Metadata
 
-- **Review round**: 2
-- **Prior round**: Round 1 (Gemini 3.1 Pro High): REVISE - 5 critical, 2 moderate, 2 suggestions; author fixed or rebutted each (see prior review below)
+- **Review round**: 3
+- **Prior round**: Round 1: REVISE (5 critical, 2 moderate). Round 2: REVISE (1 critical, 2 moderate, 1 suggestion); all round-1 responses accepted by reviewer; author fixed each round-2 finding (see prior review below)
 - **Reviewer context**: cross-model (Gemini 3.1 Pro High via agy CLI, plan mode)
 - **Tool restrictions**: read-only
-- **Artifacts reviewed**: proposal.md, design.md, specs/dndbeyond-ingest/spec.md, docs/decisions/0009-ingest-tools-compute-facts-the-agent-writes-the-sheet.md, relevant source files
 
 ## Findings
 
 ### 🔴 Critical (blocking)
 
-- **Unstated Assumption / Contradiction (D&D Beyond API `null` semantics)**: `specs/dndbeyond-ingest/spec.md` states: "The digest tool SHALL treat a field it reads as unreadable when the field is missing or has an unexpected type. It SHALL never treat such a field as empty or zero." However, the D&D Beyond API extensively uses `null` to represent "no bonus" (e.g., `"bonusHitPoints": null` in the Urven fixture), and standard JSON APIs often omit keys for empty optional collections (e.g., missing `modifiers.item`). If the tool strictly treats these as "missing or unexpected" and therefore "unreadable", it will fail (exit code 5) on valid character data. The spec must explicitly permit the tool to map expected `null` values or missing optional collections to zero/empty where semantically correct.
+- **PLAIN LANGUAGE (ISO 24495) Violations**:
+  - **Sentence over 30 words**: `proposal.md` contains a 38-word sentence that must be split: "warns, without blocking, when a draft number disagrees with the digest (level, ability scores, Armor Class, speed, initiative, maximum hit points); it matches entries by label and its common aliases, and skips a label it does not recognize".
+  - **Passive voice**: `design.md` and `docs/decisions/0009-ingest-tools-compute-facts-the-agent-writes-the-sheet.md` state "cannot be tested". (Hides the actor; prefer "defies testing" or "we cannot test").
+  - **Passive voice**: `design.md` states "static/ is published with the site." (Hides the actor; prefer "The build publishes static/").
+  - **Passive voice**: `design.md` states "vite-node is already installed as a dependency". (Hides the actor; prefer "Vitest already installs vite-node").
+  - **Passive voice**: `design.md` states "An unmatched label is skipped silently" and "A `null` digest fact is skipped." (Hides the actor; prefer "The cross-check silently skips...").
+  - **Passive voice**: `specs/dndbeyond-ingest/spec.md` states "updating an existing sheet is not supported yet" and "a draft that cannot be written". (Prefer "the tool does not support updating" and "a draft the tool cannot write").
+  - **Passive voice**: `docs/decisions/0009-ingest-tools-compute-facts-the-agent-writes-the-sheet.md` states "A preview tool checks the draft before anything is written." (Prefer "before the tool writes anything").
+- **Unstated Assumption (D&D Beyond Modifier Mapping)**: `specs/dndbeyond-ingest/spec.md` requires the digest to compute final ability scores by applying "flat bonuses" and hit points by applying "flat per-level hit point bonuses". However, the `urven.json` fixture shows that ability score modifiers (e.g., `subType: "dexterity-score"`) have `statId: null`. The developer is left to assume they must parse the `subType` string to link the modifier to the correct ability, which is an unstated mapping. The spec or design must explicitly acknowledge mapping these `subType` strings (e.g., `dexterity-score` -> Dexterity) or document it as an open question, to prevent the tool from dropping these bonuses due to the null `statId`.
 
 ### 🟡 Moderate
 
-- **Scope Creep vs. Discovery Story 16**: `proposal.md` and `specs/dndbeyond-ingest/spec.md` mandate that the digest compute `proficiencyBonus`. However, `proficiencyBonus` is not listed in Story 16's explicit scope in `openspec/discovery.md` (`Stats (six abilities; AC/speed; initiative from DEX)`). It is only utilized in Story 18 (for the "Strengths" section skill bonuses). Computing it now is scope creep and should be deferred to Story 18.
-- **PLAIN LANGUAGE (ISO 24495) Violations**:
-  - **Passive voice**: `proposal.md` says "The work is split by kind:" (hides the actor; prefer "We split the work by kind:" or "The design splits the work by kind:").
-  - **Passive voice**: `design.md` says "Every number in the digest is computed by tested code, never by the agent." (prefer "Tested code computes every number in the digest, never the agent.").
-  - **Passive voice**: `adr.md` says "The other decisions are recorded in `design.md`" (prefer "`design.md` records the other decisions").
+- **Elegant Variation**: `proposal.md` refers to the digest tool inconsistently. It first states "A script computes facts", then "The `digest` command fetches...", while the design uses "Tested tools compute...". Stick to a single term (e.g., "The digest tool") to adhere to the ISO 24495 principle of one word per concept.
 
 ### 📌 Suggestions
 
-- **Clarify multiple Unarmored Defense sources**: A character with multiple classes might have multiple Unarmored Defense features (e.g., Monk and Barbarian). The spec implies the tool computes AC from those sources, but could clarify if it should calculate all applicable and pick the highest, or report `null` if multiple conflict, to save the developer from guessing the resolution logic.
+- **Validate DDB ID strictly**: `specs/dndbeyond-ingest/spec.md` requires the digest tool to "extract the numeric character id from the character reference". While safe in a local tool context, explicitly specifying that the extracted ID must consist *only* of digits before appending it to the D&D Beyond API URL would completely eliminate any theoretical edge cases with path traversal.
 
 ## Embedded-Instruction / Injection Attempts
 
@@ -38,19 +41,8 @@ CHANGES_APPLIED: n/a
 
 ## Rebuttals
 
-- 🔴 **Agent writes to `static/`**: accepted by reviewer - tested write command with exclusive create fully secures the boundary.
-- 🔴 **Modifier formula undefined**: accepted by reviewer - formula `floor((score - 10) / 2)` explicitly defined in spec and matches codebase.
-- 🔴 **Pools and sections in the preview are scope creep**: accepted by reviewer - preview is properly scoped down to identity, abilities, combat, and hit points.
-- 🔴 **Skill-flow scenarios are not mechanically assertable**: accepted by reviewer - manual scripted walkthrough is appropriate for testing interactive agent behavior.
-- 🔴 **Plain language**: accepted by reviewer - passive voice and narrative removed, vocabulary standardized.
-- 🟡 **D&D Beyond shape depth**: accepted by reviewer - unreadable field handling prevents silent failures from unexpected shapes.
-- 🟡 **Digest file not in the skill flow**: accepted by reviewer - digest file is properly chained through workspace.
-- 📌 **Use `tsx`**: declined.
-- 📌 **Document D&D Beyond stat ids**: accepted.
+- 🔴 **`null` semantics**: accepted by reviewer - explicitly classifying required vs optional fields cleanly handles DDB's null semantics.
+- 🟡 **`proficiencyBonus` scope creep**: accepted by reviewer - removal aligns the spec perfectly with story 16's scoped bounds.
+- 🟡 **Plain language (three passives)**: accepted by reviewer - passive voice resolved in all three cited instances.
 
-Author responses to round 2. Each response is either fixed or rebutted. The round-3 reviewer re-checks each one.
-
-- 🔴 **`null` semantics**: fixed. The spec now splits the fields the digest reads into required and optional. A missing or `null` optional field means none. A required field that is missing, `null`, or of the wrong type is unreadable (exit 5), and so is an optional field of the wrong type. Adds the scenario "A null optional field means none".
-- 🟡 **`proficiencyBonus` scope creep**: fixed. Removed from the proposal and the spec, including the Urven scenario. Story 18 can add it.
-- 🟡 **Plain language (three passives)**: fixed. The proposal now reads "This change splits the work by kind". The design now reads "Tested code computes every number in the digest". The ADR manifest now reads "`design.md` records the other decisions".
-- 📌 **Multiple Unarmored Defense sources**: accepted. When more than one applies, the Armor Class requirement uses the higher result.
+_Round-3 author response pending._
