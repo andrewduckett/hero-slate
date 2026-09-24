@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { computeDigest } from './digest';
 import urven from './fixtures/urven.json';
 import zip from './fixtures/zip.json';
+import sunny from './fixtures/sunny.json';
 
 describe('computeDigest — Urven acceptance', () => {
 	it('digests Urven\'s recorded D&D Beyond response', () => {
@@ -75,6 +76,12 @@ describe('computeDigest — Urven acceptance', () => {
 		expect(byName('Ice Pick')?.toHitReason).toEqual(expect.any(String));
 		expect(byName('Ice Pick')?.damage).toBeNull();
 		expect(byName('Ice Pick')?.damageReason).toEqual(expect.any(String));
+
+		const darkness = result.digest.spells.find((s) => s.name === 'Darkness');
+		expect(darkness?.ways[0]).toMatchObject({ source: 'class feature', castingAbility: null });
+		expect(darkness?.ways[0].castingAbilityReason).toEqual(expect.any(String));
+
+		expect(result.digest.spellcasting).toEqual([]);
 	});
 });
 
@@ -128,5 +135,108 @@ describe('computeDigest — Zip acceptance', () => {
 			expect(weapon?.toHit).toBe(5);
 			expect(weapon?.damage).toBe('1d4+3');
 		}
+
+		const bySpell = (name: string) => {
+			const spell = result.digest.spells.find((s) => s.name === name);
+			if (!spell) throw new Error(`expected a spell named "${name}"`);
+			return spell;
+		};
+
+		const classWays = result.digest.spells.flatMap((s) => s.ways.filter((w) => w.source === 'class'));
+		expect(classWays.length).toBeGreaterThan(0);
+		for (const way of classWays) expect(way.className).toBe('Wizard');
+		const nonClassWays = result.digest.spells.flatMap((s) => s.ways.filter((w) => w.source !== 'class'));
+		for (const way of nonClassWays) expect(way.className).toBeNull();
+
+		const mindSliver = bySpell('Mind Sliver');
+		expect(mindSliver.saveAbility).toBe('Intelligence');
+		expect(mindSliver.ways[0]).toMatchObject({ saveDc: 13, damage: '1d6' });
+
+		const identify = bySpell('Identify');
+		expect(identify.ritual).toBe(true);
+		expect(identify.ways).toHaveLength(1);
+		expect(identify.ways[0]).toMatchObject({ source: 'class', status: 'not-prepared' });
+
+		const findFamiliar = bySpell('Find Familiar');
+		expect(findFamiliar.ways[0]).toMatchObject({
+			source: 'feat',
+			status: 'granted',
+			castingAbility: 'Wisdom',
+			usesSlot: false,
+			limitedUse: { max: 1, maxReason: null, reset: 'long rest' }
+		});
+
+		expect(result.digest.spells.find((s) => s.name === 'Freedom of Movement')).toBeUndefined();
+		expect(result.digest.spells.find((s) => s.name === 'Grease')).toBeUndefined();
+	});
+});
+
+describe('computeDigest — Sunny acceptance', () => {
+	it("digests Sunny's recorded D&D Beyond response", () => {
+		const result = computeDigest(sunny);
+
+		expect(result.status).toBe('ok');
+		if (result.status !== 'ok') return;
+
+		const bySpell = (name: string) => {
+			const spell = result.digest.spells.find((s) => s.name === name);
+			if (!spell) throw new Error(`expected a spell named "${name}"`);
+			return spell;
+		};
+
+		const thornWhip = bySpell('Thorn Whip');
+		expect(thornWhip.level).toBe(0);
+		expect(thornWhip.ways).toHaveLength(1);
+		expect(thornWhip.ways[0]).toMatchObject({ source: 'class', status: 'cantrip', toHit: 7, damage: '2d6' });
+
+		const mistyStep = bySpell('Misty Step');
+		expect(mistyStep.ways).toHaveLength(1);
+		expect(mistyStep.ways[0]).toMatchObject({ source: 'class feature', status: 'granted' });
+
+		const passWithoutTrace = bySpell('Pass without Trace');
+		expect(passWithoutTrace.ways).toHaveLength(3);
+		expect(passWithoutTrace.ways[0]).toMatchObject({ source: 'class', status: 'prepared', usesSlot: true });
+		expect(passWithoutTrace.ways[1]).toMatchObject({
+			source: 'species',
+			status: 'granted',
+			usesSlot: false,
+			limitedUse: { max: 1, maxReason: null, reset: 'long rest' }
+		});
+		expect(passWithoutTrace.ways[2]).toMatchObject({ source: 'species', status: 'granted', usesSlot: true });
+
+		const speakWithAnimals = bySpell('Speak with Animals');
+		expect(speakWithAnimals.ways.some((w) => w.source === 'class feature' && w.status === 'always')).toBe(true);
+		for (const way of speakWithAnimals.ways) {
+			expect(way.toHit).toBeNull();
+			expect(way.damage).toBeNull();
+			expect(way.healing).toBeNull();
+			expect(way.saveDc).toBeNull();
+		}
+
+		const lightningBolt = bySpell('Lightning Bolt');
+		expect(lightningBolt.ways[0]).toMatchObject({ source: 'class feature', castingAbility: 'Wisdom', damage: '8d6' });
+
+		const frostbite = bySpell('Frostbite');
+		expect(frostbite.saveAbility).toBe('Constitution');
+		expect(frostbite.ways[0]).toMatchObject({ saveDc: 15, damage: '2d6' });
+
+		const cureWounds = bySpell('Cure Wounds');
+		expect(cureWounds.ways[0].healing).toBe('2d8+4');
+		expect(cureWounds.ways[0].damage).toBeNull();
+		expect(cureWounds.ways[0].toHit).toBeNull();
+		expect(cureWounds.ways[0].saveDc).toBeNull();
+
+		const healingSpirit = bySpell('Healing Spirit');
+		expect(healingSpirit.ways[0].healing).toBe('1d6');
+
+		const callLightning = bySpell('Call Lightning');
+		expect(callLightning.ways[0].damage).toBeNull();
+		expect(callLightning.ways[0].damageReason).toEqual(expect.any(String));
+		expect(callLightning.ways[0].saveDc).toBe(15);
+		expect(callLightning.saveAbility).toBe('Dexterity');
+
+		expect(result.digest.spellcasting).toEqual([
+			{ className: 'Druid', ability: 'Wisdom', spellAttack: 7, spellAttackReason: null, saveDc: 15, saveDcReason: null }
+		]);
 	});
 });
