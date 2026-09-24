@@ -28,10 +28,10 @@ hitPoints:
   max: 54
 
 pools:
-  - id: ki
-    label: Ki
+  - id: focus_points
+    label: Focus Points
     color: sun
-    max: 5
+    max: 7
 
 sections:
   - title: Your Turn
@@ -61,5 +61,5 @@ links:
   - url: https://dndbeyond.com/characters/154922980
     label: 📜 D&D Beyond
   - url: https://www.dndbeyond.com/spells
-    label: Spell Compendium
+    label: 📜 Spell Compendium
 
