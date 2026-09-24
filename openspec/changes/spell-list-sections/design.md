@@ -55,6 +55,8 @@ The digest lists each spell name once. Each record becomes one *cast way*. Spell
 
 Numbers sit on the way because the casting ability can differ between ways. Zip casts her Wizard spells with Intelligence and her feat spells with Wisdom.
 
+A way from a class spell list also names its class in `className`. A multiclass character can have two class spell lists, and the skill's known-caster fallback needs to tell them apart.
+
 - *Alternative: one entry per record.* Rejected. The Author would see Pass without Trace three times, and the agent would have to merge them by name.
 - *Alternative: merge the ways into one.* Rejected. Merging drops real differences, such as one free cast per long rest.
 
@@ -127,7 +129,7 @@ A known caster, such as a Sorcerer, may show every leveled class spell as `not-p
 
 A spell may appear in both sections. Thorn Whip can be the Your Turn attack and a Magic row. That is the Author's choice.
 
-### D12. Recorded fixtures are blanked by a checked-in tool, and a test guards them
+### D12. A checked-in script blanks recorded fixtures, and a test guards them
 
 A recorded response holds the owner's username and user id, and their avatar choices. It holds the whole campaign roster, which names other players. It can also hold the player's free-text backstory and a physical description. The repository is public. See ADR 0010.
 

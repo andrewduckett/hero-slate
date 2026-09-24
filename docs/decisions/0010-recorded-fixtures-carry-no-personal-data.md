@@ -38,6 +38,6 @@ We considered three alternatives.
 ## Consequences
 
 - A new fixture takes one extra step: run the blanking script before committing.
-- A test fails loudly if a raw response is committed, so the mistake is caught before a pull request merges.
+- If someone commits a raw response, a test fails loudly. The failure stops the mistake before the pull request merges.
 - A fixture no longer matches D&D Beyond byte for byte. Its personal fields differ, and the script's JSON output may escape some characters differently. The character data itself is unchanged.
 - If D&D Beyond adds a new personal field, the blanking script and the test will not know about it. Whoever records a new fixture should check its top-level fields for anything that names a person.
