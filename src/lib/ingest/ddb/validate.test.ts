@@ -147,4 +147,54 @@ describe('validateDraft — warnings', () => {
 		expect(result.errors).toEqual([]);
 		expect(result.warnings.some((w) => w.includes('purple'))).toBe(true);
 	});
+
+	it('warns that the app would drop a row with no body', () => {
+		const body = [
+			'name: Sunny',
+			'sections:',
+			'  - title: Your Turn',
+			'    rows:',
+			'      - title: Swipe',
+			'        body: swipe at it!',
+			'      - title: No body'
+		].join('\n');
+		const result = validateDraft(body, 'sunny');
+		expect(result.errors).toEqual([]);
+		expect(result.warnings.some((w) => /would drop a row/i.test(w))).toBe(true);
+	});
+
+	it('warns that the app would drop a sections entry with no rows', () => {
+		const body = ['name: Sunny', 'sections:', '  - title: Your Turn', '    rows: []'].join('\n');
+		const result = validateDraft(body, 'sunny');
+		expect(result.errors).toEqual([]);
+		expect(result.warnings.some((w) => /would drop a `?sections`? entry/i.test(w))).toBe(true);
+	});
+
+	it('warns when a section color is not a palette name', () => {
+		const body = [
+			'name: Sunny',
+			'sections:',
+			'  - title: Strengths',
+			'    color: purple',
+			'    rows:',
+			'      - body: flips and sneaking'
+		].join('\n');
+		const result = validateDraft(body, 'sunny');
+		expect(result.errors).toEqual([]);
+		expect(result.warnings.some((w) => w.includes('purple'))).toBe(true);
+	});
+
+	it('warns when a row color is not a palette name', () => {
+		const body = [
+			'name: Sunny',
+			'sections:',
+			'  - title: Strengths',
+			'    rows:',
+			'      - body: flips and sneaking',
+			'        color: purple'
+		].join('\n');
+		const result = validateDraft(body, 'sunny');
+		expect(result.errors).toEqual([]);
+		expect(result.warnings.some((w) => w.includes('purple'))).toBe(true);
+	});
 });

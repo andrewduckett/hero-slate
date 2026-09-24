@@ -136,6 +136,17 @@ describe('computeDigest — required and optional fields', () => {
 		expect(result.status).toBe('ok');
 	});
 
+	it('reads a null characterValues as none', () => {
+		const result = computeDigest(character({ characterValues: null }));
+		expect(result.status).toBe('ok');
+	});
+
+	it('reports a characterValues object as unreadable, naming it', () => {
+		const result = computeDigest(character({ characterValues: {} }));
+		expect(result.status).toBe('unreadable');
+		if (result.status === 'unreadable') expect(result.message).toContain('characterValues');
+	});
+
 	it('reports a wrong-typed modifier group as unreadable, naming the group', () => {
 		const result = computeDigest(
 			character({ modifiers: { race: [], class: [], background: [], item: {}, feat: [], condition: [] } })

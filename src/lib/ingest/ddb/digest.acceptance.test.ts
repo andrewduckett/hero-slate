@@ -32,6 +32,49 @@ describe('computeDigest — Urven acceptance', () => {
 		]);
 		expect(result.digest.spellSlots).toEqual([]);
 		expect(result.digest.pactMagic).toBeNull();
+
+		const proficientSkills = result.digest.skills.filter((s) => s.proficiency === 'proficient');
+		expect(proficientSkills.map((s) => [s.name, s.ability, s.bonus]).sort()).toEqual(
+			[
+				['Acrobatics', 'Dexterity', 8],
+				['Athletics', 'Strength', 5],
+				['Insight', 'Wisdom', 5],
+				['Stealth', 'Dexterity', 8],
+				['Survival', 'Wisdom', 5]
+			].sort()
+		);
+
+		const byName = (name: string) => result.digest.actions.find((a) => a.name === name);
+
+		const unarmedStrike = byName('Unarmed Strike');
+		expect(unarmedStrike?.activation).toBe('bonus action');
+		expect(unarmedStrike?.toHit).toBe(8);
+		expect(unarmedStrike?.damage).toBeNull();
+		expect(unarmedStrike?.damageReason).toEqual(expect.any(String));
+
+		const stunningStrike = byName('Stunning Strike');
+		expect(stunningStrike?.saveDc).toBe(13);
+		expect(stunningStrike?.saveAbility).toBe('Constitution');
+
+		const shadowStep = byName('Shadow Step');
+		expect(shadowStep?.toHit).toBeNull();
+		expect(shadowStep?.toHitReason).toBeNull();
+		expect(shadowStep?.damage).toBeNull();
+		expect(shadowStep?.damageReason).toBeNull();
+		expect(shadowStep?.saveDc).toBeNull();
+		expect(shadowStep?.saveDcReason).toBeNull();
+
+		expect(result.digest.actions.filter((a) => a.name === 'Handaxe')).toHaveLength(1);
+		expect(byName('Handaxe')?.toHit).toBeNull();
+		expect(byName('Handaxe')?.toHitReason).toEqual(expect.any(String));
+		expect(byName('Handaxe')?.damage).toBeNull();
+		expect(byName('Handaxe')?.damageReason).toEqual(expect.any(String));
+
+		expect(result.digest.actions.filter((a) => a.name === 'Ice Pick')).toHaveLength(1);
+		expect(byName('Ice Pick')?.toHit).toBeNull();
+		expect(byName('Ice Pick')?.toHitReason).toEqual(expect.any(String));
+		expect(byName('Ice Pick')?.damage).toBeNull();
+		expect(byName('Ice Pick')?.damageReason).toEqual(expect.any(String));
 	});
 });
 
@@ -69,5 +112,21 @@ describe('computeDigest — Zip acceptance', () => {
 		const names = result.digest.limitedUses.map((u) => u.name);
 		expect(names).not.toContain('Freedom of Movement');
 		expect(names).not.toContain('Grease');
+
+		const investigation = result.digest.skills.find((s) => s.name === 'Investigation');
+		expect(investigation?.proficiency).toBe('expertise');
+		expect(investigation?.bonus).toBe(7);
+
+		for (const name of ['Nature', 'Stealth', 'Sleight of Hand']) {
+			const skill = result.digest.skills.find((s) => s.name === name);
+			expect(skill?.proficiency).toBe('proficient');
+			expect(skill?.bonus).toBe(5);
+		}
+
+		for (const name of ['Dagger', 'Sling']) {
+			const weapon = result.digest.actions.find((a) => a.name === name);
+			expect(weapon?.toHit).toBe(5);
+			expect(weapon?.damage).toBe('1d4+3');
+		}
 	});
 });

@@ -13,6 +13,9 @@
 import { computeArmorClass } from './armorClass';
 import { computeLimitedUses, type LimitedUse, type LimitedUseEntry, type LimitedUseSource } from './limitedUses';
 import { computeSpellSlots, computePactMagic, type SpellSlotEntry, type SpellcastingClassInput } from './spellSlots';
+import { computeSkills, type Skill } from './skills';
+import { computeActions, type Action, type FeatureActionEntry } from './actions';
+import { abilityModifier } from './rules';
 
 export const ABILITY_ORDER = [
 	'strength',
@@ -48,6 +51,8 @@ export interface Digest {
 	spellSlotsReason: string | null;
 	pactMagic: SpellSlotEntry | null;
 	pactMagicReason: string | null;
+	skills: Skill[];
+	actions: Action[];
 }
 
 export type DigestResult = { status: 'ok'; digest: Digest } | { status: 'unreadable'; message: string };
@@ -230,6 +235,22 @@ function readLimitedUseEntries(
 	return entries;
 }
 
+/** Read the `class`, `race`, `background`, and `feat` groups of `actions`, each record whole; skip `item`. */
+function readFeatureActionEntries(raw: unknown): FeatureActionEntry[] {
+	const group = optionalField(raw, 'actions', (v) => asRecord(v, 'actions'));
+	if (group === undefined) return [];
+
+	const entries: FeatureActionEntry[] = [];
+	for (const { key, source } of LIMITED_USE_GROUPS) {
+		const items = optionalField(group[key], `actions.${key}`, (v) => requiredArray(v, `actions.${key}`)) ?? [];
+		for (const item of items) {
+			const record = asRecord(item, `actions.${key}`);
+			entries.push({ name: actionName(record), source, record });
+		}
+	}
+	return entries;
+}
+
 function readBaseSpeed(data: Record<string, unknown>): number {
 	const race = asRecord(data.race, 'speed');
 	const weightSpeeds = asRecord(race.weightSpeeds, 'speed');
@@ -244,10 +265,6 @@ function hasEquippedArmorOrShield(inventory: unknown[]): boolean {
 		const definition = optionalField(record.definition, 'inventory', (v) => asRecord(v, 'inventory'));
 		return definition?.filterType === 'Armor';
 	});
-}
-
-function abilityModifier(score: number): number {
-	return Math.floor((score - 10) / 2);
 }
 
 /** Sum the `value` of every `bonus` modifier whose `subType` matches. */
@@ -333,6 +350,10 @@ export function computeDigest(body: unknown): DigestResult {
 		const { spellSlots, spellSlotsReason } = computeSpellSlots(spellcasting);
 		const { pactMagic, pactMagicReason } = computePactMagic(spellcasting);
 
+		const skills = computeSkills(modifiers, abilities, level, characterValues);
+		const featureActionEntries = readFeatureActionEntries(data.actions);
+		const actions = computeActions(featureActionEntries, inventory, modifiers, abilities, level);
+
 		return {
 			status: 'ok',
 			digest: {
@@ -349,7 +370,9 @@ export function computeDigest(body: unknown): DigestResult {
 				spellSlots,
 				spellSlotsReason,
 				pactMagic,
-				pactMagicReason
+				pactMagicReason,
+				skills,
+				actions
 			}
 		};
 	} catch (error) {
