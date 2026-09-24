@@ -18,9 +18,9 @@ This change lets the Author build that sheet from D&D Beyond. Every spell number
   - A new **Magic** section follows Your Turn. The skill recommends one spell with a save DC, one with an attack, and 2 or 3 flavor spells with no pills, each with a reason.
 - The Author keeps, cuts, swaps, or adds Magic rows, and may ask for any digest spell by name, prepared or not.
 - The skill proposes the section order Your Turn, Magic, Strengths, and a color for Magic. The Author confirms or changes both.
-- The skill writes healing as a dice pill, such as `[[2d8+4]]`, copied from the digest like every other pill.
+- The skill writes healing as a pill, such as `[[2d8+4]]`, copied from the digest like every other pill.
 - A character with no spellcasting class gets no "Cast a Spell" row and no Magic section by default. The skill still tells the Author about any granted spells.
-- Sunny's D&D Beyond response becomes a third recorded fixture, with its personal fields blanked. A test keeps every recorded fixture free of personal fields.
+- Sunny's D&D Beyond response becomes a third recorded fixture. A new script blanks its personal fields before we commit it. A test keeps every recorded fixture free of personal fields.
 - Out of scope: item spells, upcast damage, spell descriptions, a cross-check of pill numbers, and interactive dice rolling.
 
 ## Capabilities
@@ -38,7 +38,7 @@ This change lets the Author build that sheet from D&D Beyond. Every spell number
 - **Changed code** in `src/lib/ingest/ddb/`:
   - the digest, which reads class spell lists and each class's id and casting ability
   - a new focused spells module, beside `actions.ts` and `skills.ts`
-- **New fixture:** `src/lib/ingest/ddb/fixtures/sunny.json`, blanked before it is committed.
+- **New fixture:** `src/lib/ingest/ddb/fixtures/sunny.json`, which the new script blanks before we commit it.
 - **New tooling:** a small checked-in script blanks personal fields in a recorded response. A test checks every fixture.
 - **Changed skill:** `.claude/skills/dndbeyond-to-slate/SKILL.md` adds the "Cast a Spell" row, the Magic step, and the healing pill, and drops the "no spells" limit.
 - **Unchanged app:** the section renderer, the rich-text pills, the preview, and the validation already handle a Magic section. No route imports the ingest, so the deployed app is unchanged.

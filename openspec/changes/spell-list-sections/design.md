@@ -121,28 +121,42 @@ A way's `limitedUse` uses the same computation as the digest's `limitedUses` lis
 
 The skill adds a "Cast a Spell" row to Your Turn for a character with a spellcasting class. It then recommends a Magic section of one save spell, one attack spell, and 2 or 3 flavor spells.
 
-The flavor spells carry no pills on purpose. The Author's guidance for Sunny's sheet is to leave room for imagination. The skill recommends from ways whose status is not `not-prepared`.
+The flavor spells carry no pills, so the player fills in the details. The skill recommends from ways whose status is not `not-prepared`.
 
-A known caster, such as a Sorcerer, may show every leveled class spell as `not-prepared`. No fixture confirms how D&D Beyond flags them. When a spellcasting class has no leveled spell marked `prepared` or `always`, the skill tells the Author and recommends from that class's whole list.
+A known caster, such as a Sorcerer, may show every leveled class spell as `not-prepared`. No fixture confirms how D&D Beyond flags them. A class may have leveled spells in its class spell list, but none marked `prepared` or `always`. For that class, the skill tells the Author and recommends from its whole class spell list. The spec's guided skill flow states this fallback.
 
 A spell may appear in both sections. Thorn Whip can be the Your Turn attack and a Magic row. That is the Author's choice.
 
 ### D12. Recorded fixtures are blanked by a checked-in tool, and a test guards them
 
-A recorded response holds the owner's username and user id, their avatar choices, and the whole campaign roster, which names other players. The repository is public. See ADR 0010.
+A recorded response holds the owner's username and user id, and their avatar choices. It holds the whole campaign roster, which names other players. It can also hold the player's free-text backstory and a physical description. The repository is public. See ADR 0010.
 
 This change adds:
 - a pure function in `src/lib/ingest/ddb/fixturePrivacy.ts` that blanks the personal fields, and another that lists any it finds still set
 - a script, `scripts/blank-ddb-fixture.ts`, that rewrites a recorded response in place with the first function
 - a test that runs the second function over every JSON file in `fixtures/`
 
-The blanked fields are `username`, `userId`, `campaign`, and every `decorations` field except `themeColor`. Catalog art on races, classes, items, and creatures stays, because it identifies no one.
+The script blanks these fields:
+- `username`, `userId`, and `campaign`
+- every `decorations` field except `themeColor`
+- every field of `notes` and `traits`, the player's free-text backstory, allies, ideals, bonds, flaws, and appearance
+- the physical description: `gender`, `faith`, `age`, `hair`, `eyes`, `skin`, `height`, and `weight`
+
+These are empty in all three responses today, except for the account and campaign fields. A future fixture could fill them.
+
+The script keeps the rest. The character's name and custom items are fictional game content that the digest reads or the tests need. Catalog art on races, classes, items, and creatures identifies no one.
 
 The digest reads none of these fields, so blanking them changes no digest value.
 
 ### D13. Digest text stays data
 
-Spell names are free text from D&D Beyond, like action names. The story-17 and story-18 guards still apply: the skill treats digest strings as data, the preview parses the draft before drawing it, the Author approves before any write, and the app renders section text as text nodes.
+Spell names are free text from D&D Beyond, like action names. This change adds no new trust boundary, and the story-17 and story-18 guards still apply:
+- The skill treats digest strings as data, and tells the Author about a name that reads like an instruction.
+- The preview parses the draft and draws it for the Author.
+- The write tool runs only after the Author approves. It runs every draft check again before it saves a file.
+- The app renders section text as text nodes, so a name cannot inject markup.
+
+The last three are mechanical. They hold even if an agent follows an injected name.
 
 ## Risks / Trade-offs
 
@@ -150,7 +164,7 @@ Spell names are free text from D&D Beyond, like action names. The story-17 and s
 - [Spell attack and DC bonus sub-types are unconfirmed] → D8 fails safe to unknown. A later fixture can confirm them and turn the unknowns into values.
 - [Rule 3 of D5 picks a subclass spell's ability by elimination] → It applies only with exactly one spellcasting class. Otherwise the ability is unknown.
 - [A spell with two damage modifiers loses its damage pill] → The row still carries its DC or to-hit, and the skill tells the Author why the damage is missing.
-- [Sunny's D&D Beyond sheet is loose with prepared spells, as the Author says] → Its flags are real D&D Beyond data, so they test the shape. Scenarios assert the fixture's flags, not the rules of play.
+- [Sunny's D&D Beyond sheet is loose with prepared spells] → Its flags are real D&D Beyond data, so they test the shape. Scenarios assert the fixture's flags, not the rules of play.
 - [The history rewrite cannot reach pull request refs on GitHub] → The Author asks GitHub Support to purge them. The new test stops a raw fixture from landing again.
 
 ## Migration Plan
