@@ -37,13 +37,13 @@ sections:
   - title: Your Turn
     color: berry
     rows:
-      - title: Attack
+      - title: 👊 Attack
         body: "swipe with your claws: [[d20+8]] to hit, [[1d8+5]] damage"
-      - title: Grapple
+      - title: 🤼‍♂️ Grapple
         body: "[[DC 13]] Str/Dex (it chooses which) saving throw."
-      - title: Stun
+      - title: 🫨 Stun
         body: "[[DC 13]] Con saving throw."
-      - title: Shadow Step
+      - title: 🥷 Shadow Step
         body: teleport up to 60 ft. to an unoccupied space that you can see that's also in Dim Light or Darkness. You have Advantage on the next melee attack you make before the end of the current turn.
   - title: Strengths
     color: forest
@@ -61,5 +61,4 @@ links:
   - url: https://dndbeyond.com/characters/154922980
     label: 📜 D&D Beyond
   - url: https://www.dndbeyond.com/spells
-    label: 📜 Spell Compendium
-
+    label: 🔮 Spell Compendium
