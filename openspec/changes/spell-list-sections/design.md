@@ -16,7 +16,7 @@ See `proposal.md` for the motivation, and `specs/dndbeyond-ingest/spec.md` for t
 ## Goals / Non-Goals
 
 **Goals:**
-- Keep the split from ADR 0009. The digest computes every spell number, and the agent chooses and words the rows.
+- Keep the split from ADR 0009. The digest computes every spell number, and the skill chooses and words the rows.
 - Put the spell rules in one small pure module that tests can drive with hand-written inputs.
 - Report the facts D&D Beyond gives, and never decide for a class what "castable" means.
 
@@ -57,7 +57,7 @@ Numbers sit on the way because the casting ability can differ between ways. Zip 
 
 A way from a class spell list also names its class in `className`. A multiclass character can have two class spell lists, and the skill's known-caster fallback needs to tell them apart.
 
-- *Alternative: one entry per record.* Rejected. The Author would see Pass without Trace three times, and the agent would have to merge them by name.
+- *Alternative: one entry per record.* Rejected. The Author would see Pass without Trace three times, and the skill would have to merge them by name.
 - *Alternative: merge the ways into one.* Rejected. Merging drops real differences, such as one free cast per long rest.
 
 ### D4. Status is a fact, not a filter
@@ -158,7 +158,7 @@ Spell names are free text from D&D Beyond, like action names. This change adds n
 - The write tool runs only after the Author approves. It runs every draft check again before it saves a file.
 - The app renders section text as text nodes, so a name cannot inject markup.
 
-The last three are mechanical. They hold even if an agent follows an injected name.
+The last three are mechanical. They hold even if the skill follows an injected name.
 
 ## Risks / Trade-offs
 

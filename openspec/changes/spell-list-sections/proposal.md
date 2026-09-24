@@ -2,7 +2,7 @@
 
 Spells are the largest block of a spellcaster's D&D Beyond data that the ingest does not yet read (discovery story 19). A level 6 Druid like Sunny has 13 class spells, plus spells from her species and subclass. A child cannot use a list that long. Sunny's hand-written sheet shows the fix: a few choices with numbers and a few with none, "so it's easy to use your imagination". That sheet also shows the drift risk. Its spell attack says `d20+6`, but her Wisdom and proficiency give +7.
 
-This change lets the Author build that sheet from D&D Beyond. Every spell number comes from tested code, and the agent and Author choose the spells.
+This change lets the Author build that sheet from D&D Beyond. Every spell number comes from tested code, and the skill and the Author choose the spells.
 
 ## What Changes
 
