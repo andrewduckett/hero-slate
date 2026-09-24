@@ -11,8 +11,20 @@ import { resolveAbilities } from '$lib/character/abilities';
 import { resolveCombat } from '$lib/character/combat';
 import { resolveHitPoints } from '$lib/character/hitPoints';
 import { resolvePools } from '$lib/character/pools';
+import { resolveSections } from '$lib/character/sections';
 
-const DRAWN_BLOCKS = new Set(['id', 'name', 'level', 'class', 'color', 'abilities', 'combat', 'hitPoints', 'pools']);
+const DRAWN_BLOCKS = new Set([
+	'id',
+	'name',
+	'level',
+	'class',
+	'color',
+	'abilities',
+	'combat',
+	'hitPoints',
+	'pools',
+	'sections'
+]);
 
 function border(): string {
 	return '+' + '-'.repeat(40);
@@ -63,6 +75,19 @@ export function renderPreview(draft: Record<string, unknown>): string[] {
 		lines.push('| Pools');
 		for (const pool of pools) {
 			lines.push(`|   ${pool.label}: ${'o'.repeat(pool.max)}`);
+		}
+	}
+
+	const sections = resolveSections(draft.sections);
+	if (sections.length > 0) {
+		lines.push('|');
+		lines.push('| Sections');
+		for (const section of sections) {
+			lines.push(`|   ${section.title} (${section.palette})`);
+			for (const row of section.rows) {
+				if (row.title) lines.push(`|     ${row.title}: ${row.body}`);
+				else lines.push(`|     ${row.body}`);
+			}
 		}
 	}
 

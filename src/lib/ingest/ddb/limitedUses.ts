@@ -7,6 +7,7 @@
  * `armorClass.ts`.
  */
 import { ABILITY_ORDER, type AbilityKey, type AbilityScores } from './digest';
+import { abilityModifier, proficiencyBonus } from './rules';
 
 export type LimitedUseSource = 'class' | 'species' | 'background' | 'feat';
 export type ResetWord = 'short rest' | 'long rest' | 'dawn';
@@ -34,14 +35,6 @@ class UnknownMax extends Error {}
 
 function unknownMax(reason: string): never {
 	throw new UnknownMax(reason);
-}
-
-function abilityModifier(score: number): number {
-	return Math.floor((score - 10) / 2);
-}
-
-function proficiencyBonus(level: number): number {
-	return 2 + Math.floor((level - 1) / 4);
 }
 
 function abilityKey(id: unknown): AbilityKey | undefined {

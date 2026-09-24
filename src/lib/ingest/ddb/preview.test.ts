@@ -37,18 +37,57 @@ describe('renderPreview', () => {
 		expect(text).not.toContain('10');
 	});
 
-	it('lists sections, but not pools, under Not previewed', () => {
+	it('lists an unrecognized block, but not pools or sections, under Not previewed', () => {
 		const draft = {
 			name: 'Sunny',
 			pools: [{ id: 'ki', label: 'Ki', max: 5 }],
-			sections: [{ title: 'Your Turn', rows: [{ title: 'Attack', body: 'swipe!' }] }]
+			sections: [{ title: 'Your Turn', rows: [{ title: 'Attack', body: 'swipe!' }] }],
+			notes: 'a top-level block the preview does not know'
 		};
 		const text = renderPreview(draft).join('\n');
 		expect(text).toMatch(/not previewed/i);
+		expect(text).toContain('notes');
 		expect(text).not.toContain('pools');
-		expect(text).toContain('sections');
-		expect(text).not.toContain('Your Turn');
-		expect(text).not.toContain('swipe!');
+		const notPreviewedLine = text.split('\n').find((line) => /not previewed/i.test(line)) ?? '';
+		expect(notPreviewedLine).not.toContain('sections');
+		expect(text).toContain('Your Turn');
+		expect(text).toContain('swipe!');
+	});
+
+	it('draws a section with its palette name and a row keeping its pill', () => {
+		const draft = {
+			name: 'Sunny',
+			sections: [
+				{
+					title: 'Strengths',
+					color: 'forest',
+					rows: [{ title: 'Quick & Sneaky', body: 'flips and sneaking, [[+8]] bonus' }]
+				}
+			]
+		};
+		const text = renderPreview(draft).join('\n');
+		expect(text).toContain('Strengths');
+		expect(text).toContain('forest');
+		expect(text).toContain('Quick & Sneaky');
+		expect(text).toContain('flips and sneaking, [[+8]] bonus');
+	});
+
+	it('does not draw a row with no body', () => {
+		const draft = {
+			name: 'Sunny',
+			sections: [
+				{
+					title: 'Strengths',
+					rows: [
+						{ title: 'Has body', body: 'a prompt' },
+						{ title: 'No body' }
+					]
+				}
+			]
+		};
+		const text = renderPreview(draft).join('\n');
+		expect(text).toContain('Has body');
+		expect(text).not.toContain('No body');
 	});
 
 	it('draws a pool as its label followed by one dot per use', () => {

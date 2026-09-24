@@ -13,6 +13,7 @@
  * against a live fixture, per design.md's open question.
  */
 import type { AbilityScores, Modifier } from './digest';
+import { abilityModifier } from './rules';
 
 export type ArmorClassResult = { value: number; reason: null } | { value: null; reason: string };
 
@@ -28,10 +29,6 @@ class UnknownSource extends Error {}
 
 function unknown(reason: string): never {
 	throw new UnknownSource(reason);
-}
-
-function abilityModifier(score: number): number {
-	return Math.floor((score - 10) / 2);
 }
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {

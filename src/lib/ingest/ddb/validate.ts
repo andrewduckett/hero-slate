@@ -11,6 +11,7 @@ import { ID_GRAMMAR, checkIdentity } from '$lib/data/yaml';
 import { PALETTE_NAMES } from '$lib/theme/palette';
 import { validEntries } from '$lib/character/entries';
 import { resolvePools } from '$lib/character/pools';
+import { resolveSections } from '$lib/character/sections';
 
 const MAX_POOL_DOTS = 12;
 
@@ -89,6 +90,37 @@ export function validateDraft(text: string, targetId: string): ValidationResult 
 				warnings.push(`pool color "${color}" is not a palette name and will fall back to neutral`);
 			}
 		}
+	}
+
+	if (Array.isArray(parsed.sections)) {
+		if (resolveSections(parsed.sections).length < parsed.sections.length) {
+			warnings.push('the app would drop a `sections` entry');
+		}
+
+		let rowDropped = false;
+		for (const section of parsed.sections) {
+			if (!isMapping(section)) continue;
+
+			const color = section.color;
+			if (typeof color === 'string' && !(PALETTE_NAMES as readonly string[]).includes(color)) {
+				warnings.push(`section color "${color}" is not a palette name and will fall back to neutral`);
+			}
+
+			const rawRows = section.rows;
+			if (!Array.isArray(rawRows)) continue;
+
+			const resolvedRowCount = resolveSections([section])[0]?.rows.length ?? 0;
+			if (resolvedRowCount < rawRows.length) rowDropped = true;
+
+			for (const row of rawRows) {
+				if (!isMapping(row)) continue;
+				const rowColor = row.color;
+				if (typeof rowColor === 'string' && !(PALETTE_NAMES as readonly string[]).includes(rowColor)) {
+					warnings.push(`row color "${rowColor}" is not a palette name and will fall back to neutral`);
+				}
+			}
+		}
+		if (rowDropped) warnings.push('the app would drop a row in that section');
 	}
 
 	return { errors, warnings };

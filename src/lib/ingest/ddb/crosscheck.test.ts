@@ -18,6 +18,8 @@ function digest(overrides: Partial<Digest> = {}): Digest {
 		spellSlotsReason: null,
 		pactMagic: null,
 		pactMagicReason: null,
+		skills: [],
+		actions: [],
 		...overrides
 	};
 }
@@ -82,6 +84,17 @@ describe('crosscheckDraft', () => {
 
 	it('never compares the name', () => {
 		const warnings = crosscheckDraft({ name: 'Someone Else' }, digest({ name: 'Urven' }));
+		expect(warnings).toEqual([]);
+	});
+
+	it('gives no cross-check warning for a stale skill pill in a section', () => {
+		const draft = {
+			sections: [{ title: 'Strengths', rows: [{ title: 'Understanding', body: 'understanding, [[+6]] bonus' }] }]
+		};
+		const warnings = crosscheckDraft(
+			draft,
+			digest({ skills: [{ name: 'Insight', ability: 'Wisdom', proficiency: 'proficient', bonus: 5, bonusReason: null }] })
+		);
 		expect(warnings).toEqual([]);
 	});
 });
