@@ -449,7 +449,7 @@ name and confirmed (update mode matches the existing id).
   - **Scope**: in: an optional `links: [{ label, url, color? }]` key; a `resolveLinks` resolver that keeps only `https:` URLs and silently drops malformed entries (`javascript:`, `http:`, missing url); a missing label falls back to the URL's hostname; a "Links" group rendered last, after the authored sections, hidden when no valid link remains; each link opens in a new tab with `rel="noopener noreferrer"`; colour from a palette name, with contrast tests for any new pairing; example links in `urven.yaml`. / out: links inside rich-text rows (the renderer stays link-free); fetched favicons or icons from other sites; the ingest skill offering links (story 22).
   - **Relevant code**: `src/lib/types.ts`, new `src/lib/character/links.ts` + `LinksBlock.svelte` (follow `sections.ts` / `pools.ts`), `src/lib/CharacterView.svelte` (fixed block order), `src/lib/theme/palette.ts` if new tokens are needed, `static/characters/urven.yaml`.
   - **Added**: 2026-09-24
-  - **Change**: _not yet proposed_
+  - **Change**: links-section
 
 - [ ] 22. `ingest-offers-links` — the ingest interview offers the character's D&D Beyond sheet and the spell compendium as links
   - **Persona served**: Andrew (Author)
@@ -572,3 +572,4 @@ name and confirmed (update mode matches the existing id).
   sheet and, for spellcasters, the D&D Beyond spell compendium. D&D Beyond has no
   stable per-character spells URL. No stories renumbered or superseded. Reconciled the
   checklist: no drift; removed a duplicated `Change` line on story 19.
+- 2026-09-24 — Story 21 (`links-section`) implemented; change linked.
