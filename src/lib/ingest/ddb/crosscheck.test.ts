@@ -20,6 +20,8 @@ function digest(overrides: Partial<Digest> = {}): Digest {
 		pactMagicReason: null,
 		skills: [],
 		actions: [],
+		spells: [],
+		spellcasting: [],
 		...overrides
 	};
 }

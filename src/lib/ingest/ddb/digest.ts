@@ -15,6 +15,7 @@ import { computeLimitedUses, type LimitedUse, type LimitedUseEntry, type Limited
 import { computeSpellSlots, computePactMagic, type SpellSlotEntry, type SpellcastingClassInput } from './spellSlots';
 import { computeSkills, type Skill } from './skills';
 import { computeActions, type Action, type FeatureActionEntry } from './actions';
+import { computeSpells, type Spell, type SpellcastingClassSummary, type SpellClassInfo, type SpellRecordEntry, type SpellSource } from './spells';
 import { abilityModifier } from './rules';
 
 export const ABILITY_ORDER = [
@@ -53,6 +54,8 @@ export interface Digest {
 	pactMagicReason: string | null;
 	skills: Skill[];
 	actions: Action[];
+	spells: Spell[];
+	spellcasting: SpellcastingClassSummary[];
 }
 
 export type DigestResult = { status: 'ok'; digest: Digest } | { status: 'unreadable'; message: string };
@@ -112,16 +115,28 @@ function readSlotTable(definition: Record<string, unknown> | undefined): unknown
 	return spellRules?.levelSpellSlots;
 }
 
-function readClasses(raw: unknown): { classes: DigestClass[]; level: number; spellcasting: SpellcastingClassInput[] } {
+/** A class or subclass definition's spellcasting ability, as an optional field: missing or wrong-typed means none. */
+function readSpellCastingAbility(definition: Record<string, unknown> | undefined): AbilityKey | undefined {
+	return ability(definition?.spellCastingAbilityId);
+}
+
+function readClasses(raw: unknown): {
+	classes: DigestClass[];
+	level: number;
+	spellcasting: SpellcastingClassInput[];
+	spellClasses: SpellClassInfo[];
+} {
 	const list = requiredArray(raw, 'classes');
 	if (list.length === 0) fail('classes');
 
 	const classes: DigestClass[] = [];
 	const spellcasting: SpellcastingClassInput[] = [];
+	const spellClasses: SpellClassInfo[] = [];
 
 	for (const entry of list) {
 		const record = asRecord(entry, 'classes');
 		const level = requiredNumber(record.level, 'classes');
+		const id = optionalField(record.id, 'classes', (v) => requiredNumber(v, 'classes'));
 		const definition = optionalField(record.definition, 'classes', (v) => asRecord(v, 'classes'));
 		const name = typeof definition?.name === 'string' ? definition.name : '';
 		const subclassDefinition = optionalField(record.subclassDefinition, 'classes', (v) => asRecord(v, 'classes'));
@@ -136,9 +151,16 @@ function readClasses(raw: unknown): { classes: DigestClass[]; level: number; spe
 			subclassCanCastSpells: readCanCastSpells(subclassDefinition),
 			subclassSlotTable: readSlotTable(subclassDefinition)
 		});
+
+		spellClasses.push({
+			id,
+			name,
+			level,
+			ability: readSpellCastingAbility(definition) ?? readSpellCastingAbility(subclassDefinition)
+		});
 	}
 
-	return { classes, level: classes.reduce((sum, c) => sum + c.level, 0), spellcasting };
+	return { classes, level: classes.reduce((sum, c) => sum + c.level, 0), spellcasting, spellClasses };
 }
 
 /** Read the six base scores from `stats` (required: all six abilities present and numeric). */
@@ -235,6 +257,45 @@ function readLimitedUseEntries(
 	return entries;
 }
 
+const SPELL_SOURCE_GROUPS: { key: 'class' | 'race' | 'background' | 'feat'; source: SpellSource }[] = [
+	{ key: 'class', source: 'class feature' },
+	{ key: 'race', source: 'species' },
+	{ key: 'background', source: 'background' },
+	{ key: 'feat', source: 'feat' }
+];
+
+/** Read `classSpells`, the character's class spell lists, each spell tagged with its source class's id. */
+function readClassSpellEntries(raw: unknown): SpellRecordEntry[] {
+	const list = optionalField(raw, 'classSpells', (v) => requiredArray(v, 'classSpells'));
+	if (list === undefined) return [];
+
+	const entries: SpellRecordEntry[] = [];
+	for (const item of list) {
+		const group = asRecord(item, 'classSpells');
+		const classId = typeof group.characterClassId === 'number' ? group.characterClassId : undefined;
+		const spellList = requiredArray(group.spells, 'classSpells');
+		for (const spell of spellList) {
+			entries.push({ source: 'class', classId, record: asRecord(spell, 'classSpells') });
+		}
+	}
+	return entries;
+}
+
+/** Read the `class`, `race`, `background`, and `feat` groups of `spells`; skip `item`. */
+function readSpellGroupEntries(raw: unknown): SpellRecordEntry[] {
+	const group = optionalField(raw, 'spells', (v) => asRecord(v, 'spells'));
+	if (group === undefined) return [];
+
+	const entries: SpellRecordEntry[] = [];
+	for (const { key, source } of SPELL_SOURCE_GROUPS) {
+		const items = optionalField(group[key], `spells.${key}`, (v) => requiredArray(v, `spells.${key}`)) ?? [];
+		for (const item of items) {
+			entries.push({ source, classId: undefined, record: asRecord(item, `spells.${key}`) });
+		}
+	}
+	return entries;
+}
+
 /** Read the `class`, `race`, `background`, and `feat` groups of `actions`, each record whole; skip `item`. */
 function readFeatureActionEntries(raw: unknown): FeatureActionEntry[] {
 	const group = optionalField(raw, 'actions', (v) => asRecord(v, 'actions'));
@@ -305,7 +366,7 @@ export function computeDigest(body: unknown): DigestResult {
 		const data = asRecord(outer.data, 'data');
 
 		const name = requiredString(data.name, 'name');
-		const { classes, level, spellcasting } = readClasses(data.classes);
+		const { classes, level, spellcasting: slotClasses, spellClasses } = readClasses(data.classes);
 
 		const baseScores = readBaseScores(data.stats, 'stats');
 		const bonusStats = optionalField(data.bonusStats, 'bonusStats', (v) => readAbilityAdjustments(v, 'bonusStats')) ?? {};
@@ -347,12 +408,15 @@ export function computeDigest(body: unknown): DigestResult {
 		];
 		const limitedUses = computeLimitedUses(limitedUseEntries, abilities, level);
 
-		const { spellSlots, spellSlotsReason } = computeSpellSlots(spellcasting);
-		const { pactMagic, pactMagicReason } = computePactMagic(spellcasting);
+		const { spellSlots, spellSlotsReason } = computeSpellSlots(slotClasses);
+		const { pactMagic, pactMagicReason } = computePactMagic(slotClasses);
 
 		const skills = computeSkills(modifiers, abilities, level, characterValues);
 		const featureActionEntries = readFeatureActionEntries(data.actions);
 		const actions = computeActions(featureActionEntries, inventory, modifiers, abilities, level);
+
+		const spellEntries = [...readClassSpellEntries(data.classSpells), ...readSpellGroupEntries(data.spells)];
+		const { spells, spellcasting } = computeSpells(spellEntries, spellClasses, abilities, level, modifiers);
 
 		return {
 			status: 'ok',
@@ -372,7 +436,9 @@ export function computeDigest(body: unknown): DigestResult {
 				pactMagic,
 				pactMagicReason,
 				skills,
-				actions
+				actions,
+				spells,
+				spellcasting
 			}
 		};
 	} catch (error) {

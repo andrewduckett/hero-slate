@@ -463,3 +463,79 @@ describe('computeDigest — derived combat facts', () => {
 		if (result.status === 'ok') expect(result.digest.initiative).toBe(5);
 	});
 });
+
+describe('computeDigest — spell source fields', () => {
+	it('reads a missing classSpells as no class spell list', () => {
+		const result = computeDigest(character());
+		expect(result.status).toBe('ok');
+		if (result.status === 'ok') expect(result.digest.spells).toEqual([]);
+	});
+
+	it('reads a null classSpells as no class spell list', () => {
+		const result = computeDigest(character({ classSpells: null }));
+		expect(result.status).toBe('ok');
+		if (result.status === 'ok') expect(result.digest.spells).toEqual([]);
+	});
+
+	it('reports classSpells as an object instead of a list as unreadable, naming it', () => {
+		const result = computeDigest(character({ classSpells: {} }));
+		expect(result.status).toBe('unreadable');
+		if (result.status === 'unreadable') expect(result.message).toContain('classSpells');
+	});
+
+	it('still digests a class with no id and no spellcasting ability', () => {
+		const result = computeDigest(
+			character({
+				classes: [{ level: 6, definition: { name: 'Monk' }, subclassDefinition: null }]
+			})
+		);
+		expect(result.status).toBe('ok');
+		if (result.status === 'ok') expect(result.digest.spellcasting).toEqual([]);
+	});
+
+	it('reads a class spell list, matching each way to its class by id', () => {
+		const result = computeDigest(
+			character({
+				classes: [
+					{
+						id: 1,
+						level: 6,
+						definition: { name: 'Wizard', spellCastingAbilityId: 4 },
+						subclassDefinition: null
+					}
+				],
+				classSpells: [
+					{
+						characterClassId: 1,
+						spells: [
+							{
+								prepared: true,
+								alwaysPrepared: false,
+								usesSpellSlot: true,
+								spellCastingAbilityId: null,
+								limitedUse: null,
+								overrideSaveDc: null,
+								definition: {
+									name: 'Fireball',
+									level: 3,
+									concentration: false,
+									ritual: false,
+									requiresAttackRoll: false,
+									requiresSavingThrow: false,
+									saveDcAbilityId: null,
+									modifiers: []
+								}
+							}
+						]
+					}
+				]
+			})
+		);
+		expect(result.status).toBe('ok');
+		if (result.status !== 'ok') return;
+		expect(result.digest.spells).toHaveLength(1);
+		const [fireball] = result.digest.spells;
+		expect(fireball.name).toBe('Fireball');
+		expect(fireball.ways[0]).toMatchObject({ source: 'class', className: 'Wizard', status: 'prepared' });
+	});
+});
