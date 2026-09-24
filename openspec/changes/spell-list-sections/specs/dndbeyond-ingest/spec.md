@@ -77,14 +77,16 @@ The skill SHALL guide the Author from a character reference to a written charact
 5. Propose a logical id, a palette color, and whether to keep the name's emoji. The Author confirms or changes each one.
 6. Offer the pools. List each limited use with its reset, each spell-slot level, and the Pact Magic slots. The Author picks the pools to keep. For each kept pool, propose a label, a palette color, and a pool id, and the Author confirms or changes them. Propose each pool id as the label in lowercase, with hyphens between words. Propose `slots-N` for the spell-slot pool at level `N`, and `pact-slots` for Pact Magic. Offer one pool for each spell-slot level. Tell the Author when a pool's maximum is above 12, because the app would drop that pool.
 7. Recommend a Your Turn section. Recommend 3 to 5 rows from the digest's actions, and give a short reason for each. Favor the main attack, one signature feature, and one short prompt for a move with no numbers. When the digest's `spellcasting` list is not empty, include a "Cast a Spell" row among those rows. Do not list every action. The Author keeps, cuts, swaps, or adds rows, and may ask for any digest action by name.
-8. When the digest's `spellcasting` list is not empty, recommend a Magic section. Recommend one spell with a known save DC, one spell with a known to-hit, and 2 or 3 flavor spells written with no pills. Recommend only spells with a cast way whose status is not `not-prepared`. Give a short reason for each row. Do not list every spell. The Author keeps, cuts, swaps, or adds rows, and may ask for any digest spell by name.
+8. When the digest's `spellcasting` list is not empty, recommend a Magic section. Recommend one spell with a known save DC, one spell with a known to-hit, and 2 or 3 flavor spells written with no pills. Recommend only spells with a cast way whose status is not `not-prepared`, except under the fallback below. Give a short reason for each row. Do not list every spell. The Author keeps, cuts, swaps, or adds rows, and may ask for any digest spell by name.
 9. Recommend a Strengths section from the skills whose proficiency level is proficient or expertise. Group skills into one row only when their ability and their final bonus are both equal. Give each row an emoji and a short plain-words gloss that names its skills. The Author keeps, cuts, splits, or adds rows, and may ask for any digest skill by name.
 10. Propose a palette color for each section, and the section order Your Turn, Magic, Strengths. The Author confirms or changes each color and the order.
 11. Draft the character in the workspace directory, in a file named `<id>.yaml`. The draft covers the name, level, class, color, abilities, combat, hit points, the kept pools, and the kept sections.
 12. Run the preview tool with the draft and the digest file. Show the Author its full output, including every warning.
 13. After the Author approves a preview with no errors, run the write tool on the same draft.
 
-The "Cast a Spell" row SHALL carry the spell attack and save DC of one `spellcasting` entry: the entry for the class with the highest level, or the first listed on a tie. The row SHALL tell the player to pick a spell from the Magic section.
+The "Cast a Spell" row SHALL carry the spell attack and save DC of one `spellcasting` entry. The skill SHALL use the entry for the class with the highest level. On a tie, it SHALL use the first entry listed. The row SHALL tell the player to pick a spell from the Magic section.
+
+A class may have leveled spells in its class spell list, but none of them with status `prepared` or `always`. For that class, the skill SHALL tell the Author, and SHALL recommend from that class's whole class spell list. This fallback covers a class that knows its spells instead of preparing them.
 
 When the digest's `spellcasting` list is empty, the skill SHALL NOT recommend a "Cast a Spell" row or a Magic section. When that character still has spells, the skill SHALL name them to the Author, who may add a Magic section.
 
@@ -184,6 +186,12 @@ These scenarios describe agent behavior. A scripted manual walkthrough of the sk
 
 - **WHEN** the Author asks for Zip's Identify, whose only cast way is `not-prepared`
 - **THEN** the skill offers an Identify row
+
+#### Scenario: A class with no prepared spells falls back to its whole class spell list
+
+- **WHEN** a Sorcerer's class spell list has leveled spells, all with status `not-prepared`
+- **THEN** the skill tells the Author that no leveled Sorcerer spell is marked prepared
+- **AND** it recommends Magic rows from the whole Sorcerer class spell list
 
 #### Scenario: An unknown spell damage gives no damage pill
 
@@ -406,10 +414,14 @@ A character with no spellcasting class SHALL have an empty `spellcasting` list.
 
 ### Requirement: Recorded fixtures carry no personal data
 
-Every recorded D&D Beyond response checked into the repository SHALL have its personal fields blanked:
+The repository SHALL provide a script that blanks the personal fields of a recorded D&D Beyond response. Whoever records a response SHALL run the script on it before committing it. In a blanked response:
 - `username` SHALL be an empty string, and `userId` SHALL be 0.
 - `campaign` SHALL be `null`.
 - Every field of `decorations`, except `themeColor`, SHALL be `null`, including the fields of `decorations.defaultBackdrop`.
+- Every field of `notes` and of `traits` SHALL be `null`. These hold the player's free-text backstory, allies, ideals, bonds, flaws, and appearance.
+- `gender`, `faith`, `age`, `hair`, `eyes`, `skin`, `height`, and `weight` SHALL be `null`.
+
+The script SHALL NOT change any other field. The character's name, classes, abilities, modifiers, actions, spells, and inventory stay as recorded, because the tests read them.
 
 The test suite SHALL check every recorded response for these fields, and SHALL fail when any is not blank.
 
@@ -422,3 +434,14 @@ The test suite SHALL check every recorded response for these fields, and SHALL f
 
 - **WHEN** a recorded response has `username` set to `someone`
 - **THEN** the check fails and names that fixture
+
+#### Scenario: A fixture with a backstory fails
+
+- **WHEN** a recorded response has `notes.backstory` set to any text
+- **THEN** the check fails and names that fixture and the field
+
+#### Scenario: The script keeps character data
+
+- **WHEN** the script blanks a response that has a username, a campaign, a backstory, and a spell list
+- **THEN** those three personal fields are blank
+- **AND** the spell list and every other field are unchanged
