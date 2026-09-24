@@ -172,6 +172,51 @@ describe('CharacterView: sheet block order', () => {
 	});
 });
 
+const fullWithLinks: Character = {
+	...full,
+	links: [{ url: 'https://example.com', label: 'Example' }]
+};
+
+describe('CharacterView: links group', () => {
+	it('renders the links group after the last section', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: fullWithLinks } } });
+
+		expect(blockOrder(container)).toEqual([
+			'header',
+			'abilities',
+			'combat',
+			'hit-points',
+			'pools',
+			'sections',
+			'links'
+		]);
+	});
+
+	it('shows the Links heading after Pools and directly before the chips', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: fullWithLinks } } });
+
+		expect(groupHeadings(container)).toEqual(['Stats', 'Health', 'Pools', 'Links']);
+
+		const heading = [...container.querySelectorAll('[data-group-heading]')].find(
+			(h) => h.textContent?.trim() === 'Links'
+		) as HTMLElement;
+		expect(heading.nextElementSibling?.getAttribute('data-block')).toBe('links');
+	});
+
+	it('shows no Links heading when links is missing', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: full } } });
+
+		expect(groupHeadings(container)).not.toContain('Links');
+	});
+
+	it('shows no Links heading when every link is dropped', () => {
+		const character: Character = { ...full, links: [{ url: 'javascript:alert(1)' }] };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(groupHeadings(container)).not.toContain('Links');
+	});
+});
+
 describe('CharacterView: group headings', () => {
 	it('shows Stats, Health, and Pools, in order, each directly before its group', () => {
 		const { container } = render(CharacterView, { props: { result: { status: 'found', character: full } } });

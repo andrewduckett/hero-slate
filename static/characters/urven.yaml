@@ -57,3 +57,9 @@ sections:
     - title: 🌿 Survival
       body: learn about plants, beasts, & the wild, [[+5]] bonus
 
+links:
+  - url: https://dndbeyond.com/characters/154922980
+    label: 📜 D&D Beyond
+  - url: https://www.dndbeyond.com/spells
+    label: Spell Compendium
+

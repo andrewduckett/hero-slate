@@ -8,10 +8,12 @@
 	import HitPointsBlock from '$lib/character/HitPointsBlock.svelte';
 	import ResourcePoolsBlock from '$lib/character/ResourcePoolsBlock.svelte';
 	import SectionsBlock from '$lib/character/SectionsBlock.svelte';
+	import LinksBlock from '$lib/character/LinksBlock.svelte';
 	import { resolveAbilities } from '$lib/character/abilities';
 	import { resolveCombat } from '$lib/character/combat';
 	import { resolveHitPoints } from '$lib/character/hitPoints';
 	import { resolvePools } from '$lib/character/pools';
+	import { resolveLinks } from '$lib/character/links';
 	import AppHeader from '$lib/AppHeader.svelte';
 
 	type ViewState = GetCharacterResult | { status: 'loading' };
@@ -38,6 +40,9 @@
 	);
 	const hasHealth = $derived(character !== null && resolveHitPoints(character.hitPoints, storedHp) !== null);
 	const hasPools = $derived(character !== null && resolvePools(character.pools, storedPools).length > 0);
+	const hasLinks = $derived(
+		character !== null && resolveLinks(character.links, resolvePalette(character.color)).length > 0
+	);
 </script>
 
 {#if result.status === 'loading'}
@@ -51,8 +56,9 @@
 			subtitle={formatIdentity(result.character) || undefined}
 			palette={resolvePalette(result.character.color)}
 		/>
-		<!-- Blocks render in one fixed order: stats, hit points, pools, then the
-		     authored sections. Each group heading sits directly before its blocks. -->
+		<!-- Blocks render in one fixed order: stats, hit points, pools, the
+		     authored sections, then the links. Each group heading sits directly
+		     before its blocks. -->
 		{#if hasStats}
 			<div class="group">
 				<h2 class="group-heading" data-group-heading>Stats</h2>
@@ -78,6 +84,12 @@
 			</div>
 		{/if}
 		<SectionsBlock sections={result.character.sections} />
+		{#if hasLinks}
+			<div class="group">
+				<h2 class="group-heading" data-group-heading>Links</h2>
+				<LinksBlock links={result.character.links} palette={resolvePalette(result.character.color)} />
+			</div>
+		{/if}
 	</article>
 {:else if result.status === 'error'}
 	<p>Could not load this character. Try again.</p>
