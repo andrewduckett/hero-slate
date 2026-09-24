@@ -37,6 +37,13 @@ export interface Character {
 	 */
 	sections?: unknown;
 
+	/**
+	 * Ordered `{ url, label?, color? }` entries. Stays `unknown` here because the
+	 * provider validates identity only; `resolveLinks` in `character/links.ts` owns
+	 * this shape and silently drops any entry that does not match it.
+	 */
+	links?: unknown;
+
 	/** Any other authored keys pass through unchanged this release. */
 	[key: string]: unknown;
 }
