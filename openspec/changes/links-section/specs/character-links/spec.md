@@ -49,6 +49,16 @@ The system SHALL keep a link only when its `url` is a string that parses as an a
 - **WHEN** a character lists a link with the URL `/sunny` or `not a url`
 - **THEN** the sheet does not show that link
 
+#### Scenario: A URL with only a username is dropped
+
+- **WHEN** a character lists a link with the URL `https://user@example.com`
+- **THEN** the sheet does not show that link
+
+#### Scenario: A bare string entry is dropped
+
+- **WHEN** a character lists `https://example.com` as a plain string instead of a mapping with a `url`
+- **THEN** the sheet does not show that link
+
 #### Scenario: An invalid link does not hide valid ones
 
 - **WHEN** a character lists a valid link, then an entry with no `url`, then another valid link
@@ -68,6 +78,12 @@ The system SHALL show a link's `label` as plain text. The system SHALL NOT inter
 - **WHEN** a character lists a link labelled `**Spells**`
 - **THEN** the link shows the text `**Spells**` exactly, with no bold styling
 
+#### Scenario: A label with HTML
+
+- **WHEN** a character lists a link labelled `<em>Spells</em>`
+- **THEN** the link shows the text `<em>Spells</em>` exactly
+- **AND** the link contains no `em` element
+
 #### Scenario: A missing label falls back to the hostname
 
 - **WHEN** a character lists a link with the URL `https://www.dndbeyond.com/spells` and no label
@@ -76,6 +92,11 @@ The system SHALL show a link's `label` as plain text. The system SHALL NOT inter
 #### Scenario: A blank label falls back to the hostname
 
 - **WHEN** a character lists a link with the label `"   "` and the URL `https://example.com/tool`
+- **THEN** the link shows the text `example.com`
+
+#### Scenario: A label that is not a string falls back to the hostname
+
+- **WHEN** a character lists a link with the label `42` written as a number and the URL `https://example.com/tool`
 - **THEN** the link shows the text `example.com`
 
 ### Requirement: Link colour defaults to the character's palette
@@ -117,6 +138,17 @@ The system SHALL show the kept links as a row of chips that wraps onto more line
 - **WHEN** a character lists more links than fit on one line of a phone screen
 - **THEN** the chips wrap onto more lines
 - **AND** the page does not scroll sideways
+
+#### Scenario: Chips are big enough to tap
+
+- **WHEN** the sheet shows a link chip
+- **THEN** the chip is at least 44 CSS pixels tall
+
+#### Scenario: The arrow is visible but not announced
+
+- **WHEN** the sheet shows a link chip
+- **THEN** the chip shows an arrow after its label
+- **AND** the arrow is hidden from assistive technology
 
 ### Requirement: Links open in a new tab without a referrer
 

@@ -81,8 +81,20 @@ VERDICT: APPROVE_WITH_CHANGES
 3. **Clarify `LinksBlock.svelte` props and resolver pattern in `design.md`:**  
    In `design.md` (D2), explicitly state the props interface for `LinksBlock.svelte`. Specify whether `LinksBlock` receives `links: ResolvedLink[]` pre-resolved by `CharacterView`, or accepts `links: unknown` and `palette: PaletteName` to resolve internally.
 
-CHANGES_APPLIED: no
+CHANGES_APPLIED: yes
 
 ## Rebuttals
 
-*(To be filled by the author upon addressing or rebutting the findings above.)*
+- **Moderate 1-3:** fixed as listed in Required Changes 1-3; re-checked and verified by the reviewer below.
+- **Suggestion 1 (bare string entry):** applied — added `Scenario: A bare string entry is dropped`.
+- **Suggestion 2 (username-only credentials):** applied — added `Scenario: A URL with only a username is dropped`.
+- **Suggestion 3 (CharacterView comment):** deferred to implementation; design.md D2 now says the block-order comment is updated.
+- **Suggestion 4 (plain language):** no action needed.
+
+## Re-check (round 1)
+
+1. **Required Change 1 (touch target height and visual arrow scenarios in `character-links/spec.md`):** VERIFIED — Added `Scenario: Chips are big enough to tap` (asserting ≥44px height) and `Scenario: The arrow is visible but not announced` (asserting the arrow is hidden from assistive technology) under `Requirement: Links render as a row of chips`.
+2. **Required Change 2 (HTML rendering and non-string label scenarios in `character-links/spec.md`):** VERIFIED — Added `Scenario: A label with HTML` (asserting literal text without HTML elements) and `Scenario: A label that is not a string falls back to the hostname` under `Requirement: Link labels are plain text`.
+3. **Required Change 3 (clarify `LinksBlock.svelte` props and resolver pattern in `design.md`):** VERIFIED — Section D2 explicitly defines the props contract as `links: unknown` and `palette: PaletteName`, noting that `LinksBlock` calls `resolveLinks` internally matching the pattern of other blocks.
+
+Result: all three Required Changes verified (see `CHANGES_APPLIED` above).

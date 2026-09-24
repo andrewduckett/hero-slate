@@ -47,7 +47,7 @@ For each entry, the resolver does the following, in order:
 
 ### D2. A `LinksBlock.svelte` chip row, rendered last
 
-`LinksBlock.svelte` takes the resolved links and renders a `<ul>` that uses `flex-wrap: wrap`. Each `<li>` holds one `<a>`:
+`LinksBlock.svelte` takes two props: `links: unknown`, the raw value from the character, and `palette: PaletteName`, the character's resolved palette. It calls `resolveLinks(links, palette)` itself, as `SectionsBlock.svelte` calls `resolveSections`. It renders a `<ul>` that uses `flex-wrap: wrap`. Each `<li>` holds one `<a>`:
 
 - `href={link.href}`, `target="_blank"`, `rel="noopener noreferrer"`.
 - `data-palette={link.palette}`. The existing palette CSS then sets `--tint` and `--deep` for that chip.
@@ -57,7 +57,7 @@ For each entry, the resolver does the following, in order:
 - A visually hidden span with the text "(opens in a new tab)", so the accessible name carries both the label and the new-tab notice.
 - A visible `:focus-visible` outline for keyboard users.
 
-`CharacterView.svelte` adds a `hasLinks` check that calls the same resolver as the block. It renders a "Links" group heading and the block after `SectionsBlock`. This matches how the Stats, Health, and Pools groups work.
+`CharacterView.svelte` adds a `hasLinks` check that calls the same resolver as the block. It renders a "Links" group heading and the block after `SectionsBlock`. So the view and the block each resolve the links once. The Pools group already works this way: `hasPools` and `ResourcePoolsBlock` both call `resolvePools`. The resolver is pure and the list is short, so the second call costs nothing that matters. The view's block-order comment is updated to name the links group.
 
 **Alternative considered:** a card with one row per link, like sections. Rejected. The group is tapped only now and then, so it should take less space than the prompts above it.
 
