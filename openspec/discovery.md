@@ -1,7 +1,7 @@
 # Discovery: Simple Character Sheet Web App
 
 > Status: complete
-> Created: 2026-09-18 · Last revised: 2026-09-23 (added the D&D Beyond ingest authoring epic, stories 16–20)
+> Created: 2026-09-18 · Last revised: 2026-09-24 (added the links section, stories 21–22)
 
 > Release plan produced by the discovery skill. Resume or revise by re-running the skill.
 > To build: run `/opsx:propose` and ask it to use the next unchecked story below.
@@ -27,6 +27,12 @@
   API (`character-service.dndbeyond.com`); suggest-and-confirm palette/section colors;
   one pool per spell-slot level; a private character is handled by telling the author to
   set it public and retry.
+- 2026-09-24 — Conversation request: an optional, per-character **links section**,
+  for example the D&D Beyond character sheet, D&D Beyond spells, or another site used
+  during play. Many sheets will have none (a child's sheet probably won't). Decisions
+  taken this session: links sit in a "Links" group at the bottom of the sheet; the
+  sheet block is a Should; having the ingest skill offer a D&D Beyond link is a
+  separate Could story.
 
 ## Scope, goals, non-goals
 
@@ -166,6 +172,11 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
   stale every level-up. The skeleton (URL → minimal valid sheet) unblocks the epic;
   update-in-place keeps a shipped sheet current without clobbering authored prose.
 
+- **Links section** (added 2026-09-24) — Andrew-as-Player: track in play. A fuller
+  sheet still sends its player to D&D Beyond or another reference mid-session. One tap
+  from the sheet saves searching for the right tab. Not a Must: the sheet works without
+  it, and Sunny's sheet will usually have no links.
+
 ### Could
 
 - Pool number±view fallback for large counts (>12).
@@ -176,6 +187,10 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
   Author: write YAML. Each opt-in section type (feature pools + spell slots; Your Turn +
   skills; spell lists) is incremental richness on top of the skeleton. Valuable but each
   is a hand-authorable section, so none is a Must.
+
+- **Ingest offers links** (added 2026-09-24) — Author: write YAML. The ingest skill
+  already knows the D&D Beyond character URL, so it can offer that link. It saves a
+  line of hand-typing, so it's a Could.
 
 ### Won't (this release)
 
@@ -410,8 +425,7 @@ name and confirmed (update mode matches the existing id).
   - **Scope**: in: the digest reports every class, feat, species, and subclass spell with its readiness status, its ways to cast, and digest-proven numbers (to-hit, damage with cantrip scaling, healing, save DC), plus a spell attack and DC per spellcasting class; a two-tier sheet: a "Cast a Spell" row in Your Turn, then a recommended **Magic** section of one save spell, one attack spell, and 2–3 flavour spells; suggest + confirm colours; a sanitized Sunny fixture. / out: spell-slot pools (story 17); item spells; upcast damage; a full spell reference/description dump (prompts, not a catalog).
   - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; `src/lib/ingest/ddb/` (digest); emits `sections[]` per `src/lib/data/yaml.ts`; DDB `spells`/`classSpells` fields.
   - **Added**: 2026-09-23
-  - **Change**: spell-list-sections
-  - **Change**: spell-list-sections
+  - **Change**: spell-list-sections (archived)
 
 - [ ] 20. `update-in-place` — re-run on an existing character updates drifted values, keeps authored structure
   - **Persona served**: Andrew (Author)
@@ -422,6 +436,30 @@ name and confirmed (update mode matches the existing id).
   - **Scope**: in: detect an existing `static/characters/<id>.yaml`; diff DDB values against it (level, `hitPoints.max`, ability values, `combat` values, pool/slot `max`); show the ASCII preview with changed values highlighted; on OK, update only those values and leave section structure, titles, colours, and prose untouched. / out: restructuring authored sections; adding new sections on update (author re-runs new-mode for that); resolving genuine authoring conflicts automatically (surface them, ask).
   - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; parses + rewrites `static/characters/<id>.yaml` preserving unknown/authored keys; schema in `src/lib/data/yaml.ts`.
   - **Added**: 2026-09-23
+  - **Change**: _not yet proposed_
+
+### Links (added 2026-09-24)
+
+- [ ] 21. `links-section` — a sheet can list links (D&D Beyond, other play sites) that open in one tap
+  - **Persona served**: Andrew-as-Player (Sunny, with no links, sees no change)
+  - **Journey segment**: Player "track in play" (reach a reference without searching for it)
+  - **MoSCoW**: Should
+  - **Why this story / why now**: a fuller sheet still sends its player to D&D Beyond or another site mid-session. One tap from the sheet saves hunting for the right tab. Nothing on the sheet can hold a link today: the rich-text renderer has no link syntax by design, and a test asserts pills are not interactive. So links get their own block, which also keeps URL checking in one place.
+  - **Depends on**: stories 6, 7, 8 (group-heading pattern, card style, palette tokens)
+  - **Scope**: in: an optional `links: [{ label, url, color? }]` key; a `resolveLinks` resolver that keeps only `https:` URLs and silently drops malformed entries (`javascript:`, `http:`, missing url); a missing label falls back to the URL's hostname; a "Links" group rendered last, after the authored sections, hidden when no valid link remains; each link opens in a new tab with `rel="noopener noreferrer"`; colour from a palette name, with contrast tests for any new pairing; example links in `urven.yaml`. / out: links inside rich-text rows (the renderer stays link-free); fetched favicons or icons from other sites; the ingest skill offering links (story 22).
+  - **Relevant code**: `src/lib/types.ts`, new `src/lib/character/links.ts` + `LinksBlock.svelte` (follow `sections.ts` / `pools.ts`), `src/lib/CharacterView.svelte` (fixed block order), `src/lib/theme/palette.ts` if new tokens are needed, `static/characters/urven.yaml`.
+  - **Added**: 2026-09-24
+  - **Change**: _not yet proposed_
+
+- [ ] 22. `ingest-offers-links` — the ingest interview offers the character's D&D Beyond sheet and the spell compendium as links
+  - **Persona served**: Andrew (Author)
+  - **Journey segment**: Author "write YAML"
+  - **MoSCoW**: Could
+  - **Why this story / why now**: the skill already knows the D&D Beyond character URL, so offering it saves hand-typing. Spellcasters also benefit from a link to the general spell compendium as a reference. D&D Beyond has no stable per-character spells URL, so the spells link is the compendium, not the character's list.
+  - **Depends on**: stories 16, 21 (soft: 19, whose digest spell data decides whether to offer the spells link)
+  - **Scope**: in: opt-in offers of (a) the character's D&D Beyond sheet, built from the character id, and (b) the D&D Beyond spell compendium `https://www.dndbeyond.com/spells`, offered only when the character casts spells; both shown in the ASCII preview and confirmed or dropped one by one; no `links` key written when none is chosen. / out: links to other sites (hand-authored); filtered spell searches per character or class; update-in-place behaviour (story 20 already preserves authored keys).
+  - **Relevant code**: `.claude/skills/dndbeyond-to-slate/SKILL.md`; `src/lib/ingest/ddb/` (digest already reports spells); emits `links[]` per story 21's resolver.
+  - **Added**: 2026-09-24
   - **Change**: _not yet proposed_
 
 ## Open Questions
@@ -527,3 +565,10 @@ name and confirmed (update mode matches the existing id).
   note: "Write YAML" stays `partial`, now naming story 19's spells — the "Cast a Spell"
   row, the Magic section, and the healing pill — as shipped alongside stories 16–18's
   fields, with update-in-place (story 20) as the remaining gap.
+- 2026-09-24 — Revision: added a **links section** from a conversation request.
+  Story 21 `links-section` (Should) adds an optional, `https:`-only "Links" group at
+  the bottom of the sheet, hidden when a character has none. Story 22
+  `ingest-offers-links` (Could) lets the ingest skill offer the character's D&D Beyond
+  sheet and, for spellcasters, the D&D Beyond spell compendium. D&D Beyond has no
+  stable per-character spells URL. No stories renumbered or superseded. Reconciled the
+  checklist: no drift; removed a duplicated `Change` line on story 19.
