@@ -104,7 +104,7 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
    partial       partial        gap         gap           gap            gap
 ```
 
-1. **Write YAML** — one file per character + manifest line — partial (story 16 ships a guided ingest for identity, abilities, combat, and hit points; story 17 adds pools and spell slots; sections, spells, and update-in-place are stories 18–20, still gaps)
+1. **Write YAML** — one file per character + manifest line — partial (story 16 ships a guided ingest for identity, abilities, combat, and hit points; story 17 adds pools and spell slots; story 18 adds the Your Turn actions section and the proficient-skills Strengths section; spells and update-in-place are stories 19–20, still gaps)
 2. **Commit to GitHub** — existing GitHub flow — partial (GitHub exists; repo not wired to a build)
 3. **Build & deploy** — Cloudflare Pages builds Vite app, SPA fallback — gap
 4. **Character in picker** — manifest drives home cards — gap
@@ -116,8 +116,11 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
 > questions, approve an ASCII preview, get a `static/characters/<id>.yaml` with
 > identity, abilities, combat, and hit points. Story 17 (`feature-pools-and-slots`)
 > adds the same guided offer-and-confirm flow for `pools`: class-feature limited
-> uses, one pool per spell-slot level, and Pact Magic. The stage becomes `supported`
-> once stories 18–20 add Your Turn/skills, spells, and update-in-place.
+> uses, one pool per spell-slot level, and Pact Magic. Story 18
+> (`your-turn-and-skills`) adds a Your Turn actions section and a proficient-skills
+> Strengths section, each with digest-proven `[[...]]` pills the Author edits prose
+> around. The stage becomes `supported` once stories 19–20 add spells and
+> update-in-place.
 
 ## MoSCoW
 
@@ -384,7 +387,7 @@ name and confirmed (update mode matches the existing id).
   - **Added**: 2026-09-23
   - **Change**: feature-pools-and-slots
 
-- [ ] 18. `your-turn-and-skills` — interview offers a "Your Turn" actions section and a proficient-skills "Strengths" section
+- [x] 18. `your-turn-and-skills` — interview offers a "Your Turn" actions section and a proficient-skills "Strengths" section
   - **Persona served**: Andrew (Author)
   - **Journey segment**: Author "write YAML" (the philosophy payload: prompts, not a catalog)
   - **MoSCoW**: Could
@@ -487,3 +490,8 @@ name and confirmed (update mode matches the existing id).
   update-in-place (stories 18–20) as the remaining gaps.
 - 2026-09-23 — Follow-up: checked off story 17 on the checklist (missed when the change
   archived, the same gap story 16 had).
+- 2026-09-23 — Story 18 (`your-turn-and-skills`) implemented, archived, and checked off on
+  the checklist. Updated the Author journey note: "Write YAML" stays `partial`, now naming
+  story 18's Your Turn actions section and proficient-skills Strengths section as shipped
+  alongside stories 16–17's fields, with spells and update-in-place (stories 19–20) as the
+  remaining gaps.
