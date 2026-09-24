@@ -104,7 +104,7 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
    partial       partial        gap         gap           gap            gap
 ```
 
-1. **Write YAML** — one file per character + manifest line — partial (story 16 ships a guided ingest for identity, abilities, combat, and hit points; story 17 adds pools and spell slots; story 18 adds the Your Turn actions section and the proficient-skills Strengths section; spells and update-in-place are stories 19–20, still gaps)
+1. **Write YAML** — one file per character + manifest line — partial (story 16 ships a guided ingest for identity, abilities, combat, and hit points; story 17 adds pools and spell slots; story 18 adds the Your Turn actions section and the proficient-skills Strengths section; story 19 adds spells — a "Cast a Spell" row, a Magic section, and the healing pill; update-in-place is story 20, still a gap)
 2. **Commit to GitHub** — existing GitHub flow — partial (GitHub exists; repo not wired to a build)
 3. **Build & deploy** — Cloudflare Pages builds Vite app, SPA fallback — gap
 4. **Character in picker** — manifest drives home cards — gap
@@ -119,8 +119,11 @@ Greenfield repo — every stage is `gap` today (only OpenSpec scaffold + `PRD.md
 > uses, one pool per spell-slot level, and Pact Magic. Story 18
 > (`your-turn-and-skills`) adds a Your Turn actions section and a proficient-skills
 > Strengths section, each with digest-proven `[[...]]` pills the Author edits prose
-> around. The stage becomes `supported` once stories 19–20 add spells and
-> update-in-place.
+> around. Story 19 (`spell-list-sections`) adds spells: the digest reports every
+> class, feat, species, and subclass spell with its readiness status and
+> digest-proven numbers, and the skill offers a "Cast a Spell" row in Your Turn plus
+> a recommended Magic section, with a healing pill alongside the existing ones. The
+> stage becomes `supported` once story 20 adds update-in-place, the remaining gap.
 
 ## MoSCoW
 
@@ -519,3 +522,7 @@ name and confirmed (update mode matches the existing id).
   a recommended Magic section), digest-proven spell numbers, and a sanitized Sunny
   fixture. Recorded the spell data shape, the sheet shape, and the fixture privacy
   cleanup under Open Questions as resolved.
+- 2026-09-23 — Story 19 (`spell-list-sections`) implemented. Updated the Author journey
+  note: "Write YAML" stays `partial`, now naming story 19's spells — the "Cast a Spell"
+  row, the Magic section, and the healing pill — as shipped alongside stories 16–18's
+  fields, with update-in-place (story 20) as the remaining gap.
