@@ -80,6 +80,35 @@ function computeMax(rule: Record<string, unknown>, abilities: AbilityScores, lev
 	return total;
 }
 
+export interface SingleLimitedUse {
+	max: number | null;
+	maxReason: string | null;
+	reset: ResetWord | null;
+}
+
+/**
+ * Compute one `limitedUse` rule's maximum and reset, under the same
+ * single-rule computation `computeLimitedUses` applies to every entry. `null`
+ * means no limited use at all: the computed maximum was 0 or less.
+ */
+export function computeSingleLimitedUse(
+	rule: Record<string, unknown>,
+	abilities: AbilityScores,
+	level: number
+): SingleLimitedUse | null {
+	const reset = readReset(rule);
+	try {
+		const max = computeMax(rule, abilities, level);
+		if (max <= 0) return null;
+		return { max, maxReason: null, reset };
+	} catch (error) {
+		if (error instanceof UnknownMax) {
+			return { max: null, maxReason: error.message, reset };
+		}
+		throw error;
+	}
+}
+
 export function computeLimitedUses(
 	entries: LimitedUseEntry[],
 	abilities: AbilityScores,
@@ -88,18 +117,9 @@ export function computeLimitedUses(
 	const results: LimitedUse[] = [];
 
 	for (const entry of entries) {
-		const reset = readReset(entry.rule);
-		try {
-			const max = computeMax(entry.rule, abilities, level);
-			if (max <= 0) continue;
-			results.push({ name: entry.name, source: entry.source, max, maxReason: null, reset });
-		} catch (error) {
-			if (error instanceof UnknownMax) {
-				results.push({ name: entry.name, source: entry.source, max: null, maxReason: error.message, reset });
-				continue;
-			}
-			throw error;
-		}
+		const single = computeSingleLimitedUse(entry.rule, abilities, level);
+		if (single === null) continue;
+		results.push({ name: entry.name, source: entry.source, ...single });
 	}
 
 	return results;
