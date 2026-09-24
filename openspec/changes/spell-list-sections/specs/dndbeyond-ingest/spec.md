@@ -90,7 +90,7 @@ A class may have leveled spells in its class spell list, but none of them with s
 
 When the digest's `spellcasting` list is empty, the skill SHALL NOT recommend a "Cast a Spell" row or a Magic section. When that character still has spells, the skill SHALL name them to the Author, who may add a Magic section.
 
-When a spell has more than one cast way, the skill SHALL take the row's numbers from one cast way. It SHALL propose the way with the earliest status in this order: `cantrip`, `always`, `granted`, `prepared`, `not-prepared`.
+When a spell has more than one cast way, the skill SHALL take the row's numbers from one cast way. It SHALL propose the way with the earliest status in this order: `cantrip`, `always`, `granted`, `prepared`, `not-prepared`. When several ways share that status, it SHALL propose the first of them in the digest's order.
 
 The skill SHALL write every number in a section pill from a digest value, and SHALL NOT compute, add, merge, or estimate a number. It SHALL format the pills this way:
 - a skill bonus as `[[+N]]` or `[[-N]]`
@@ -231,6 +231,7 @@ The digest SHALL list each distinct spell name once. It SHALL order the list by 
 
 Each cast way SHALL carry:
 - `source`: `class` for a class spell list, `class feature` for the `class` group of `spells`, and `species`, `background`, or `feat` for the other groups
+- `className`: for a way from a class spell list, the name of the class that list belongs to, matched by the class `id`; `null` for any other source
 - `status`: the first that applies of `cantrip` (spell level 0), `always` (D&D Beyond marks it always prepared), `granted` (any source except `class`), `prepared` (D&D Beyond marks it prepared), and `not-prepared`
 - `usesSlot`: `true` when D&D Beyond marks that the way uses a spell slot, and `false` otherwise
 - `limitedUse`: `null`, or the way's `max`, `maxReason`, and `reset`, computed under the rules of the Limited uses requirement
@@ -239,6 +240,8 @@ Each cast way SHALL carry:
 
 A limited use whose computed `max` is 0 or less SHALL count as `null`.
 
+The skill's known-caster fallback groups ways by `className`, so it can find each class's whole class spell list.
+
 Each number SHALL be known, unknown, or not applicable, under the same three states the Action facts requirement defines. `castingAbility` SHALL follow the known and unknown states, and SHALL NOT be not applicable.
 
 #### Scenario: A cantrip from a class spell list
@@ -246,6 +249,18 @@ Each number SHALL be known, unknown, or not applicable, under the same three sta
 - **WHEN** the tool digests the recorded D&D Beyond response for Sunny
 - **THEN** `Thorn Whip` has level 0 and one cast way
 - **AND** that way has source `class` and status `cantrip`
+
+#### Scenario: A class spell list names its class
+
+- **WHEN** the tool digests Zip's recorded response
+- **THEN** every cast way with source `class` has `className` Wizard
+- **AND** every cast way from another source has `className` `null`
+
+#### Scenario: A multiclass character's spell lists stay apart
+
+- **WHEN** a Druid and Sorcerer multiclass has a class spell list for each class
+- **THEN** each cast way from the Druid list has `className` Druid
+- **AND** each cast way from the Sorcerer list has `className` Sorcerer
 
 #### Scenario: A granted subclass spell
 
