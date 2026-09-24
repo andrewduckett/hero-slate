@@ -404,10 +404,10 @@ name and confirmed (update mode matches the existing id).
   - **MoSCoW**: Could
   - **Why this story / why now**: rounds out the epic for spellcasters — the remaining large DDB block. Kept separate from Your Turn so the interview stays legible and each mapper ships independently.
   - **Depends on**: stories 16, 18
-  - **Scope**: in: read DDB known/prepared spells; offer them as opt-in section(s) (e.g. grouped by level or cantrips-vs-leveled, author's choice); short prompt-style rows with dice pills where a spell has an attack/DC; suggest + confirm colours. / out: spell-slot pools (story 17); a full spell reference/description dump (prompts, not a catalog).
-  - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; emits `sections[]` per `src/lib/data/yaml.ts`; DDB `spells`/`classSpells` fields.
+  - **Scope**: in: the digest reports every class, feat, species, and subclass spell with its readiness status, its ways to cast, and digest-proven numbers (to-hit, damage with cantrip scaling, healing, save DC), plus a spell attack and DC per spellcasting class; a two-tier sheet: a "Cast a Spell" row in Your Turn, then a recommended **Magic** section of one save spell, one attack spell, and 2–3 flavour spells; suggest + confirm colours; a sanitized Sunny fixture. / out: spell-slot pools (story 17); item spells; upcast damage; a full spell reference/description dump (prompts, not a catalog).
+  - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; `src/lib/ingest/ddb/` (digest); emits `sections[]` per `src/lib/data/yaml.ts`; DDB `spells`/`classSpells` fields.
   - **Added**: 2026-09-23
-  - **Change**: _not yet proposed_
+  - **Change**: spell-list-sections
 
 - [ ] 20. `update-in-place` — re-run on an existing character updates drifted values, keeps authored structure
   - **Persona served**: Andrew (Author)
@@ -450,6 +450,25 @@ name and confirmed (update mode matches the existing id).
   of which appears in Urven's fixture. See `design.md`'s Decisions (D7, D8) and Risks in
   the `dndbeyond-ingest-skeleton` change for the full mapping and this residual
   uncertainty.
+- **Ingest epic — spell data shape** (resolved in story 19 exploration, `spell-list-sections`):
+  confirmed against Zip (a level 2 Wizard) and Sunny (a level 6 Circle of the Land Druid,
+  character 164521812). `classSpells[]` links to its class through `characterClassId`,
+  and that class's `spellCastingAbilityId` gives the casting ability. Spells also arrive
+  in the `class`, `race`, and `feat` groups of `spells`, and the same spell can appear
+  more than once (Sunny's Pass without Trace appears three times). D&D Beyond's
+  `prepared` and `alwaysPrepared` flags are unreliable for granted spells: Sunny's
+  Circle of the Land spells show both as false. Cantrip damage scales through each
+  damage modifier's `atHigherLevels` steps; healing is a `bonus` modifier of sub-type
+  `hit-points`, with `usePrimaryStat` adding the casting modifier.
+- **Ingest epic — sheet shape for spells** (resolved in story 19 exploration): two tiers.
+  Your Turn keeps 3–4 top choices, including a "Cast a Spell" row with the caster's
+  spell attack and DC; a Magic section below holds the chosen spells. The Author's
+  guidance: one spell with a DC, one with an attack, and a few flavour spells with no
+  numbers, so the child can use her imagination.
+- **Recorded fixtures carry no personal data** (resolved 2026-09-23): the recorded D&D
+  Beyond responses held the owner's username, avatar, and a campaign roster naming
+  other players. The fixtures were blanked, `main` history was rewritten, and new
+  fixtures are blanked before they are committed.
 
 ## Change Log
 
@@ -495,3 +514,8 @@ name and confirmed (update mode matches the existing id).
   story 18's Your Turn actions section and proficient-skills Strengths section as shipped
   alongside stories 16–17's fields, with spells and update-in-place (stories 19–20) as the
   remaining gaps.
+- 2026-09-23 — Story 19 (`spell-list-sections`) explored and proposed; change linked.
+  Rescoped the story packet to a two-tier sheet (a "Cast a Spell" row in Your Turn, then
+  a recommended Magic section), digest-proven spell numbers, and a sanitized Sunny
+  fixture. Recorded the spell data shape, the sheet shape, and the fixture privacy
+  cleanup under Open Questions as resolved.
