@@ -401,7 +401,7 @@ name and confirmed (update mode matches the existing id).
   - **Added**: 2026-09-23
   - **Change**: your-turn-and-skills
 
-- [ ] 19. `spell-list-sections` — interview offers the character's spells as freeform sections
+- [x] 19. `spell-list-sections` — interview offers the character's spells as freeform sections
   - **Persona served**: Andrew (Author)
   - **Journey segment**: Author "write YAML" (spellcasters)
   - **MoSCoW**: Could
@@ -410,6 +410,7 @@ name and confirmed (update mode matches the existing id).
   - **Scope**: in: the digest reports every class, feat, species, and subclass spell with its readiness status, its ways to cast, and digest-proven numbers (to-hit, damage with cantrip scaling, healing, save DC), plus a spell attack and DC per spellcasting class; a two-tier sheet: a "Cast a Spell" row in Your Turn, then a recommended **Magic** section of one save spell, one attack spell, and 2–3 flavour spells; suggest + confirm colours; a sanitized Sunny fixture. / out: spell-slot pools (story 17); item spells; upcast damage; a full spell reference/description dump (prompts, not a catalog).
   - **Relevant code**: `.claude/skills/dndbeyond-to-slate/`; `src/lib/ingest/ddb/` (digest); emits `sections[]` per `src/lib/data/yaml.ts`; DDB `spells`/`classSpells` fields.
   - **Added**: 2026-09-23
+  - **Change**: spell-list-sections
   - **Change**: spell-list-sections
 
 - [ ] 20. `update-in-place` — re-run on an existing character updates drifted values, keeps authored structure
