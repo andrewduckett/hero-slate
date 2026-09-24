@@ -1,7 +1,7 @@
 # Sunny Thornwood — the walking-skeleton sample character.
 # Identity fields (name, level, class, color) are validated this release.
 name: Sunny Thornwood
-level: 6
+level: 7
 class: Druid
 color: forest
 
@@ -33,7 +33,7 @@ combat:
 # Maximum hit points is authored; current hit points are per-device state, not a
 # definition field, so a new character starts at full health.
 hitPoints:
-  max: 45
+  max: 52
 
 # Resource-pool maximums are authored. Remaining uses are per-device state.
 pools:
@@ -47,6 +47,10 @@ pools:
     max: 3
   - id: spell-slots-3
     label: 3rd Level
+    color: ocean
+    max: 3
+  - id: spell-slots-4
+    label: 4th Level
     color: ocean
     max: 3
   - id: wild-shape
@@ -73,7 +77,7 @@ sections:
       - title: Attack
         body: "Wild Shape claws: [[d20+6]] to hit, [[2d6+4]] damage"
       - title: Cast a Spell
-        body: "Cast a prepared spell — spell attack [[d20+6]], save DC 15"
+        body: "Cast a prepared spell — spell attack [[d20+7]], [[2d6+4]] damage, save [[DC 15]]"
       - title: Shapeshift
         body: "Transform into an animal — Wolf, Bear, Horse, or Cat. You can do this 2 times before a rest, and you don't even have to roll."
       - title: Help
