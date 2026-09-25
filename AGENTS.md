@@ -8,8 +8,7 @@ Hero Slate renders simple Dungeons & Dragons character sheets from hand-edited
 YAML, as a static web app with no backend. It exists to invert a reference-heavy
 sheet: show **who you are and what you have** — stats, hit points, trackers, short
 prompts — so a 9-year-old describes what she wants to do instead of reading a menu
-of legal moves. The product intent lives in `openspec/prd.md`; personas, journeys,
-and priorities live in `openspec/discovery.md`; the backlog is GitHub issues.
+of legal moves. The product intent lives in `openspec/prd.md`; personas and journeys live in `openspec/discovery.md`; the backlog is GitHub issues.
 
 ## Durable constraints (honor in every change)
 

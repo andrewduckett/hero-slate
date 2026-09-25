@@ -1,6 +1,6 @@
 # Discovery: Simple Character Sheet Web App
 
-> The living map behind the backlog: personas, journeys, and priorities.
+> The living map behind the backlog: who it serves and the journeys it supports.
 > Product intent (scope, goals, non-goals) lives in `openspec/prd.md`.
 > The backlog is GitHub issues. To build, run `/opsx:propose`; it picks the next open,
 > unblocked, unassigned issue.
@@ -90,77 +90,11 @@ Stage status checked against the code on 2026-09-24.
    fetches its YAML each time. Offline copies that refresh in the background are
    the gap ([#33](https://github.com/andrewduckett/hero-slate/issues/33)) — partial
 
-## MoSCoW
-
-### Must
-
-- **App scaffold + Cloudflare Pages deploy** (Vite+Svelte, SPA fallback, clean-path
-  routing) — Author: build & deploy; nothing ships without it.
-- **YAML config via data-provider interface + manifest, logical IDs** — Author: write
-  YAML; Player: open sheet. The interface keeps the future DB un-trapped.
-- **Home picker from manifest** — Player: find my character.
-- **Sheet render: identity + ability scores (compute modifier) + AC/speed/initiative** —
-  Player: see who I am.
-- **HP tracker + per-device state store (localStorage)** — Player: track/restore/reopen.
-- **Resource pools tracker** (bidirectional dots) — Player: track/restore.
-- **Custom sections + rich-text markup** (bold/italic/emoji/styled `[[dice]]`) — the whole
-  philosophy: prompts instead of a rules catalog.
-- **Named-palette theming + auto light/dark** — config references color names from day
-  one; a kid must be able to read it.
-
-### Should
-
-- **PWA: installable + offline** (app shell + cached config) — flaky table wifi; icon.
-- **Stale-while-revalidate config refresh** — edits propagate without going stale.
-- **Unlisted/noindex access config** — cheap privacy.
-- **Avatar images** — emoji works without it.
-
-- **Sheet restyle + section reorder** ([#27](https://github.com/andrewduckett/hero-slate/issues/27)) — Player: see who I am; the unstyled
-  sheet reads worse than the bespoke page it replaces.
-- **Palette depth + colour roles** ([#28](https://github.com/andrewduckett/hero-slate/issues/28)) — Player: see who I am; two tokens per
-  palette can only fill a shape, so the sheet reads as one hue and a name no longer
-  describes its colour.
-- **Theme default + toggle** ([#29](https://github.com/andrewduckett/hero-slate/issues/29)) — Player: open the sheet; dark is the wanted
-  default and no control exists to switch.
-- **Landscape layout** ([#30](https://github.com/andrewduckett/hero-slate/issues/30)) — Player: track in play; the table setup is a tablet
-  on its side, and one narrow column wastes the wide axis.
-
-- **D&D Beyond ingest — skeleton + update-in-place** ([#37](https://github.com/andrewduckett/hero-slate/issues/37), [#41](https://github.com/andrewduckett/hero-slate/issues/41); epic [#36](https://github.com/andrewduckett/hero-slate/issues/36),
-  added 2026-09-23) — Author: write YAML. The app works with hand-written config, so this is
-  not a Must; but hand-authoring a full sheet is the Author's heaviest step and drifts
-  stale every level-up. The skeleton (URL → minimal valid sheet) unblocks the epic;
-  update-in-place keeps a shipped sheet current without clobbering authored prose.
-
-- **Links section** ([#43](https://github.com/andrewduckett/hero-slate/issues/43); epic [#42](https://github.com/andrewduckett/hero-slate/issues/42), added 2026-09-24) — Andrew-as-Player: track in play. A fuller
-  sheet still sends its player to D&D Beyond or another reference mid-session. One tap
-  from the sheet saves searching for the right tab. Not a Must: the sheet works without
-  it, and Sunny's sheet will usually have no links.
-
-### Could
-
-- Pool number±view fallback for large counts (>12).
-- Tap/roll micro-animations and visual polish.
-- Install-icon / splash polish beyond the basics.
-
-- **D&D Beyond ingest — richer section mappers** ([#38](https://github.com/andrewduckett/hero-slate/issues/38)–[#40](https://github.com/andrewduckett/hero-slate/issues/40); epic [#36](https://github.com/andrewduckett/hero-slate/issues/36), added 2026-09-23) —
-  Author: write YAML. Each opt-in section type (feature pools + spell slots; Your Turn +
-  skills; spell lists) is incremental richness on top of the skeleton. Valuable but each
-  is a hand-authorable section, so none is a Must.
-
-- **Ingest offers links** ([#44](https://github.com/andrewduckett/hero-slate/issues/44); epic [#42](https://github.com/andrewduckett/hero-slate/issues/42), added 2026-09-24) — Author: write YAML. The ingest skill
-  already knows the D&D Beyond character URL, so it can offer that link. It saves a
-  line of hand-typing, so it's a Could.
-
-### Won't (this release)
-
-- In-app definition editing; in-app dice rolling; conditions/status; temp HP & death
-  saves; cross-device sync/accounts; the hosted DB itself. (These are the v1 non-goals;
-  the architecture leaves room for the DB later.)
-
 ## Backlog
 
 The backlog is GitHub issues: <https://github.com/andrewduckett/hero-slate/issues>.
-Each issue body is a self-contained story packet. Epics are parent issues with
+Each issue body is a self-contained story packet, including its MoSCoW priority
+and why. Epics are parent issues with
 sub-issues, and dependencies are "blocked by" links.
 
 - Epic: D&D Beyond → Hero Slate authoring skill — [#36](https://github.com/andrewduckett/hero-slate/issues/36)
