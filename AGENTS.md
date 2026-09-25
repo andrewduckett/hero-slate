@@ -8,8 +8,8 @@ Hero Slate renders simple Dungeons & Dragons character sheets from hand-edited
 YAML, as a static web app with no backend. It exists to invert a reference-heavy
 sheet: show **who you are and what you have** — stats, hit points, trackers, short
 prompts — so a 9-year-old describes what she wants to do instead of reading a menu
-of legal moves. The product intent lives in `openspec/prd.md`; the release plan and
-milestone status live in `openspec/discovery.md`.
+of legal moves. The product intent lives in `openspec/prd.md`; personas, journeys,
+and priorities live in `openspec/discovery.md`; the backlog is GitHub issues.
 
 ## Durable constraints (honor in every change)
 
@@ -75,7 +75,9 @@ work; treat those specific errors as noise until `@types/node` is added.
 
 - Planning uses **OpenSpec**: in-flight work lives under `openspec/changes/`;
   durable specs under `openspec/specs/`; decision records under `docs/decisions/`. Use
-  the `opsx:*` skills (propose → apply → verify → archive).
+  the `opsx:*` skills (propose → apply → verify → archive). OpenSpec changes carry
+  product behavior. Repo maintenance (tooling, docs, backlog housekeeping) goes
+  through an ordinary branch and PR with Conventional Commits.
 - **Toolchain is per stack.** v0.10.x: Node 20+, npm, Vite/React, Hono, Drizzle —
   gate with **`npm run check`** (TypeScript) after every change to `apps/`/`packages/`.
   v2: cargo workspace under `backend/`, orchestrated by the root `justfile` — gate with
@@ -91,13 +93,15 @@ One branch and one pull request carry a change through its whole lifecycle —
 propose, apply, verify, archive — and merge once. There is no "cross `main`
 between phases" step.
 
-- **Branch per change.** One OpenSpec change (one discovery story) = one branch =
+- **Branch per change.** One OpenSpec change (one backlog issue) = one branch =
   one PR. Dependent stories **stack**: branch off the parent's branch and target
   its PR; independent stories branch off `main`.
 - **A commit per unit of work.** Each artifact (proposal, design, specs, tasks) is
   its own `docs:` commit; each implementation task is its own commit with its real
   type (`feat:`/`fix:`/`refactor:`/`test:`); the archive is its own `chore:` commit.
-- **Draft until archived.** Open the PR as a draft at propose. Run propose → apply →
+- **Draft until archived.** Open the PR as a draft at propose, and assign its issue
+  (`gh issue edit <n> --add-assignee @me`). An assigned open issue is in progress, so
+  propose does not pick it again. Run propose → apply →
   verify → archive all on the branch; `archive` moves the change to
   `openspec/changes/archive/` and syncs delta specs into `openspec/specs/`. Flip the
   PR to ready when the archive commit lands.
@@ -108,11 +112,10 @@ between phases" step.
   archive commit — this restores the change under `openspec/changes/` and unwinds the
   spec sync. Make the fixes, re-archive as the last commit, and flip ready again. A
   rejected PR is just closed and its branch deleted; `main` stays clean.
-- **Issue provenance.** When a change originates from a GitHub issue, discovery
-  records `Origin: #<issue>` on the story and propose carries it into `proposal.md`.
-  A PR that fully resolves a single issue says `Closes #<issue>`; a PR that is one of
-  many stories under an epic or milestone issue says `Part of #<issue>`, and that
-  parent issue is closed only once `discovery.md` shows all its stories archived.
+- **Every story is an issue.** Its body is the story packet; propose reads it and
+  names the issue in `proposal.md`. The story's PR says `Closes #<issue>`, so merging
+  closes it. An epic is a parent issue with its stories as sub-issues; close the
+  epic once all its sub-issues are closed. Dependencies are "blocked by" links.
 
 ## Writing document artifacts — plain language
 
