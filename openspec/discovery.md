@@ -2,8 +2,8 @@
 
 > The living map behind the backlog: who it serves and the journeys it supports.
 > Product intent (scope, goals, non-goals) lives in `openspec/prd.md`.
-> The backlog is GitHub issues. To build, run `/opsx:propose`; it picks the next open,
-> unblocked, unassigned issue.
+> The backlog is GitHub issues. To build, run `/openspec-propose-change`; 
+> it picks the next open, unblocked, unassigned issue.
 
 ## Personas
 

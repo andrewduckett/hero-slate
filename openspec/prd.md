@@ -1,7 +1,5 @@
 # PRD: Simple Character Sheet Web App
 
-**Status:** Draft · **Date:** 2026-09-18 · **Author:** Andrew Duckett
-
 ## 1. Background & Problem
 
 We built a static character sheet so a 9-year-old could join a family Dungeons &
