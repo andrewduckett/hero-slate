@@ -92,10 +92,4 @@ Stage status checked against the code on 2026-09-24.
 
 ## Backlog
 
-The backlog is GitHub issues: <https://github.com/andrewduckett/hero-slate/issues>.
-Each issue body is a self-contained story packet, including its MoSCoW priority
-and why. Epics are parent issues with
-sub-issues, and dependencies are "blocked by" links.
-
-- Epic: D&D Beyond → Hero Slate authoring skill — [#36](https://github.com/andrewduckett/hero-slate/issues/36)
-- Epic: Links — [#42](https://github.com/andrewduckett/hero-slate/issues/42)
+Stories are GitHub issues: <https://github.com/andrewduckett/hero-slate/issues>.
