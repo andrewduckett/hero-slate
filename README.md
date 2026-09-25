@@ -208,7 +208,8 @@ failing test first.
 
 This project plans with **OpenSpec**. In-flight work lives under
 `openspec/changes/`, durable specs under `openspec/specs/`, and decision records
-under `docs/decisions/`. The roadmap is `openspec/discovery.md` — one story per change.
+under `docs/decisions/`. The backlog is GitHub issues — one issue per change — and
+`openspec/discovery.md` holds the personas and journeys behind it.
 Two constraints hold across every change: the core stays **static with no backend**
 this release, and character data is reached **only through the provider interface**
 keyed by a logical id. Full guidance is in [`AGENTS.md`](AGENTS.md).
