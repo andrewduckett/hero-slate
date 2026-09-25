@@ -3,8 +3,9 @@ schema: spec-driven-review
 # Project context (optional)
 # This is shown to AI when creating artifacts.
 context: |
-  The backlog is GitHub issues; openspec/discovery.md holds personas, journeys, and
-  priorities. When asked to propose the next change without a specific request, list
+  The backlog is GitHub issues, each with its MoSCoW priority; openspec/discovery.md
+  holds personas and journeys. An issue marked "Not yet a story" must be cut into a
+  story packet before it is proposed. When asked to propose the next change without a specific request, list
   open issues with
   `gh issue list --state open --limit 200 --json number,title,assignees,blockedBy,subIssuesSummary`.
   Skip epic parents (any issue with sub-issues), issues with an open blocker, and
