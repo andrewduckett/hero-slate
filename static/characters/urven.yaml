@@ -44,18 +44,18 @@ sections:
       - title: 🫨 Stun
         body: "[[DC 13]] Con saving throw."
       - title: 🥷 Shadow Step
-        body: teleport up to 60 ft. to an unoccupied space that you can see that's also in Dim Light or Darkness. You have Advantage on the next melee attack you make before the end of the current turn.
+        body: "teleport up to 60 ft. to an unoccupied space that you can see that's also in Dim Light or Darkness. You have Advantage on the next melee attack you make before the end of the current turn."
   - title: Strengths
     color: forest
     rows:
     - title: 🤸🏼‍♂️ Acrobatics
-      body: [[+8]] flips
+      body: "[[+8]] flips"
     - title: 👀 Insight
-      body: [[+6]] understanding
+      body: "[[+6]] understanding"
     - title: 🤫 Sneaking
-      body: [[+8]] moving quietly & hiding
+      body: "[[+8]] moving quietly & hiding"
     - title: 🌿 Survival
-      body: [[+5]] learn about plants, beasts, & the wild
+      body: "[[+5]] learn about plants, beasts, & the wild"
 
 links:
   - url: https://dndbeyond.com/characters/154922980
