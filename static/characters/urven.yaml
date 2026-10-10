@@ -40,7 +40,7 @@ sections:
       - title: 👊 Attack
         body: "swipe with your claws: [[d20+8]] to hit, [[1d8+5]] damage"
       - title: 🤼‍♂️ Grapple
-        body: "[[DC 13]] Str/Dex (it chooses which) saving throw."
+        body: "[[DC 13]] Str or Dex saving throw."
       - title: 🫨 Stun
         body: "[[DC 13]] Con saving throw."
       - title: 🥷 Shadow Step
@@ -49,13 +49,13 @@ sections:
     color: forest
     rows:
     - title: 🤸🏼‍♂️ Acrobatics
-      body: flips, [[+8]] bonus
+      body: flips, [[+8]]
     - title: 👀 Insight
-      body: understanding, [[+6]] bonus
+      body: understanding, [[+6]]
     - title: 🤫 Sneaking
-      body: moving quietly & hiding, [[+8]] bonus
+      body: moving quietly & hiding, [[+8]]
     - title: 🌿 Survival
-      body: learn about plants, beasts, & the wild, [[+5]] bonus
+      body: learn about plants, beasts, & the wild, [[+5]]
 
 links:
   - url: https://dndbeyond.com/characters/154922980
