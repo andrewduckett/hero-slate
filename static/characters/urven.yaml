@@ -49,13 +49,13 @@ sections:
     color: forest
     rows:
     - title: 🤸🏼‍♂️ Acrobatics
-      body: flips, [[+8]]
+      body: [[+8]] flips
     - title: 👀 Insight
-      body: understanding, [[+6]]
+      body: [[+6]] understanding
     - title: 🤫 Sneaking
-      body: moving quietly & hiding, [[+8]]
+      body: [[+8]] moving quietly & hiding
     - title: 🌿 Survival
-      body: learn about plants, beasts, & the wild, [[+5]]
+      body: [[+5]] learn about plants, beasts, & the wild
 
 links:
   - url: https://dndbeyond.com/characters/154922980
