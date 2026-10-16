@@ -94,4 +94,40 @@ describe('ResourcePoolsBlock', () => {
 			expect(container.querySelector('[data-pool-size]')).toBeNull();
 		});
 	});
+
+	describe('counter', () => {
+		function renderCounter(stored: unknown = undefined, state = store()) {
+			return render(ResourcePoolsBlock, {
+				props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 35 }], storedPools: stored, store: state, id: 'gimdak' }
+			});
+		}
+
+		it('is a group named for the pool and its remaining uses', () => {
+			renderCounter();
+
+			expect(screen.getByRole('group', { name: 'Lay On Hands: 35 remaining' })).toBeTruthy();
+		});
+
+		it('has a progress bar named for the pool', () => {
+			renderCounter();
+
+			const bar = screen.getByRole('progressbar', { name: 'Lay On Hands' });
+			expect(bar.getAttribute('aria-valuenow')).toBe('35');
+			expect(bar.getAttribute('aria-valuemin')).toBe('0');
+			expect(bar.getAttribute('aria-valuemax')).toBe('35');
+		});
+
+		it('offers spend and restore controls in order, each named for the pool', () => {
+			const { container } = renderCounter();
+
+			const controls = [...container.querySelectorAll('[data-pool-adjust]')];
+			expect(controls.map((control) => control.getAttribute('aria-label'))).toEqual([
+				'Lay On Hands: -5',
+				'Lay On Hands: -1',
+				'Lay On Hands: +1',
+				'Lay On Hands: +5'
+			]);
+			expect(controls.map((control) => control.getAttribute('data-pool-adjust'))).toEqual(['-5', '-1', '+1', '+5']);
+		});
+	});
 });

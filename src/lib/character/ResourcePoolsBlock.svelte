@@ -6,12 +6,19 @@
 
 	let { pools, storedPools, store, id = '' }: { pools: unknown; storedPools: unknown; store?: StateStore; id?: string } = $props();
 	const resolved = untrack(() => resolvePools(pools, storedPools));
+	// Spend steps come first and restore steps last, as on the hit points tracker.
+	const spend = [-5, -1];
+	const restore = [1, 5];
 	let counts = $state<Record<string, number>>(Object.fromEntries(resolved.map((pool) => [pool.id, pool.current])));
 
 	function snapshot(): Record<string, number> {
 		const next = Object.create(null) as Record<string, number>;
 		for (const pool of resolved) next[pool.id] = counts[pool.id];
 		return next;
+	}
+
+	function step(amount: number): string {
+		return amount > 0 ? `+${amount}` : String(amount);
 	}
 
 	function persist(): void {
@@ -48,9 +55,41 @@
 					</div>
 				</div>
 			{:else}
-				<div class="pool" data-palette={resolvePalette(pool.color)} data-pool-form="counter">
+				<div
+					class="pool"
+					data-palette={resolvePalette(pool.color)}
+					data-pool-form="counter"
+					role="group"
+					aria-label={`${pool.label}: ${counts[pool.id]} remaining`}
+				>
 					<h3>{pool.label}</h3>
 					<div class="readout"><span class="current">{counts[pool.id]}</span> / {pool.max}</div>
+					<div
+						class="bar"
+						role="progressbar"
+						aria-label={pool.label}
+						aria-valuenow={counts[pool.id]}
+						aria-valuemin={0}
+						aria-valuemax={pool.max}
+					>
+						<div class="fill" style:width="{(counts[pool.id] / pool.max) * 100}%"></div>
+					</div>
+					<div class="controls">
+						<div class="spend">
+							{#each spend as amount}
+								<button type="button" data-pool-adjust={step(amount)} aria-label={`${pool.label}: ${step(amount)}`}>
+									{step(amount)}
+								</button>
+							{/each}
+						</div>
+						<div class="restore">
+							{#each restore as amount}
+								<button type="button" data-pool-adjust={step(amount)} aria-label={`${pool.label}: ${step(amount)}`}>
+									{step(amount)}
+								</button>
+							{/each}
+						</div>
+					</div>
 				</div>
 			{/if}
 		{/each}
