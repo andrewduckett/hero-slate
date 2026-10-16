@@ -18,7 +18,7 @@
 
 ## 4. Integration [depends-on: 2, 3]
 
-- [ ] 4.1 [medium] The full suite and the static build pass; in a browser at 360 px, `/urven` Focus Points dots, `/gimdak` Lay On Hands counter buttons, and a temporary, uncommitted character with a `max: 12` pool each measure at least 44 by 44 px with no sideways scroll (verify: `npm test && npm run build`)
+- [x] 4.1 [medium] The full suite and the static build pass; in a browser at 360 px, `/urven` Focus Points dots, `/gimdak` Lay On Hands counter buttons, and a temporary, uncommitted character with a `max: 12` pool each measure at least 44 by 44 px with no sideways scroll (verify: `npm test && npm run build`) (✓ npm test and npm run build passed; at 360 px every Urven, Gimdak and 12-use dot or counter button measured 44x44, page scrollWidth 345)
 
 ## Deviations Ledger
 
