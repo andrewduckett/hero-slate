@@ -1,18 +1,16 @@
-schema: spec-driven-review
+schema: lets-standard
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-context: |
-  The backlog is GitHub issues, each with its MoSCoW priority as a `priority/*` label;
-  openspec/discovery.md holds personas and journeys. An issue marked "Not yet a story"
-  must be cut into a story packet before it is proposed. When asked to propose the
-  next change without a specific request, list open issues with
-  `gh issue list --state open --limit 200 --json number,title,labels,assignees,blockedBy,subIssuesSummary`.
-  Skip epic parents (any issue labeled `kind/epic` or with sub-issues), issues with an
-  open blocker, assigned issues (they are in progress), issues labeled `priority/wont`,
-  and issues with no `priority/*` label (they are untriaged). Of the rest, take the
-  highest priority — `priority/must`, then `priority/should`, then `priority/could` —
-  and the lowest number within it. Read its story packet with
-  `gh issue view <n> --json body`. When proposing,
-  assign the issue (`gh issue edit <n> --add-assignee @me`) and have the draft PR
-  say `Closes #<n>`. One story per change.
+# The code review rule. lets-spec put it here, and your project owns it:
+# delete it to stop code reviews, or edit it to change when they run.
+# OpenSpec keeps a project's rules for finishing a change under
+# operations.archive. lets-build follows them once every task is done,
+# before it runs verify.
+operations:
+  archive:
+    guidance:
+      - >-
+        Every change gets one code review before it is verified. If the
+        pull request description has no **Code review** section, run the
+        `lets-review-code` skill now. Otherwise check the section as that
+        skill's *Check an earlier review* section says, and run the skill
+        again only when it tells you to.

@@ -40,22 +40,22 @@ sections:
       - title: 👊 Attack
         body: "swipe with your claws: [[d20+8]] to hit, [[1d8+5]] damage"
       - title: 🤼‍♂️ Grapple
-        body: "[[DC 13]] Str/Dex (it chooses which) saving throw."
+        body: "[[DC 13]] Str or Dex saving throw."
       - title: 🫨 Stun
         body: "[[DC 13]] Con saving throw."
       - title: 🥷 Shadow Step
-        body: teleport up to 60 ft. to an unoccupied space that you can see that's also in Dim Light or Darkness. You have Advantage on the next melee attack you make before the end of the current turn.
+        body: "teleport up to 60 ft. to an unoccupied space that you can see that's also in Dim Light or Darkness. You have Advantage on the next melee attack you make before the end of the current turn."
   - title: Strengths
     color: forest
     rows:
     - title: 🤸🏼‍♂️ Acrobatics
-      body: flips, [[+8]] bonus
+      body: "[[+8]] flips"
     - title: 👀 Insight
-      body: understanding, [[+6]] bonus
+      body: "[[+6]] understanding"
     - title: 🤫 Sneaking
-      body: moving quietly & hiding, [[+8]] bonus
+      body: "[[+8]] moving quietly & hiding"
     - title: 🌿 Survival
-      body: learn about plants, beasts, & the wild, [[+5]] bonus
+      body: "[[+5]] learn about plants, beasts, & the wild"
 
 links:
   - url: https://dndbeyond.com/characters/154922980

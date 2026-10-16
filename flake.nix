@@ -2,9 +2,10 @@
   description = "Node development shell";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  inputs.lets-spec.url = "github:andrewduckett/lets-spec";
 
   outputs =
-    { nixpkgs, ... }:
+    { nixpkgs, lets-spec, ... }:
     let
       lib = nixpkgs.lib;
       systems = [
@@ -13,7 +14,8 @@
         "x86_64-darwin"
         "aarch64-darwin"
       ];
-      forAllSystems = f: lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+      forAllSystems =
+        f: lib.genAttrs systems (system: f system nixpkgs.legacyPackages.${system});
 
       # "22", "v22" or "22.1.0" in .nvmrc all select nodejs_22.
       nodeMajor = lib.head (
@@ -21,10 +23,19 @@
       );
     in
     {
-      devShells = forAllSystems (pkgs: {
-        default = pkgs.mkShell {
-          packages = [ pkgs."nodejs_${nodeMajor}" ];
-        };
-      });
+      devShells = forAllSystems (
+        system: pkgs: {
+          default = pkgs.mkShell {
+            packages = [
+              pkgs."nodejs_${nodeMajor}"
+              lets-spec.packages.${system}.standard-github-labels
+            ];
+            # Skip the sync in CI, so lets-sync --check sees the committed tree.
+            shellHook = ''
+              if [ -z "''${CI:-}" ]; then lets-sync; fi
+            '';
+          };
+        }
+      );
     };
 }
