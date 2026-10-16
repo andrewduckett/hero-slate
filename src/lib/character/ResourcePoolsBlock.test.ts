@@ -129,5 +129,20 @@ describe('ResourcePoolsBlock', () => {
 			]);
 			expect(controls.map((control) => control.getAttribute('data-pool-adjust'))).toEqual(['-5', '-1', '+1', '+5']);
 		});
+
+		it.each([
+			['spends uses', 35, 'Lay On Hands: -5', 30],
+			['stops spending at zero', 3, 'Lay On Hands: -5', 0],
+			['stops restoring at the maximum', 33, 'Lay On Hands: +5', 35]
+		])('%s', async (_name, stored, control, expected) => {
+			const state = store();
+			const { container } = renderCounter({ 'lay-on-hands': stored }, state);
+			state.write.mockClear();
+
+			await fireEvent.click(screen.getByRole('button', { name: control }));
+
+			expect(container.querySelector('.readout')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(`${expected} / 35`);
+			expect(state.write).toHaveBeenLastCalledWith('gimdak', 'pools', { 'lay-on-hands': expected });
+		});
 	});
 });

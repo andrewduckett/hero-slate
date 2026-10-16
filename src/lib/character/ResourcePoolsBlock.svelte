@@ -33,6 +33,13 @@
 		persist();
 	}
 
+	function adjust(poolId: string, max: number, amount: number): void {
+		const next = Object.assign(Object.create(null), counts) as Record<string, number>;
+		next[poolId] = Math.min(max, Math.max(0, counts[poolId] + amount));
+		counts = next;
+		persist();
+	}
+
 	onMount(() => persist());
 </script>
 
@@ -77,14 +84,24 @@
 					<div class="controls">
 						<div class="spend">
 							{#each spend as amount}
-								<button type="button" data-pool-adjust={step(amount)} aria-label={`${pool.label}: ${step(amount)}`}>
+								<button
+									type="button"
+									data-pool-adjust={step(amount)}
+									aria-label={`${pool.label}: ${step(amount)}`}
+									onclick={() => adjust(pool.id, pool.max, amount)}
+								>
 									{step(amount)}
 								</button>
 							{/each}
 						</div>
 						<div class="restore">
 							{#each restore as amount}
-								<button type="button" data-pool-adjust={step(amount)} aria-label={`${pool.label}: ${step(amount)}`}>
+								<button
+									type="button"
+									data-pool-adjust={step(amount)}
+									aria-label={`${pool.label}: ${step(amount)}`}
+									onclick={() => adjust(pool.id, pool.max, amount)}
+								>
 									{step(amount)}
 								</button>
 							{/each}
