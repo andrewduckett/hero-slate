@@ -127,8 +127,8 @@ palette color, and a pool id, and the Author confirms or changes them:
   (for example, `focus-points` for "Focus Points").
 - Propose `slots-N` for the spell-slot pool at level `N` (for example,
   `slots-1`), and `pact-slots` for the Pact Magic pool.
-- If a pool's maximum is above 12, tell the Author: the app shows at most 12
-  dots and would drop that pool.
+- If a pool's maximum is above 100, tell the Author: the app tracks at most
+  100 uses and would drop that pool.
 
 ### 7. Recommend a Your Turn section
 
@@ -231,7 +231,7 @@ npx --silent vite-node src/lib/ingest/ddb/cli.ts preview .workspace/<id>.yaml --
 
 Show the Author the tool's full output, including every warning — an
 unknown palette color, a dropped section, row, or other entry, a pool above
-the 12-dot limit, or a cross-check mismatch against the digest. A
+the 100-use limit, or a cross-check mismatch against the digest. A
 cross-check warning is advisory: it does not block anything, but the Author
 should see it before approving. The preview does not cross-check section
 pills against the digest — it draws every section and row instead, so the

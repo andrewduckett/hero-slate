@@ -14,7 +14,7 @@
 ## 3. Ingest wording [depends-on: 1]
 
 - [x] 3.1 [parallel] [easy] The preview warning for a pool above 100 names the pool and says "the app tracks at most 100 uses", and no warning mentions dots (verify: `npm test -- src/lib/ingest/ddb/validate.test.ts`) (✓ npm test -- src/lib/ingest/ddb/validate.test.ts passed)
-- [ ] 3.2 [parallel] [easy] The `dndbeyond-to-slate` skill tells the Author about a pool above 100 uses, and no longer mentions a 12-dot limit (verify: `! grep -nE "12-dot|at most 12|above 12" .claude/skills/dndbeyond-to-slate/SKILL.md`)
+- [x] 3.2 [parallel] [easy] The `dndbeyond-to-slate` skill tells the Author about a pool above 100 uses, and no longer mentions a 12-dot limit (verify: `! grep -nE "12-dot|at most 12|above 12" .claude/skills/dndbeyond-to-slate/SKILL.md`) (✓ grep check passed)
 
 ## 4. Integration [depends-on: 2, 3]
 
