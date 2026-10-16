@@ -43,7 +43,7 @@
 
 ## Journey Map
 
-Stage status checked against the code on 2026-09-24.
+Stage status checked against the code on 2026-10-15.
 
 **Player journey** (Sunny + Andrew-as-Player):
 
@@ -51,7 +51,7 @@ Stage status checked against the code on 2026-09-24.
   Find my      Open the     See who      Track in     Restore     Reopen       Use with
   character ─► sheet     ─► I am     ─►  play      ─► after     ─► later     ─► no wifi
      │            │           │            │            │            │            │
-  partial     supported   supported    supported    supported    supported       gap
+  partial     supported   supported     partial     supported    supported       gap
 ```
 
 1. **Find my character** — deep link `/sunny` works; the picker at `/` is a
@@ -59,7 +59,9 @@ Stage status checked against the code on 2026-09-24.
 2. **Open the sheet** — character YAML loads and renders — supported
 3. **See who I am** — identity, ability scores, AC/speed/initiative, prompts, links —
    supported (no avatar yet: [#35](https://github.com/andrewduckett/hero-slate/issues/35))
-4. **Track in play** — tap HP ±, spend/restore resource pool dots — supported
+4. **Track in play** — tap HP ±, spend/restore resource pool dots — partial. Pools
+   up to 100 render, but any pool over 5 shrinks its dots below the 44 px tap
+   target ([#46](https://github.com/andrewduckett/hero-slate/issues/46))
 5. **Restore after** — manual restore via bidirectional taps (no reset button) — supported
 6. **Reopen later** — tracking state persisted per device (localStorage) — supported
 7. **Use with no wifi** — installed PWA, offline app shell + cached config — gap
