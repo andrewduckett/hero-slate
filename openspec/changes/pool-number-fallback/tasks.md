@@ -9,7 +9,7 @@
 - [x] 2.3 [medium] A counter control adds its step, clamps to 0..max, and saves the full `pools` map: 35 then -5 shows `30 / 35` and saves 30; 3 then -5 saves 0; 33 then +5 saves 35 (verify: `npm test -- src/lib/character/ResourcePoolsBlock.test.ts`) (✓ npm test -- src/lib/character/ResourcePoolsBlock.test.ts passed)
 - [x] 2.4 [easy] A counter at 0 is not marked down and keeps full opacity, and the counter has no reset or rest control (verify: `npm test -- src/lib/character/ResourcePoolsBlock.test.ts`) (✓ npm test -- src/lib/character/ResourcePoolsBlock.test.ts passed)
 - [x] 2.5 [medium] A counter change and a dot change made before either save finishes both land in the saved map, and a stored count of 8 for a pool whose `max` is now 20 shows a counter reading `8 / 20` (verify: `npm test -- src/lib/character/ResourcePoolsBlock.test.ts`) (✓ npm test -- src/lib/character/ResourcePoolsBlock.test.ts passed)
-- [ ] 2.6 [medium] Style the counter as design D-d to D-f describe: 2.75rem round buttons (spend outlined in `--structural` with `--deep` text, restore filled in `--tint` with `--deep` border and text), a 2rem current value, a 0.75rem bar, and a counter card of `flex: 1 1 16rem`; every dot is 2.75rem with the `--space-2` gap (verify: `npm run build`)
+- [x] 2.6 [medium] Style the counter as design D-d to D-f describe: 2.75rem round buttons (spend outlined in `--structural` with `--deep` text, restore filled in `--tint` with `--deep` border and text), a 2rem current value, a 0.75rem bar, and a counter card of `flex: 1 1 16rem`; every dot is 2.75rem with the `--space-2` gap (verify: `npm run build`) (✓ npm run build passed)
 
 ## 3. Ingest wording [depends-on: 1]
 

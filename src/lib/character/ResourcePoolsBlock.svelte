@@ -114,7 +114,7 @@
 {/if}
 
 <style>
-	/* Cards sit side by side, each only as wide as its dots, and wrap. */
+	/* Cards sit side by side, a dot card only as wide as its dots, and wrap. */
 	.resource-pools {
 		display: flex;
 		flex-wrap: wrap;
@@ -134,6 +134,11 @@
 		box-shadow: var(--shadow);
 	}
 
+	/* A counter card fills its row, with room for four buttons on a phone. */
+	[data-pool-form='counter'] {
+		flex: 1 1 16rem;
+	}
+
 	h3 {
 		margin: 0;
 		font-size: 1.25rem;
@@ -146,7 +151,49 @@
 		gap: var(--space-2);
 	}
 
-	/* A chunky dot that is its own tap target: 2.75rem is 44 CSS pixels. */
+	/* The max reads at the heading's size, smaller than the current value. */
+	.readout {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		font-weight: 700;
+		line-height: 1;
+		color: var(--muted);
+	}
+
+	.current {
+		font-size: 2rem;
+		font-weight: 800;
+		color: var(--deep);
+	}
+
+	.bar {
+		height: 0.75rem;
+		border: 2px solid var(--deep);
+		border-radius: 999px;
+		background-color: var(--tint);
+		overflow: hidden;
+	}
+
+	.fill {
+		height: 100%;
+		border-radius: 999px;
+		background-color: var(--accent);
+	}
+
+	/* Spend on the left, restore on the right, with a flexible gap between. */
+	.controls {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--space-2);
+	}
+
+	.spend,
+	.restore {
+		display: flex;
+		gap: var(--space-2);
+	}
+
+	/* A chunky dot or step button that is its own tap target: 2.75rem is 44 CSS pixels. */
 	button {
 		inline-size: 2.75rem;
 		block-size: 2.75rem;
@@ -155,14 +202,25 @@
 		cursor: pointer;
 	}
 
-	button[data-pool-dot='filled'] {
+	/* A filled dot and a restore button share one look. */
+	button[data-pool-dot='filled'],
+	.restore button {
 		background-color: var(--tint);
 		border: 4px solid var(--deep);
 	}
 
-	button[data-pool-dot='empty'] {
+	/* An empty dot and a spend button share the other. */
+	button[data-pool-dot='empty'],
+	.spend button {
 		background-color: transparent;
 		border: 4px solid var(--structural);
+	}
+
+	[data-pool-adjust] {
+		font-family: var(--font-display);
+		font-size: 1rem;
+		font-weight: 800;
+		color: var(--deep);
 	}
 
 	button:focus-visible {
