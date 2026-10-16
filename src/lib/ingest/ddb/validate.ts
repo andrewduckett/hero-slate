@@ -10,7 +10,7 @@ import { parse as parseYaml } from 'yaml';
 import { ID_GRAMMAR, checkIdentity } from '$lib/data/yaml';
 import { PALETTE_NAMES } from '$lib/theme/palette';
 import { validEntries } from '$lib/character/entries';
-import { MAX_POOL_DOTS, resolvePools } from '$lib/character/pools';
+import { MAX_POOL_USES, resolvePools } from '$lib/character/pools';
 import { resolveSections } from '$lib/character/sections';
 
 
@@ -82,8 +82,8 @@ export function validateDraft(text: string, targetId: string): ValidationResult 
 			if (typeof pool !== 'object' || pool === null || Array.isArray(pool)) continue;
 			const { label, max, color } = pool as Record<string, unknown>;
 			const poolLabel = typeof label === 'string' ? label : 'a pool';
-			if (typeof max === 'number' && Number.isInteger(max) && max > MAX_POOL_DOTS) {
-				warnings.push(`${poolLabel} has a maximum of ${max}, and the app shows at most ${MAX_POOL_DOTS} dots`);
+			if (typeof max === 'number' && Number.isInteger(max) && max > MAX_POOL_USES) {
+				warnings.push(`${poolLabel} has a maximum of ${max}, and the app tracks at most ${MAX_POOL_USES} uses`);
 			}
 			if (typeof color === 'string' && !(PALETTE_NAMES as readonly string[]).includes(color)) {
 				warnings.push(`pool color "${color}" is not a palette name and will fall back to neutral`);

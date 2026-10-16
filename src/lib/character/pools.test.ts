@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolvePools } from './pools';
+import { MAX_POOL_USES, POOL_DOT_LIMIT, resolvePools } from './pools';
 
 describe('resolvePools', () => {
 	it('keeps valid pools in their authored order', () => {
@@ -29,6 +29,18 @@ describe('resolvePools', () => {
 		['a missing id', { label: 'Magic', max: 2 }]
 	])('drops a pool with %s', (_name, pool) => {
 		expect(resolvePools([pool], undefined)).toEqual([]);
+	});
+
+	it('draws dots for pools of up to 12 uses', () => {
+		expect(POOL_DOT_LIMIT).toBe(12);
+	});
+
+	it('tracks pools of up to 100 uses', () => {
+		expect(MAX_POOL_USES).toBe(100);
+	});
+
+	it('keeps a pool of 100 uses', () => {
+		expect(resolvePools([{ id: 'lay-on-hands', label: 'Lay On Hands', max: 100 }], undefined)).toHaveLength(1);
 	});
 
 	it('keeps a large pool such as Lay On Hands', () => {
