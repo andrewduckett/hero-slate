@@ -92,8 +92,10 @@ controls.
 ### Requirement: Remaining-use counter for large pools
 
 The system SHALL render each valid pool whose `max` is from 13 through 100 as a
-labeled counter instead of dots. The counter SHALL show the remaining uses as
-`current / max` and as a progress bar. The bar's accessible name SHALL be the
+labeled counter instead of dots. The counter SHALL be a group whose accessible
+name is the pool label and the remaining uses, such as "Lay On Hands: 35
+remaining". It SHALL show the remaining uses as `current / max` and as a
+progress bar. The bar's accessible name SHALL be the
 pool label, and it SHALL report the remaining uses as its value, from 0 through
 `max`. The counter SHALL offer four controls in the order -5, -1, +1, +5. Each
 control's accessible name SHALL be the pool label and its step, such as
@@ -113,7 +115,8 @@ readout and bar. The counter SHALL not offer reset or rest controls.
 #### Scenario: Controls appear in order and name the pool
 
 - **WHEN** a valid pool labelled `Lay On Hands` has `max` 35
-- **THEN** its controls are named "Lay On Hands: -5", "Lay On Hands: -1", "Lay On Hands: +1" and "Lay On Hands: +5", in that order
+- **THEN** the counter is a group named "Lay On Hands: 35 remaining"
+- **AND** its controls are named "Lay On Hands: -5", "Lay On Hands: -1", "Lay On Hands: +1" and "Lay On Hands: +5", in that order
 - **AND** its progress bar is named "Lay On Hands" with value 35 of 35
 
 #### Scenario: Spending uses lowers the count

@@ -24,7 +24,7 @@ None.
 
 - `resource-pools`: the dots requirement covers pools of 1–12 uses only; a new requirement adds the counter for 13–100; the over-limit scenario uses 101.
 - `character-sheet`: the "Sheet fits a phone screen" requirement extends the 44 px tap target from pool dots to every pool control.
-- `dndbeyond-ingest`: the "Draft validation" warning for a pool above 100 says the app shows at most 100 uses, not 100 dots.
+- `dndbeyond-ingest`: the "Draft validation" warning for a pool above 100 says the app tracks at most 100 uses, not 100 dots. The "Guided skill flow" tells the Author about a pool above 100, not above 12.
 
 ## Impact
 
