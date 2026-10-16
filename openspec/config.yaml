@@ -1,12 +1,5 @@
 schema: lets-standard
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-context: |
-  The backlog is GitHub issues, each with its MoSCoW priority as a `priority/*` label;
-  openspec/discovery.md holds personas and journeys. An issue marked "Not yet a story"
-  must be cut into a story packet before it is proposed. One story per change.
-
 # The code review rule. lets-spec put it here, and your project owns it:
 # delete it to stop code reviews, or edit it to change when they run.
 # OpenSpec keeps a project's rules for finishing a change under
