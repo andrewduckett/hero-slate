@@ -11,7 +11,7 @@ rules-agnostic, per-device counters that stay separate from authored character d
 
 The system SHALL read `pools` as an ordered list of pool definitions. A valid
 definition SHALL be a non-array object with a unique, non-empty string `id`, a
-non-empty string `label`, and an integer `max` from one through 12. `color` SHALL
+non-empty string `label`, and an integer `max` from one through 100. `color` SHALL
 be optional and, when present, SHALL be a string. The system SHALL keep valid
 definitions in authored order. It SHALL ignore invalid definitions and later
 definitions that repeat an earlier valid id. The system SHALL treat an unknown

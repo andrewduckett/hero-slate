@@ -10,10 +10,9 @@ import { parse as parseYaml } from 'yaml';
 import { ID_GRAMMAR, checkIdentity } from '$lib/data/yaml';
 import { PALETTE_NAMES } from '$lib/theme/palette';
 import { validEntries } from '$lib/character/entries';
-import { resolvePools } from '$lib/character/pools';
+import { MAX_POOL_DOTS, resolvePools } from '$lib/character/pools';
 import { resolveSections } from '$lib/character/sections';
 
-const MAX_POOL_DOTS = 12;
 
 export interface ValidationResult {
 	errors: string[];

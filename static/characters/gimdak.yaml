@@ -1,0 +1,139 @@
+name: Gimdak Steelward
+level: 7
+class: Paladin
+color: sun
+
+abilities:
+  - label: Strength
+    value: 20
+  - label: Dexterity
+    value: 14
+  - label: Constitution
+    value: 14
+  - label: Intelligence
+    value: 11
+  - label: Wisdom
+    value: 10
+  - label: Charisma
+    value: 16
+combat:
+  - label: Armor Class
+    value: 20
+  - label: Speed
+    value: 30
+  - label: Initiative
+    value: "+2"
+
+hitPoints:
+  max: 66
+
+pools:
+  - id: holy-power
+    label: Holy Power
+    color: sun
+    max: 2
+  - id: fire-breath
+    label: Fire Breath
+    color: fire
+    max: 3
+  - id: dragon-wings
+    label: Dragon Wings
+    color: ocean
+    max: 1
+  - id: earth-shaker
+    label: Earth Shaker
+    color: forest
+    max: 3
+  - id: slots-1
+    label: Spell Slots (1st)
+    color: berry
+    max: 4
+  - id: slots-2
+    label: Spell Slots (2nd)
+    color: berry
+    max: 3
+  - id: lay-on-hands
+    label: Lay On Hands
+    color: sun
+    max: 35
+  - id: divine-smite
+    label: Free Divine Smite
+    color: sun
+    max: 1
+  - id: find-steed
+    label: Free Find Steed
+    color: neutral
+    max: 1
+
+sections:
+  - title: Action
+    color: fire
+    rows:
+      - title: 🔨 Warhammer
+        body: "Smash! [[d20+8]] to hit, [[1d8+5]] damage — and you can push them back 10 feet"
+      - title: 🔥 Fire Breath
+        body: "Breathe dragon fire! Enemies make a [[DC 13]] Dexterity save or take [[2d10]] damage"
+      - title: ✨ Cast a Spell
+        body: "Pick a spell from Magic — spell attack [[d20+6]], save [[DC 14]]"
+
+  - title: Bonus Action
+    color: sun
+    rows:
+      - title: 💡 Pick One
+        body: "You only get one bonus action a turn, so choose wisely!"
+      - title: 🛡️ Champion Challenge
+        body: "Your best first move! Shout a challenge so enemies can't run away from you to reach your friends."
+      - title: 🌊 Turn the Tide
+        body: "When two or more friends are badly hurt, heal all of them at once."
+      - title: 🙌 Lay On Hands
+        body: "Touch a friend and heal them with holy light from your big healing pool."
+      - title: 🐉 Dragon Wings
+        body: "Sprout dragon wings and fly!"
+
+  - title: Reaction
+    color: ocean
+    rows:
+      - title: 💡 Pick One
+        body: "You get one reaction each round — save it for the right moment."
+      - title: 👁️ Sentinel
+        body: "An enemy next to you attacks someone else? Swing at them for free, and they stop in their tracks."
+      - title: 🤺 Interception
+        body: "A friend next to you gets hit? Block it with your shield and they take [[1d10+3]] less damage."
+      - title: 💛 Divine Allegiance
+        body: "Take a friend's hit yourself — only to stop them from falling down."
+
+  - title: Game Plan
+    color: neutral
+    rows:
+      - title: 🧲 Stay Close
+        body: "Friends near you are better at resisting danger. Keep your friends close, and don't chase enemies far away."
+      - title: 🧱 Be the Wall
+        body: "Challenge enemies, then stand next to your friends. Sentinel stops anyone who tries to get past, and Interception blocks what gets through."
+      - title: 🌅 Before the Fight
+        body: "Cast Warding Bond on a strong friend who is fully healed."
+
+  - title: Magic
+    color: berry
+    rows:
+      - title: 🗣️ Command
+        body: "Give a one-word order like \"Drop!\" or \"Flee!\" — they make a [[DC 14]] Wisdom save"
+      - title: ⚡ Divine Smite
+        body: "When you hit, add [[2d8]] holy damage"
+      - title: 🤝 Warding Bond
+        body: "Protect a friend by sharing their hurts."
+      - title: 🐴 Find Steed
+        body: "Summon a loyal mount to ride into battle."
+      - title: ⚔️ Compelled Duel
+        body: "Dare one enemy to fight only you — they make a [[DC 14]] Wisdom save"
+      - title: ⚖️ Zone of Truth
+        body: "Make an area where nobody can lie — they make a [[DC 14]] Charisma save"
+
+  - title: Strengths
+    color: forest
+    rows:
+      - title: 💪 Mighty Muscles
+        body: climbing, jumping & shoving (Athletics), [[+8]] bonus
+      - title: 👑 Royal Voice
+        body: talking people around, nicely or scarily (Persuasion, Intimidation), [[+6]] bonus
+      - title: 🩹 Field Medic
+        body: patching up wounds (Medicine), [[+3]] bonus
