@@ -83,7 +83,7 @@ export function validateDraft(text: string, targetId: string): ValidationResult 
 			const { label, max, color } = pool as Record<string, unknown>;
 			const poolLabel = typeof label === 'string' ? label : 'a pool';
 			if (typeof max === 'number' && Number.isInteger(max) && max > MAX_POOL_USES) {
-				warnings.push(`${poolLabel} has a maximum of ${max}, and the app shows at most ${MAX_POOL_USES} dots`);
+				warnings.push(`${poolLabel} has a maximum of ${max}, and the app tracks at most ${MAX_POOL_USES} uses`);
 			}
 			if (typeof color === 'string' && !(PALETTE_NAMES as readonly string[]).includes(color)) {
 				warnings.push(`pool color "${color}" is not a palette name and will fall back to neutral`);
