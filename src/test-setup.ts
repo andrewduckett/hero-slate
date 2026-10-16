@@ -44,7 +44,13 @@ const globalRef = globalThis as unknown as {
 };
 
 globalRef.Storage = MemoryStorage;
-globalRef.localStorage = new MemoryStorage() as unknown as Storage;
+// Newer jsdom defines `localStorage` as a getter-only accessor, so plain
+// assignment throws. Redefine the property instead.
+Object.defineProperty(globalRef, 'localStorage', {
+	value: new MemoryStorage() as unknown as Storage,
+	configurable: true,
+	writable: true
+});
 
 // jsdom ships no `matchMedia`. Provide a stub that returns no dark preference
 // and no-ops the listener methods, so any component that reads the device
