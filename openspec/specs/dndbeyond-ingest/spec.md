@@ -748,7 +748,7 @@ The preview tool SHALL read a drafted character file and check it before it draw
 These are **warnings**:
 - The character's `color` is not a palette name. The app would fall back to neutral.
 - The app would silently drop an entry in `abilities`, `combat`, or `pools`.
-- A `pools` entry has an integer `max` above 100. This warning SHALL name the pool and say that the app shows at most 100 dots.
+- A `pools` entry has an integer `max` above 100. This warning SHALL name the pool and say that the app tracks at most 100 uses.
 - A `pools` entry's `color` is not a palette name. The app would fall back to neutral.
 - `hitPoints.max` is present but is not an integer greater than 0.
 - The app would silently drop a `sections` entry, or a row inside a section.
@@ -772,7 +772,7 @@ The preview tool SHALL list every error and warning. It SHALL exit with code 1 w
 
 - **WHEN** the draft has a pool labelled `Sorcery Points` with `max: 120`
 - **THEN** the preview warns that the app would drop a `pools` entry
-- **AND** it warns that `Sorcery Points` has a maximum of 120, and the app shows at most 100 dots
+- **AND** it warns that `Sorcery Points` has a maximum of 120, and the app tracks at most 100 uses
 - **AND** it exits with code 0
 
 #### Scenario: A repeated pool id is a warning
@@ -1005,7 +1005,7 @@ The skill SHALL guide the Author from a character reference to a written charact
 3. On a digest failure, relay the tool's message, and stop.
 4. When a digest fact is `null`, tell the Author its reason, and do not guess it. For Armor Class, ask the Author for the value. For a limited use, spell slots, or Pact Magic, ask for the value only when the Author wants that pool.
 5. Propose a logical id, a palette color, and whether to keep the name's emoji. The Author confirms or changes each one.
-6. Offer the pools. List each limited use with its reset, each spell-slot level, and the Pact Magic slots. The Author picks the pools to keep. For each kept pool, propose a label, a palette color, and a pool id, and the Author confirms or changes them. Propose each pool id as the label in lowercase, with hyphens between words. Propose `slots-N` for the spell-slot pool at level `N`, and `pact-slots` for Pact Magic. Offer one pool for each spell-slot level. Tell the Author when a pool's maximum is above 12, because the app would drop that pool.
+6. Offer the pools. List each limited use with its reset, each spell-slot level, and the Pact Magic slots. The Author picks the pools to keep. For each kept pool, propose a label, a palette color, and a pool id, and the Author confirms or changes them. Propose each pool id as the label in lowercase, with hyphens between words. Propose `slots-N` for the spell-slot pool at level `N`, and `pact-slots` for Pact Magic. Offer one pool for each spell-slot level. Tell the Author when a pool's maximum is above 100, because the app would drop that pool.
 7. Recommend a Your Turn section. Recommend 3 to 5 rows from the digest's actions, and give a short reason for each. Favor the main attack, one signature feature, and one short prompt for a move with no numbers. When the digest's `spellcasting` list is not empty, include a "Cast a Spell" row among those rows. Do not list every action. The Author keeps, cuts, swaps, or adds rows, and may ask for any digest action by name.
 8. When the digest's `spellcasting` list is not empty, recommend a Magic section. Recommend one spell with a known save DC, one spell with a known to-hit, and 2 or 3 flavor spells written with no pills. Recommend only spells with a cast way whose status is not `not-prepared`, except under the fallback below. Give a short reason for each row. Do not list every spell. The Author keeps, cuts, swaps, or adds rows, and may ask for any digest spell by name.
 9. Recommend a Strengths section from the skills whose proficiency level is proficient or expertise. Group skills into one row only when their ability and their final bonus are both equal. Give each row an emoji and a short plain-words gloss that names its skills. The Author keeps, cuts, splits, or adds rows, and may ask for any digest skill by name.
