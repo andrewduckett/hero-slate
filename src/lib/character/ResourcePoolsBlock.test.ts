@@ -158,5 +158,28 @@ describe('ResourcePoolsBlock', () => {
 
 			expect(screen.queryByRole('button', { name: /reset|rest(?!o)/i })).toBeNull();
 		});
+
+		it('keeps a dot change in a rapid counter save', async () => {
+			const state = store();
+			render(ResourcePoolsBlock, {
+				props: {
+					pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 35 }, { id: 'channel', label: 'Channel Divinity', max: 2 }],
+					storedPools: undefined, store: state, id: 'gimdak'
+				}
+			});
+			state.write.mockClear();
+
+			await fireEvent.click(screen.getByRole('button', { name: 'Channel Divinity: 2 remaining' }));
+			await fireEvent.click(screen.getByRole('button', { name: 'Lay On Hands: -1' }));
+			expect(state.write).toHaveBeenLastCalledWith('gimdak', 'pools', { 'lay-on-hands': 34, channel: 1 });
+		});
+
+		it('keeps a stored count when the maximum crosses the dot limit', () => {
+			const { container } = render(ResourcePoolsBlock, {
+				props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 20 }], storedPools: { 'lay-on-hands': 8 }, store: store(), id: 'gimdak' }
+			});
+
+			expect(container.querySelector('.readout')?.textContent?.replace(/\s+/g, ' ').trim()).toBe('8 / 20');
+		});
 	});
 });
