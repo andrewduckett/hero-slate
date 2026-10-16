@@ -1,6 +1,6 @@
 ## 1. Pool limits
 
-- [ ] 1.1 [easy] `pools.ts` exports `POOL_DOT_LIMIT = 12` and renames `MAX_POOL_DOTS` to `MAX_POOL_USES` (still 100); a pool with `max` 100 resolves and one with `max` 101 does not; update the importer in `validate.ts` (verify: `npm test -- src/lib/character/pools.test.ts`)
+- [x] 1.1 [easy] `pools.ts` exports `POOL_DOT_LIMIT = 12` and renames `MAX_POOL_DOTS` to `MAX_POOL_USES` (still 100); a pool with `max` 100 resolves and one with `max` 101 does not; update the importer in `validate.ts` (verify: `npm test -- src/lib/character/pools.test.ts`) (✓ npm test -- src/lib/character/pools.test.ts passed)
 
 ## 2. Pools block: dots and counter [depends-on: 1]
 
