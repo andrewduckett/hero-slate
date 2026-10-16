@@ -144,5 +144,19 @@ describe('ResourcePoolsBlock', () => {
 			expect(container.querySelector('.readout')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(`${expected} / 35`);
 			expect(state.write).toHaveBeenLastCalledWith('gimdak', 'pools', { 'lay-on-hands': expected });
 		});
+
+		it('looks the same at zero uses', () => {
+			renderCounter({ 'lay-on-hands': 0 });
+
+			const counter = screen.getByRole('group', { name: 'Lay On Hands: 0 remaining' });
+			expect([...counter.attributes].map((attribute) => attribute.name).filter((name) => name.endsWith('-state'))).toEqual([]);
+			expect(counter.style.opacity).toBe('');
+		});
+
+		it('offers no reset or rest control', () => {
+			renderCounter();
+
+			expect(screen.queryByRole('button', { name: /reset|rest(?!o)/i })).toBeNull();
+		});
 	});
 });
