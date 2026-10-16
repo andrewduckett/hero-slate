@@ -2,7 +2,7 @@
 	import { onMount, untrack } from 'svelte';
 	import type { StateStore } from '$lib/state/store';
 	import { resolvePalette } from '$lib/theme/resolve';
-	import { resolvePools } from './pools';
+	import { POOL_DOT_LIMIT, resolvePools } from './pools';
 
 	let { pools, storedPools, store, id = '' }: { pools: unknown; storedPools: unknown; store?: StateStore; id?: string } = $props();
 	const resolved = untrack(() => resolvePools(pools, storedPools));
@@ -32,20 +32,27 @@
 {#if resolved.length > 0}
 	<section class="resource-pools" aria-label="Resource pools" data-block="pools">
 		{#each resolved as pool (pool.id)}
-			<div class="pool" data-palette={resolvePalette(pool.color)} data-pool-size={pool.max > 5 ? 'large' : 'small'}>
-				<h3>{pool.label}</h3>
-				<div class="dots" aria-label={`${pool.label}: ${counts[pool.id]} remaining`}>
-					{#each Array(pool.max) as _, index}
-						{@const dot = index + 1}
-						<button
-							type="button"
-							data-pool-dot={dot <= counts[pool.id] ? 'filled' : 'empty'}
-							aria-label={`${pool.label}: ${dot} remaining`}
-							onclick={() => select(pool.id, dot)}
-						></button>
-					{/each}
+			{#if pool.max <= POOL_DOT_LIMIT}
+				<div class="pool" data-palette={resolvePalette(pool.color)} data-pool-form="dots">
+					<h3>{pool.label}</h3>
+					<div class="dots" aria-label={`${pool.label}: ${counts[pool.id]} remaining`}>
+						{#each Array(pool.max) as _, index}
+							{@const dot = index + 1}
+							<button
+								type="button"
+								data-pool-dot={dot <= counts[pool.id] ? 'filled' : 'empty'}
+								aria-label={`${pool.label}: ${dot} remaining`}
+								onclick={() => select(pool.id, dot)}
+							></button>
+						{/each}
+					</div>
 				</div>
-			</div>
+			{:else}
+				<div class="pool" data-palette={resolvePalette(pool.color)} data-pool-form="counter">
+					<h3>{pool.label}</h3>
+					<div class="readout"><span class="current">{counts[pool.id]}</span> / {pool.max}</div>
+				</div>
+			{/if}
 		{/each}
 	</section>
 {/if}
@@ -90,18 +97,6 @@
 		padding: 0;
 		border-radius: 50%;
 		cursor: pointer;
-	}
-
-	/* A pool of more than 5 uses gets smaller dots so it stays compact. */
-	[data-pool-size='large'] .dots {
-		gap: var(--space-1);
-	}
-
-	/* Specific enough to beat the filled/empty border shorthand below. */
-	[data-pool-size='large'] button[data-pool-dot] {
-		inline-size: 1.75rem;
-		block-size: 1.75rem;
-		border-width: 3px;
 	}
 
 	button[data-pool-dot='filled'] {

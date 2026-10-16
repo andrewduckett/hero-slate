@@ -4,7 +4,7 @@
 
 ## 2. Pools block: dots and counter [depends-on: 1]
 
-- [ ] 2.1 [medium] A pool with `max` 12 renders 12 dot controls and no counter, and a pool with `max` 13 renders a counter reading `13 / 13` and no dots; each card carries `data-pool-form="dots"` or `"counter"`, and `data-pool-size` with its two 28 px CSS rules is gone (verify: `npm test -- src/lib/character/ResourcePoolsBlock.test.ts`)
+- [x] 2.1 [medium] A pool with `max` 12 renders 12 dot controls and no counter, and a pool with `max` 13 renders a counter reading `13 / 13` and no dots; each card carries `data-pool-form="dots"` or `"counter"`, and `data-pool-size` with its two 28 px CSS rules is gone (verify: `npm test -- src/lib/character/ResourcePoolsBlock.test.ts`) (✓ npm test -- src/lib/character/ResourcePoolsBlock.test.ts passed)
 - [ ] 2.2 [medium] A counter for `Lay On Hands` with `max` 35 is a group named "Lay On Hands: 35 remaining", has a progress bar named "Lay On Hands" with value 35 of 35, and has controls named "Lay On Hands: -5", "-1", "+1", "+5" in that order with `data-pool-adjust` (verify: `npm test -- src/lib/character/ResourcePoolsBlock.test.ts`)
 - [ ] 2.3 [medium] A counter control adds its step, clamps to 0..max, and saves the full `pools` map: 35 then -5 shows `30 / 35` and saves 30; 3 then -5 saves 0; 33 then +5 saves 35 (verify: `npm test -- src/lib/character/ResourcePoolsBlock.test.ts`)
 - [ ] 2.4 [easy] A counter at 0 is not marked down and keeps full opacity, and the counter has no reset or rest control (verify: `npm test -- src/lib/character/ResourcePoolsBlock.test.ts`)

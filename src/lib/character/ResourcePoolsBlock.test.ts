@@ -64,4 +64,34 @@ describe('ResourcePoolsBlock', () => {
 		await fireEvent.click(screen.getByRole('button', { name: 'Magic: 1 remaining' }));
 		expect(state.write).toHaveBeenLastCalledWith('sunny', 'pools', { magic: 0 });
 	});
+
+	describe('form', () => {
+		it('draws a pool of 12 uses as dots', () => {
+			const { container } = render(ResourcePoolsBlock, {
+				props: { pools: [{ id: 'ki', label: 'Ki', max: 12 }], storedPools: undefined, store: store(), id: 'sunny' }
+			});
+
+			expect(container.querySelectorAll('[data-pool-dot]')).toHaveLength(12);
+			expect(container.querySelector('[data-pool-form]')?.getAttribute('data-pool-form')).toBe('dots');
+			expect(container.querySelector('[data-pool-adjust]')).toBeNull();
+		});
+
+		it('draws a pool of 13 uses as a counter', () => {
+			const { container } = render(ResourcePoolsBlock, {
+				props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 13 }], storedPools: undefined, store: store(), id: 'gimdak' }
+			});
+
+			expect(container.querySelector('[data-pool-form]')?.getAttribute('data-pool-form')).toBe('counter');
+			expect(container.querySelector('.readout')?.textContent?.replace(/\s+/g, ' ').trim()).toBe('13 / 13');
+			expect(container.querySelector('[data-pool-dot]')).toBeNull();
+		});
+
+		it('marks no card with a dot size', () => {
+			const { container } = render(ResourcePoolsBlock, {
+				props: { pools: [{ id: 'focus', label: 'Focus Points', max: 7 }], storedPools: undefined, store: store(), id: 'urven' }
+			});
+
+			expect(container.querySelector('[data-pool-size]')).toBeNull();
+		});
+	});
 });
