@@ -113,12 +113,12 @@ describe('validateDraft — warnings', () => {
 		expect(result.warnings).toEqual([]);
 	});
 
-	it('warns that the app would drop a pool above the 12-dot limit, naming it', () => {
-		const body = ['name: Sunny', 'pools:', '  - id: sorcery', '    label: Sorcery Points', '    max: 15'].join('\n');
+	it('warns that the app would drop a pool above the 100-dot limit, naming it', () => {
+		const body = ['name: Sunny', 'pools:', '  - id: sorcery', '    label: Sorcery Points', '    max: 120'].join('\n');
 		const result = validateDraft(body, 'sunny');
 		expect(result.errors).toEqual([]);
 		expect(result.warnings.some((w) => /would drop/i.test(w))).toBe(true);
-		expect(result.warnings.some((w) => w.includes('Sorcery Points') && w.includes('15') && w.includes('12'))).toBe(
+		expect(result.warnings.some((w) => w.includes('Sorcery Points') && w.includes('120') && w.includes('100'))).toBe(
 			true
 		);
 	});

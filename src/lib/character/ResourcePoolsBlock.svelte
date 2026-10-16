@@ -32,7 +32,7 @@
 {#if resolved.length > 0}
 	<section class="resource-pools" aria-label="Resource pools" data-block="pools">
 		{#each resolved as pool (pool.id)}
-			<div class="pool" data-palette={resolvePalette(pool.color)}>
+			<div class="pool" data-palette={resolvePalette(pool.color)} data-pool-size={pool.max > 5 ? 'large' : 'small'}>
 				<h3>{pool.label}</h3>
 				<div class="dots" aria-label={`${pool.label}: ${counts[pool.id]} remaining`}>
 					{#each Array(pool.max) as _, index}
@@ -51,13 +51,18 @@
 {/if}
 
 <style>
+	/* Cards sit side by side, each only as wide as its dots, and wrap. */
 	.resource-pools {
-		display: grid;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: start;
 		gap: var(--space-3);
 	}
 
 	/* Each pool is a raised card with its own palette. */
 	.pool {
+		flex: 0 1 auto;
+		max-inline-size: 100%;
 		display: grid;
 		gap: var(--space-3);
 		padding: var(--space-4);
@@ -85,6 +90,18 @@
 		padding: 0;
 		border-radius: 50%;
 		cursor: pointer;
+	}
+
+	/* A pool of more than 5 uses gets smaller dots so it stays compact. */
+	[data-pool-size='large'] .dots {
+		gap: var(--space-1);
+	}
+
+	/* Specific enough to beat the filled/empty border shorthand below. */
+	[data-pool-size='large'] button[data-pool-dot] {
+		inline-size: 1.75rem;
+		block-size: 1.75rem;
+		border-width: 3px;
 	}
 
 	button[data-pool-dot='filled'] {

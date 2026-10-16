@@ -49,7 +49,8 @@ describe('palette.css generation', () => {
 	});
 
 	it('matches the committed palette.css (regenerate if this fails)', () => {
-		const committed = readFileSync(cssPath, 'utf8');
+		// Git may check the file out with CRLF line endings on Windows.
+		const committed = readFileSync(cssPath, 'utf8').replace(/\r\n/g, '\n');
 		expect(committed).toBe(generatePaletteCss());
 	});
 });

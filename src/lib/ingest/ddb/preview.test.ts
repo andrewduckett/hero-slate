@@ -98,7 +98,7 @@ describe('renderPreview', () => {
 	});
 
 	it('does not draw a pool the app would drop', () => {
-		const draft = { name: 'Sunny', pools: [{ id: 'sorcery', label: 'Sorcery Points', max: 13 }] };
+		const draft = { name: 'Sunny', pools: [{ id: 'sorcery', label: 'Sorcery Points', max: 101 }] };
 		const text = renderPreview(draft).join('\n');
 		expect(text).not.toContain('Sorcery Points');
 	});

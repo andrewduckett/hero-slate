@@ -24,11 +24,15 @@ describe('resolvePools', () => {
 	});
 
 	it.each([
-		['a maximum above twelve', { id: 'magic', label: 'Magic', max: 13 }],
+		['a maximum above one hundred', { id: 'magic', label: 'Magic', max: 101 }],
 		['a blank label', { id: 'magic', label: ' ', max: 2 }],
 		['a missing id', { label: 'Magic', max: 2 }]
 	])('drops a pool with %s', (_name, pool) => {
 		expect(resolvePools([pool], undefined)).toEqual([]);
+	});
+
+	it('keeps a large pool such as Lay On Hands', () => {
+		expect(resolvePools([{ id: 'lay-on-hands', label: 'Lay On Hands', max: 35 }], undefined)).toHaveLength(1);
 	});
 
 	it('keeps an unknown color for the theme resolver', () => {

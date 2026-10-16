@@ -748,7 +748,7 @@ The preview tool SHALL read a drafted character file and check it before it draw
 These are **warnings**:
 - The character's `color` is not a palette name. The app would fall back to neutral.
 - The app would silently drop an entry in `abilities`, `combat`, or `pools`.
-- A `pools` entry has an integer `max` above 12. This warning SHALL name the pool and say that the app shows at most 12 dots.
+- A `pools` entry has an integer `max` above 100. This warning SHALL name the pool and say that the app shows at most 100 dots.
 - A `pools` entry's `color` is not a palette name. The app would fall back to neutral.
 - `hitPoints.max` is present but is not an integer greater than 0.
 - The app would silently drop a `sections` entry, or a row inside a section.
@@ -770,9 +770,9 @@ The preview tool SHALL list every error and warning. It SHALL exit with code 1 w
 
 #### Scenario: A pool above the dot limit is a warning
 
-- **WHEN** the draft has a pool labelled `Sorcery Points` with `max: 15`
+- **WHEN** the draft has a pool labelled `Sorcery Points` with `max: 120`
 - **THEN** the preview warns that the app would drop a `pools` entry
-- **AND** it warns that `Sorcery Points` has a maximum of 15, and the app shows at most 12 dots
+- **AND** it warns that `Sorcery Points` has a maximum of 120, and the app shows at most 100 dots
 - **AND** it exits with code 0
 
 #### Scenario: A repeated pool id is a warning

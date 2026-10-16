@@ -1,3 +1,6 @@
+/** The most dots a pool may show; Lay On Hands reaches 100 at level 20. */
+export const MAX_POOL_DOTS = 100;
+
 export interface ResolvedPool {
 	id: string;
 	label: string;
@@ -16,7 +19,7 @@ export function resolvePools(pools: unknown, _stored: unknown): ResolvedPool[] {
 		const { id, label, color, max } = pool as Record<string, unknown>;
 		if (typeof id !== 'string' || id.length === 0) return [];
 		if (typeof label !== 'string' || label.trim().length === 0) return [];
-		if (typeof max !== 'number' || !Number.isInteger(max) || max < 1 || max > 12) return [];
+		if (typeof max !== 'number' || !Number.isInteger(max) || max < 1 || max > MAX_POOL_DOTS) return [];
 		if (color !== undefined && typeof color !== 'string') return [];
 		if (ids.has(id)) return [];
 		ids.add(id);

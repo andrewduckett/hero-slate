@@ -24,7 +24,7 @@ describe('shipped sunny.yaml', () => {
 		if (result.status === 'found') {
 			expect(result.character.id).toBe('sunny');
 			expect(result.character.name).toBe('Sunny Thornwood');
-			expect(result.character.level).toBe(6);
+			expect(result.character.level).toBe(7);
 			expect(result.character.class).toBe('Druid');
 			expect(result.character.color).toBe('forest');
 		}
@@ -44,7 +44,7 @@ describe('shipped sunny.yaml', () => {
 				'Wisdom',
 				'Charisma'
 			]);
-			expect(abilities.map((e) => e.score)).toEqual([10, 14, 14, 10, 18, 12]);
+			expect(abilities.map((e) => e.score)).toEqual([8, 14, 14, 12, 20, 10]);
 		}
 	});
 
@@ -66,8 +66,8 @@ describe('shipped sunny.yaml', () => {
 		if (result.status === 'found') {
 			// The file supplies only `max`; a new character starts at full health.
 			expect(resolveHitPoints(result.character.hitPoints, undefined)).toEqual({
-				current: 45,
-				max: 45
+				current: 52,
+				max: 52
 			});
 		}
 	});
