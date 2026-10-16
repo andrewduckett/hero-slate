@@ -70,62 +70,77 @@ Known gap: `npm run check` reports `node:fs`/`process` type errors because the r
 has no `@types/node` and tests read files with `node:fs`. This predates current
 work; treat those specific errors as noise until `@types/node` is added.
 
+## Project workflow notes
+
+The shared workflow rules are in the lets-spec block at the end of this file.
+This project adds:
+
+- **A story packet's `MoSCoW` line matches its priority label.** When you change
+  one, change the other in the same edit. Set the label with the `lets-shape`
+  backlog script, not with `gh`.
+- **Apply `iso-24495-3`** (science and technical writing) to architecture specs,
+  design docs and software documentation, on top of the core plain-language rule.
+
+<!-- BEGIN lets-spec rules. lets-sync rewrites this block: change lets-spec, not this text. -->
 ## Workflow
 
-Planning uses **OpenSpec**: in-flight work lives under `openspec/changes/`;
-durable specs under `openspec/specs/`; decision records under `docs/decisions/`. Use
-the `opsx:*` skills (propose → apply → verify → archive). OpenSpec changes carry
-product behavior. Repo maintenance (tooling, docs, backlog housekeeping) goes
-through an ordinary branch and PR with Conventional Commits.
+These rules come from lets-spec, and apply to every agent.
 
-One branch and one pull request carry a change through its whole lifecycle —
-propose, apply, verify, archive — and merge once. There is no "cross `main`
-between phases" step.
+- **Plan product changes with OpenSpec.** Work in progress lives in
+  `openspec/changes/`, specs in `openspec/specs/`, and decision records
+  in `docs/decisions/`. A change starts with a brainstorm and ends with
+  archive. The schema's instructions say what to do at each step in
+  between. [Routing](#routing) says where each request starts.
+- **One change is one branch and one pull request,** from propose to
+  archive. Independent changes branch off the repository's default
+  branch. A change that
+  depends on another stacks: it branches off the other change's branch
+  and targets its pull request.
+- **One commit per unit of work,** with Conventional Commits: `feat:`,
+  `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
+- **Run the project's checks** before you push, and fix what they
+  report. The project's own instructions say how to run them.
+- **When you review code, also apply the project's `REVIEW.md`,** if it
+  has one.
+- **Use the entry points' backlog scripts for issue selection, kind and
+  priority.** `lets-build`'s script picks and claims stories, and
+  `lets-shape`'s sets kind and priority. Never set an issue's kind or
+  priority with `gh` directly. Every story is an issue, and its pull
+  request says `Closes #<n>`. An epic is a parent issue with its stories
+  as sub-issues. Dependencies are "blocked by" links. Put a blocker on
+  each story it blocks, never only on the epic: picking the next story
+  cannot see a blocker on a parent issue. A "relates to" link never
+  counts as a blocker.
+- **The user owns the merge.** Never merge a pull request unless the
+  user asks. Stacks merge bottom-up.
+- **Change requests reopen an archived change.** If a ready pull request
+  gets change requests, mark it as a draft again and `git revert` the
+  archive commit. Make the fixes, archive again as the last commit, and
+  mark it ready. A rejected pull request is closed and its branch
+  deleted.
+- **Never edit what lets-spec puts in the project:** this section,
+  between its markers, the skills in `.agents/skills/` and the schema
+  folder in `openspec/schemas/`. `lets-sync` rewrites this section, and
+  the skills and the schema are read-only links into the Nix store that
+  git ignores. Change lets-spec instead. Never run `openspec init` or
+  `openspec update`; they write skills of their own.
 
-- **Branch per change.** One OpenSpec change (one backlog issue) = one branch =
-  one PR. Dependent stories **stack**: branch off the parent's branch and target
-  its PR; independent stories branch off `main`.
-- **A commit per unit of work.** Each artifact (proposal, design, specs, tasks) is
-  its own `docs:` commit; each implementation task is its own commit with its real
-  type (`feat:`/`fix:`/`refactor:`/`test:`); the archive is its own `chore:` commit.
-- **Draft until archived.** Open the PR as a draft at propose, and assign its issue
-  (`gh issue edit <n> --add-assignee @me`). An assigned open issue is in progress, so
-  propose does not pick it again. Run propose → apply →
-  verify → archive all on the branch; `archive` moves the change to
-  `openspec/changes/archive/` and syncs delta specs into `openspec/specs/`. Flip the
-  PR to ready when the archive commit lands.
-- **User owns the merge.** The agent never merges a PR unless explicitly asks and 
-  confirmed. Stacks merge bottom-up: parent to `main` first, then retarget and merge 
-  each child.
-- **If a ready PR gets change-requests,** flip it back to draft and `git revert` the
-  archive commit — this restores the change under `openspec/changes/` and unwinds the
-  spec sync. Make the fixes, re-archive as the last commit, and flip ready again. A
-  rejected PR is just closed and its branch deleted; `main` stays clean.
-- **Every story is an issue.** Its body is the story packet; propose reads it and
-  names the issue in `proposal.md`. The story's PR says `Closes #<issue>`, so merging
-  closes it. An epic is a parent issue, labeled `kind/epic`, with its stories as
-  sub-issues; close the epic once all its sub-issues are closed. Dependencies are
-  "blocked by" links.
-- **Every story carries one MoSCoW priority label:** `priority/must`,
-  `priority/should`, `priority/could`, or `priority/wont`. The label matches the
-  `MoSCoW` line in the story packet; when you change one, change the other in the same
-  edit. Epics and untriaged issues have no priority label.
+### Routing
 
-## Writing document artifacts — plain language
+| Request | Start with |
+|---|---|
+| A large idea, or work that needs splitting or prioritizing | The `lets-shape` skill |
+| Start the next story, or move the current branch's change on | The `lets-build` skill |
+| A tooling or dependency change that changes no behavior | An ordinary branch and pull request, with no OpenSpec change |
 
-Write every document artifact — READMEs, ADRs, GitHub issue bodies/designs, `docs/`,
-PR descriptions, and other prose deliverables — to the **ISO 24495 Plain Language**
-standard: reader-first, purposeful structure, findable, understandable, and
-actionable. Apply the core standard (`iso-24495-1`) to all prose, and the
-science/technical sector standard (`iso-24495-3`) to architecture specs, design docs,
-and software documentation. This governs prose only — code, config, and test fixtures
-follow the toolchain's own conventions.
+### Writing
 
-## Scratch & Working Files
-
-Temporary files — scratch notes, intermediate output, working scripts, throwaway data — go in
-**`.workspace/`** at the repo root. It is gitignored (see `.gitignore`). **Use it instead of `/tmp`
-or any scratchpad path your tooling suggests** — this convention overrides a harness-provided
-scratchpad location. Create the directory if it isn't there (`mkdir -p .workspace`). Nothing durable
-lives here; anything worth keeping belongs in the repo tree or a GitHub issue.
-
+- **Write prose in plain language** (ISO 24495): READMEs, decision
+  records, issue bodies, `docs/`, pull request descriptions and OpenSpec
+  artifacts. Put the reader first, and make each document easy to find,
+  understand and act on. Code and config follow their own conventions.
+- **Put scratch files in `.workspace/`** at the repo root, not in `/tmp`
+  or a scratch path your tool suggests. Create it if it is missing, and
+  keep it out of git. Anything worth keeping belongs in the repo or an
+  issue.
+<!-- END lets-spec rules -->
