@@ -1,5 +1,5 @@
 import { parse as parseYaml } from 'yaml';
-import type { Character } from '$lib/types';
+import type { Character } from '#lib/types';
 import type { CharacterProvider, GetCharacterResult } from './provider';
 
 /** The minimal HTTP response surface the provider reads. `fetch`'s `Response` satisfies it. */

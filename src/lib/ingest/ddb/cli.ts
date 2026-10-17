@@ -4,7 +4,7 @@
  * `run` is the pure part: it takes argv and an injected `CliDeps`, and
  * returns an outcome instead of touching the real file system, network, or
  * process. `main` is the only impure part — it wires real `fs`, `fetch`,
- * `process.argv`, and `process.exit`. Run with `vite-node` so `$lib`
+ * `process.argv`, and `process.exit`. Run with `vite-node` so `#lib`
  * aliases resolve the same way they do in tests (see design.md, D2 and D3).
  */
 import { EXIT_CODES } from './exitCodes';

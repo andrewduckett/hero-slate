@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, untrack } from 'svelte';
-	import type { StateStore } from '$lib/state/store';
-	import { resolvePalette } from '$lib/theme/resolve';
+	import type { StateStore } from '#lib/state/store';
+	import { resolvePalette } from '#lib/theme/resolve';
 	import { POOL_DOT_LIMIT, resolvePools } from './pools';
 
 	let { pools, storedPools, store, id = '' }: { pools: unknown; storedPools: unknown; store?: StateStore; id?: string } = $props();

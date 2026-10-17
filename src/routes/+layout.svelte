@@ -1,7 +1,7 @@
 <script lang="ts">
-	import '$lib/theme/palette.css';
-	import '$lib/theme/fonts.css';
-	import '$lib/theme/base.css';
+	import '#lib/theme/palette.css';
+	import '#lib/theme/fonts.css';
+	import '#lib/theme/base.css';
 
 	let { children } = $props();
 </script>

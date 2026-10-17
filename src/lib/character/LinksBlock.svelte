@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolveLinks } from './links';
-	import type { PaletteName } from '$lib/theme/palette';
+	import type { PaletteName } from '#lib/theme/palette';
 
 	let { links, palette }: { links: unknown; palette: PaletteName } = $props();
 

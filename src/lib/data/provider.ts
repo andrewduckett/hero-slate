@@ -1,4 +1,4 @@
-import type { Character } from '$lib/types';
+import type { Character } from '#lib/types';
 
 /**
  * The result of loading a character by logical id.

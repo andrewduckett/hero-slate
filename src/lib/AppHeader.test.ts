@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 
-vi.mock('$lib/theme/preference', () => ({
+vi.mock('#lib/theme/preference', () => ({
 	THEME_STORAGE_KEY: 'hero-slate:theme',
 	readPreference: vi.fn(() => null),
 	writePreference: vi.fn(),

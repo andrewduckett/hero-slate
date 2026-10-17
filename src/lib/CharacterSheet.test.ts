@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/svelte';
 import CharacterSheet from './CharacterSheet.svelte';
-import type { CharacterProvider, GetCharacterResult } from '$lib/data/provider';
-import type { JsonValue, StateStore } from '$lib/state/store';
-import { createLocalStorageStore } from '$lib/state/localStorage';
+import type { CharacterProvider, GetCharacterResult } from '#lib/data/provider';
+import type { JsonValue, StateStore } from '#lib/state/store';
+import { createLocalStorageStore } from '#lib/state/localStorage';
 
 function deferred<T>() {
 	let resolve!: (value: T) => void;

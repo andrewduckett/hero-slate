@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import CharacterView from './CharacterView.svelte';
-import type { Character } from '$lib/types';
+import type { Character } from '#lib/types';
 
 const sunny: Character = { id: 'sunny', name: 'Sunny Thornwood', level: 6, class: 'Druid' };
 

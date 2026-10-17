@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 
 // Mock preference module.
-vi.mock('$lib/theme/preference', () => ({
+vi.mock('#lib/theme/preference', () => ({
 	THEME_STORAGE_KEY: 'hero-slate:theme',
 	readPreference: vi.fn(() => null),
 	writePreference: vi.fn(),
@@ -10,9 +10,9 @@ vi.mock('$lib/theme/preference', () => ({
 	getEffectiveMode: vi.fn(() => 'dark')
 }));
 
-vi.mock('$lib/theme/palette.css', () => ({}));
-vi.mock('$lib/theme/fonts.css', () => ({}));
-vi.mock('$lib/theme/base.css', () => ({}));
+vi.mock('#lib/theme/palette.css', () => ({}));
+vi.mock('#lib/theme/fonts.css', () => ({}));
+vi.mock('#lib/theme/base.css', () => ({}));
 
 // The toggle is now in AppHeader, which both +page.svelte and CharacterView
 // use. Test that it is present and functional on the no-character index route.

@@ -1,15 +1,15 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
+	"extends": "$app/tsconfig",
 	"compilerOptions": {
-		"allowJs": true,
-		"allowImportingTsExtensions": true,
-		"checkJs": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
+		// TypeScript does not add file extensions to package.json `imports` targets,
+		// so mirror the `#lib` mapping here for type-checking.
+		"paths": {
+			"#lib": ["./src/lib"],
+			"#lib/*": ["./src/lib/*"]
+		},
 		"sourceMap": true,
-		"strict": true,
-		"moduleResolution": "bundler"
-	}
+		"strict": true
+	},
+	"include": ["src", "test", "*"],
+	"exclude": ["src/service-worker"]
 }

@@ -3,15 +3,15 @@
  * before the write tool saves it.
  *
  * Reuses the provider's own rules instead of copying them: `ID_GRAMMAR` and
- * `checkIdentity` from `$lib/data/yaml`, `PALETTE_NAMES` from
- * `$lib/theme/palette`, and `validEntries` from `$lib/character/entries`.
+ * `checkIdentity` from `#lib/data/yaml`, `PALETTE_NAMES` from
+ * `#lib/theme/palette`, and `validEntries` from `#lib/character/entries`.
  */
 import { parse as parseYaml } from 'yaml';
-import { ID_GRAMMAR, checkIdentity } from '$lib/data/yaml';
-import { PALETTE_NAMES } from '$lib/theme/palette';
-import { validEntries } from '$lib/character/entries';
-import { MAX_POOL_USES, resolvePools } from '$lib/character/pools';
-import { resolveSections } from '$lib/character/sections';
+import { ID_GRAMMAR, checkIdentity } from '#lib/data/yaml';
+import { PALETTE_NAMES } from '#lib/theme/palette';
+import { validEntries } from '#lib/character/entries';
+import { MAX_POOL_USES, resolvePools } from '#lib/character/pools';
+import { resolveSections } from '#lib/character/sections';
 
 
 export interface ValidationResult {

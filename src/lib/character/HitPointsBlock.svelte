@@ -11,8 +11,8 @@
 	// dimmed with reduced opacity, never a flash, shake, or alarm color.
 	import { onMount, untrack } from 'svelte';
 	import { resolveHitPoints } from './hitPoints';
-	import type { StateStore } from '$lib/state/store';
-	import { ROLE_PALETTE } from '$lib/theme/roles';
+	import type { StateStore } from '#lib/state/store';
+	import { ROLE_PALETTE } from '#lib/theme/roles';
 
 	let {
 		hitPoints,

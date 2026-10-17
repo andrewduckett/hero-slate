@@ -1,5 +1,5 @@
-import { resolvePalette } from '$lib/theme/resolve';
-import type { PaletteName } from '$lib/theme/palette';
+import { resolvePalette } from '#lib/theme/resolve';
+import type { PaletteName } from '#lib/theme/palette';
 
 export interface ResolvedLink {
 	href: string;

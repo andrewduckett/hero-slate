@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/svelte';
 import ResourcePoolsBlock from './ResourcePoolsBlock.svelte';
-import type { StateStore } from '$lib/state/store';
+import type { StateStore } from '#lib/state/store';
 
 function store(): StateStore & { write: ReturnType<typeof vi.fn> } {
 	return { read: vi.fn().mockResolvedValue(undefined), write: vi.fn().mockResolvedValue(undefined) };

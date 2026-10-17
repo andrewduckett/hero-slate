@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { PaletteName } from '$lib/theme/palette';
-	import ThemeToggle from '$lib/theme/ThemeToggle.svelte';
+	import type { PaletteName } from '#lib/theme/palette';
+	import ThemeToggle from '#lib/theme/ThemeToggle.svelte';
 
 	let {
 		title,
