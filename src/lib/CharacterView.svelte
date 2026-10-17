@@ -1,20 +1,20 @@
 <script lang="ts">
-	import type { GetCharacterResult } from '$lib/data/provider';
-	import type { JsonValue, StateStore } from '$lib/state/store';
-	import { formatIdentity } from '$lib/format';
-	import { resolvePalette } from '$lib/theme/resolve';
-	import AbilitiesBlock from '$lib/character/AbilitiesBlock.svelte';
-	import CombatBlock from '$lib/character/CombatBlock.svelte';
-	import HitPointsBlock from '$lib/character/HitPointsBlock.svelte';
-	import ResourcePoolsBlock from '$lib/character/ResourcePoolsBlock.svelte';
-	import SectionsBlock from '$lib/character/SectionsBlock.svelte';
-	import LinksBlock from '$lib/character/LinksBlock.svelte';
-	import { resolveAbilities } from '$lib/character/abilities';
-	import { resolveCombat } from '$lib/character/combat';
-	import { resolveHitPoints } from '$lib/character/hitPoints';
-	import { resolvePools } from '$lib/character/pools';
-	import { resolveLinks } from '$lib/character/links';
-	import AppHeader from '$lib/AppHeader.svelte';
+	import type { GetCharacterResult } from '#lib/data/provider';
+	import type { JsonValue, StateStore } from '#lib/state/store';
+	import { formatIdentity } from '#lib/format';
+	import { resolvePalette } from '#lib/theme/resolve';
+	import AbilitiesBlock from '#lib/character/AbilitiesBlock.svelte';
+	import CombatBlock from '#lib/character/CombatBlock.svelte';
+	import HitPointsBlock from '#lib/character/HitPointsBlock.svelte';
+	import ResourcePoolsBlock from '#lib/character/ResourcePoolsBlock.svelte';
+	import SectionsBlock from '#lib/character/SectionsBlock.svelte';
+	import LinksBlock from '#lib/character/LinksBlock.svelte';
+	import { resolveAbilities } from '#lib/character/abilities';
+	import { resolveCombat } from '#lib/character/combat';
+	import { resolveHitPoints } from '#lib/character/hitPoints';
+	import { resolvePools } from '#lib/character/pools';
+	import { resolveLinks } from '#lib/character/links';
+	import AppHeader from '#lib/AppHeader.svelte';
 
 	type ViewState = GetCharacterResult | { status: 'loading' };
 

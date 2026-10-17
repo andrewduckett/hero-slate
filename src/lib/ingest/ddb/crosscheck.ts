@@ -7,8 +7,8 @@
  * is never compared.
  */
 import { ABILITY_ORDER, type AbilityKey, type Digest } from './digest';
-import { validEntries } from '$lib/character/entries';
-import { resolvePools } from '$lib/character/pools';
+import { validEntries } from '#lib/character/entries';
+import { resolvePools } from '#lib/character/pools';
 
 const ABILITY_ALIASES: Record<string, AbilityKey> = {
 	strength: 'strength',

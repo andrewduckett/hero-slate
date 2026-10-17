@@ -9,8 +9,8 @@
 	// the late completion for the previous id is discarded, whether the character
 	// read or the state read was the slow one. This guards the combined result, not
 	// just the state read, so one character's data never lands on another's sheet.
-	import type { CharacterProvider, GetCharacterResult } from '$lib/data/provider';
-	import type { JsonValue, StateStore } from '$lib/state/store';
+	import type { CharacterProvider, GetCharacterResult } from '#lib/data/provider';
+	import type { JsonValue, StateStore } from '#lib/state/store';
 	import CharacterView from './CharacterView.svelte';
 
 	let {

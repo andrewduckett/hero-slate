@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolveSections } from './sections';
-	import RichText from '$lib/richtext/RichText.svelte';
-	import { parse } from '$lib/richtext/parse';
+	import RichText from '#lib/richtext/RichText.svelte';
+	import { parse } from '#lib/richtext/parse';
 
 	let { sections }: { sections: unknown } = $props();
 

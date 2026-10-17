@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import CombatBlock from './CombatBlock.svelte';
-import { ROLE_PALETTE } from '$lib/theme/roles';
+import { ROLE_PALETTE } from '#lib/theme/roles';
 
 describe('CombatBlock', () => {
 	it('renders each label with its value (string verbatim, finite number as its value)', () => {

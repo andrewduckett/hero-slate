@@ -4,9 +4,9 @@
 	// `combat` field itself and renders nothing when no valid entry remains. All
 	// text comes from Svelte text bindings, so authored values can never inject markup.
 	import { resolveCombat, type ResolvedCombat } from './combat';
-	import { resolveCombatPalette } from '$lib/theme/roles';
-	import { resolvePalette } from '$lib/theme/resolve';
-	import type { PaletteName } from '$lib/theme/palette';
+	import { resolveCombatPalette } from '#lib/theme/roles';
+	import { resolvePalette } from '#lib/theme/resolve';
+	import type { PaletteName } from '#lib/theme/palette';
 
 	let { combat, palette }: { combat: unknown; palette?: string } = $props();
 

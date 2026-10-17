@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/svelte';
 import HitPointsBlock from './HitPointsBlock.svelte';
-import type { StateStore } from '$lib/state/store';
-import { ROLE_PALETTE } from '$lib/theme/roles';
+import type { StateStore } from '#lib/state/store';
+import { ROLE_PALETTE } from '#lib/theme/roles';
 
 /** A store spy whose reads and writes resolve immediately. */
 function fakeStore(): StateStore & { write: ReturnType<typeof vi.fn> } {

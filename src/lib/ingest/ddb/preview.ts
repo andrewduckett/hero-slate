@@ -7,11 +7,11 @@
  * Emoji in names vary in display width, so the border has no right-hand
  * side: a fixed-width right edge would never line up.
  */
-import { resolveAbilities } from '$lib/character/abilities';
-import { resolveCombat } from '$lib/character/combat';
-import { resolveHitPoints } from '$lib/character/hitPoints';
-import { resolvePools } from '$lib/character/pools';
-import { resolveSections } from '$lib/character/sections';
+import { resolveAbilities } from '#lib/character/abilities';
+import { resolveCombat } from '#lib/character/combat';
+import { resolveHitPoints } from '#lib/character/hitPoints';
+import { resolvePools } from '#lib/character/pools';
+import { resolveSections } from '#lib/character/sections';
 
 const DRAWN_BLOCKS = new Set([
 	'id',

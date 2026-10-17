@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createYamlProvider, type FetchLike } from './yaml';
-import { resolveAbilities } from '$lib/character/abilities';
-import { resolveCombat } from '$lib/character/combat';
-import { resolveHitPoints } from '$lib/character/hitPoints';
+import { resolveAbilities } from '#lib/character/abilities';
+import { resolveCombat } from '#lib/character/combat';
+import { resolveHitPoints } from '#lib/character/hitPoints';
 
 // Prove the shipped sample file parses to a valid `found` character.
 const sunnyPath = resolve(process.cwd(), 'static/characters/sunny.yaml');
