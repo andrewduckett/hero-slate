@@ -40,9 +40,11 @@ The reasoning behind each one is in `docs/decisions/`.
 
 ## Toolchain
 
-- **Dev shell:** `nix develop` (or direnv) supplies Node, `gh`, the OpenSpec CLI
-  and `lets`, and runs `lets sync` on entry.
-- **Runtime:** Node 22 (`.nvmrc`). **Package manager:** npm (`package-lock.json`).
+- **Dev tools:** [mise](https://mise.jdx.dev) (`mise.toml`) supplies Node, `gh`,
+  the OpenSpec CLI and `lets`. Run `mise install` once; with `mise activate` in
+  your shell, entering the repo runs `lets sync`. Without it, run
+  `mise exec -- lets sync`.
+- **Runtime:** Node 26 (`.nvmrc`). **Package manager:** npm (`package-lock.json`).
 - **Framework:** SvelteKit + Svelte 5 (runes), TypeScript, Vite.
 - **Tests:** Vitest + `@testing-library/svelte` in a jsdom environment.
 - **Data:** `yaml`. **Deploy:** Cloudflare Workers static assets via `wrangler`.
@@ -61,7 +63,8 @@ npm run deploy           # build + wrangler deploy
 ```
 
 **Checks:** before you push, run `npm test` and `npm run build` and confirm both
-are green. CI runs CodeQL only, so local verification is the gate.
+are green. CI runs CodeQL and `lets sync --check` only, so local verification of
+the app is the gate.
 
 Known gap: `npm run check` reports `node:fs`/`process` type errors because the repo
 has no `@types/node` and tests read files with `node:fs`. Treat those specific
