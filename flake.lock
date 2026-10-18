@@ -27,11 +27,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1792117906,
-        "narHash": "sha256-Y/nq8Cqw3BEdAfeDGCg4NlXoassYUxQ3m/mLcidkKl8=",
+        "lastModified": 1792270674,
+        "narHash": "sha256-5Q4mYtrhK+EWCrSEdFHnTMnSgnqASso1w/HfYWjUSNU=",
         "owner": "andrewduckett",
         "repo": "lets-spec",
-        "rev": "d3d74e7fb28cbef9ca0d3a36c012a7e8bbfb062a",
+        "rev": "3d8f65e2daced2a3777bb43960964d28ed459266",
         "type": "github"
       },
       "original": {

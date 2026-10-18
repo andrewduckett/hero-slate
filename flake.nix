@@ -28,11 +28,11 @@
           default = pkgs.mkShell {
             packages = [
               pkgs."nodejs_${nodeMajor}"
-              lets-spec.packages.${system}.standard-github-labels
+              lets-spec.packages.${system}.standard
             ];
-            # Skip the sync in CI, so lets-sync --check sees the committed tree.
+            # Skip the sync in CI, so lets sync --check sees the committed tree.
             shellHook = ''
-              if [ -z "''${CI:-}" ]; then lets-sync; fi
+              if [ -z "''${CI:-}" ]; then lets sync; fi
             '';
           };
         }
