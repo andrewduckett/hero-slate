@@ -38,5 +38,6 @@ pnpm-debug.log*
 __pycache__/
 *.pyc
 
-# nix-direnv cache
-.direnv/
+# mise local overrides
+mise.local.toml
+.mise.local.toml

@@ -26,9 +26,11 @@ page. The full product intent is in [`openspec/prd.md`](openspec/prd.md).
 
 ## 📦 Install
 
-Requires [Node 22](.nvmrc) and npm.
+Requires [Node 26](.nvmrc) and npm. [mise](https://mise.jdx.dev) installs
+that and the other dev tools from `mise.toml`:
 
 ```bash
+mise install
 npm install
 ```
 

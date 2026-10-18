@@ -1,0 +1,13 @@
+# Dev tools for Hero Slate. `mise install` fetches them; with `mise activate`
+# in your shell, `cd` into the repo puts them on PATH and runs `lets sync`.
+[tools]
+node = "26"
+gh = "2.102"
+"npm:@fission-ai/openspec" = "1.13.2"   # the version in the lets-spec release notes
+"github:andrewduckett/lets-spec" = { version = "0.3.0", asset_pattern = "lets-spec-0.3.0.tar.gz" }
+
+[env]
+LETS_SPEC_FLOW = "standard"
+
+[hooks]
+enter = "lets sync"
