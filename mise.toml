@@ -4,7 +4,7 @@
 node = "26"
 gh = "2.102"
 "npm:@fission-ai/openspec" = "1.13.2"   # the version in the lets-spec release notes
-"github:andrewduckett/lets-spec" = { version = "0.3.0", asset_pattern = "lets-spec-0.3.0.tar.gz" }
+"github:andrewduckett/lets-spec" = { version = "0.3.0" }
 
 [env]
 LETS_SPEC_FLOW = "standard"
