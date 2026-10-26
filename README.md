@@ -203,8 +203,59 @@ npm run check      # svelte-kit sync + svelte-check (type-check)
 ```
 
 Run `npm test` and `npm run build` before opening a PR — both must be green. CI runs
-CodeQL only for now, so local verification is the gate. Practice TDD: write the
+CodeQL and `lets sync --check` only, so local verification is the gate. Practice TDD: write the
 failing test first.
+
+### Dependency updates
+
+[Renovate](https://docs.renovatebot.com) keeps the pins current in
+`package.json`, `.github/workflows/` and `mise.toml`. It runs once a day from
+`.github/workflows/renovate.yml`, under the rules in `.github/renovate.json5`
+([ADR-0011](docs/decisions/0011-self-hosted-renovate-owns-dependency-updates.md)).
+
+- **Minor and patch updates** arrive on Mondays, as one pull request each for
+  npm, GitHub Actions and `mise.toml`.
+- **Each major update** arrives in its own pull request.
+- **Let's Spec updates** arrive on their own, with the files `lets sync` writes
+  already committed.
+- **Security fixes** arrive at the next daily run, whatever the day. Dependabot
+  raises the alert; Renovate opens a pull request titled `… [SECURITY]` and
+  labelled `security`.
+- The **Dependency Dashboard** issue lists what Renovate found and what it is
+  holding back. Tick an update there to get its pull request at the next run.
+
+Nothing merges automatically. Before you merge an update, run `npm test` and
+`npm run build` on its branch.
+
+#### Set up Renovate
+
+Renovate signs in as a GitHub App, so that CI runs on its pull requests. Pull
+requests opened with a workflow's own token don't trigger CI. This repository
+shares the app PierPressure uses. Set it up once:
+
+1. Add this repository to the app's installation: **Settings → Applications →
+   the app → Configure → Repository access**. The app needs these repository
+   permissions, and no others:
+
+   | Permission | Access | Why |
+   | --- | --- | --- |
+   | Contents | Read and write | Push update branches |
+   | Pull requests | Read and write | Open and update the pull requests |
+   | Issues | Read and write | Labels, and the Dependency Dashboard |
+   | Workflows | Read and write | GitHub rejects any commit that changes `.github/workflows/` without it |
+   | Checks | Read and write | Read CI results on its branches |
+   | Commit statuses | Read and write | Read CI results on its branches |
+   | Dependabot alerts | Read-only | The source of the `[SECURITY]` pull requests |
+   | Metadata | Read-only | Required by GitHub |
+
+2. Add two repository secrets: **Settings → Secrets and variables → Actions**.
+   - `RENOVATE_APP_ID`: the app's ID or client ID, both shown on its page.
+   - `RENOVATE_APP_PRIVATE_KEY`: the whole private key file. Generate one on the
+     app's page if you don't have it.
+3. Run it: **Actions → Renovate → Run workflow**.
+
+If the key leaks, generate a new one on the app's page, delete the old one, and
+update the secret here and in PierPressure.
 
 ## 🤖 For AI agents
 
