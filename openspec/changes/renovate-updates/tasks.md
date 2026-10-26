@@ -22,7 +22,7 @@
 
 ## 4. Documentation
 
-- [ ] 4.1 [easy] ADR-0011 in `docs/decisions/` records that self-hosted Renovate owns every dependency update and Dependabot only raises alerts, with the alternatives pier-pressure's ADR-0024 weighed and why auto-merge is out (verify: `grep -q 'status: accepted' docs/decisions/0011-*.md`)
+- [x] 4.1 [easy] ADR-0011 in `docs/decisions/` records that self-hosted Renovate owns every dependency update and Dependabot only raises alerts, with the alternatives pier-pressure's ADR-0024 weighed and why auto-merge is out (verify: `grep -q 'status: accepted' docs/decisions/0011-*.md`) (✓ `grep -qi` passed; `-i` because this repo's ADRs write `- Status: accepted`)
 - [ ] 4.2 [easy] The README says what Renovate updates, how updates and security fixes arrive, that nothing merges automatically, and how to install the GitHub App and add its two secrets (verify: `grep -q 'RENOVATE_APP_PRIVATE_KEY' README.md`)
 
 ## 5. Integration
