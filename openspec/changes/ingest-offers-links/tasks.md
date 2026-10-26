@@ -1,7 +1,7 @@
 ## 1. Offer D&D Beyond links in the ingest
 
 - [x] 1.1 [easy] The digest tool's JSON output reports `sheetUrl` as `https://www.dndbeyond.com/characters/<id>` for a bare id, and the same canonical URL for a reference with a trailing path segment or query string (verify: npx vitest run src/lib/ingest/ddb/cli.test.ts) (✓ npx vitest run src/lib/ingest/ddb/cli.test.ts passed)
-- [ ] 1.2 [easy] Draft validation warns that the app would drop a `links` entry when a link would not survive the app's link rules, such as an `http:` URL, and still exits 0 (verify: npx vitest run src/lib/ingest/ddb/validate.test.ts)
+- [x] 1.2 [easy] Draft validation warns that the app would drop a `links` entry when a link would not survive the app's link rules, such as an `http:` URL, and still exits 0 (verify: npx vitest run src/lib/ingest/ddb/validate.test.ts) (✓ npx vitest run src/lib/ingest/ddb/validate.test.ts passed)
 - [ ] 1.3 [easy] Draft validation warns that a link's `color` is not a palette name and will fall back to neutral (verify: npx vitest run src/lib/ingest/ddb/validate.test.ts)
 - [ ] 1.4 [medium] The preview draws a `Links` block after Sections: each kept link as its shown label (the hostname when it has no label), its resolved palette (the character's palette when the link has no `color`), and its URL, in authored order, with dropped links not drawn (verify: npx vitest run src/lib/ingest/ddb/preview.test.ts)
 - [ ] 1.5 [easy] The preview no longer lists `links` under "Not previewed" (verify: npx vitest run src/lib/ingest/ddb/preview.test.ts)
