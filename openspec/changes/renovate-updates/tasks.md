@@ -5,7 +5,7 @@
 
 ## 1. Pins in mise.toml
 
-- [ ] 1.1 [easy] `mise.toml` is the only Node pin: delete `.nvmrc`, and point `README.md:29` and `AGENTS.md:47` at `mise.toml` (verify: `test ! -e .nvmrc && ! grep -n nvmrc README.md AGENTS.md`)
+- [x] 1.1 [easy] `mise.toml` is the only Node pin: delete `.nvmrc`, and point `README.md:29` and `AGENTS.md:47` at `mise.toml` (verify: `test ! -e .nvmrc && ! grep -n nvmrc README.md AGENTS.md`) (✓ `test ! -e .nvmrc && ! grep -n nvmrc README.md AGENTS.md` passed)
 - [ ] 1.2 [easy] The Let's Spec pin uses `asset_pattern = "lets-spec-*.tar.gz"`, and the OpenSpec comment says it is an ordinary pin Renovate moves on its own, not tied to Let's Spec (verify: `mise install && mise exec -- lets sync --check`)
 
 ## 2. Renovate rules
