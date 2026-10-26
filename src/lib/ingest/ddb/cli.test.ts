@@ -70,6 +70,22 @@ describe('cli run — digest', () => {
 		expect(parsed.name).toBe('Test Hero');
 	});
 
+	it('reports the canonical sheet URL for a bare id', async () => {
+		const deps = fakeDeps({ fetchFn: fetchReturning(res({ body: JSON.stringify(character()) })) });
+
+		const result = await run(['digest', '154922980'], deps);
+
+		expect(JSON.parse(result.stdout).sheetUrl).toBe('https://www.dndbeyond.com/characters/154922980');
+	});
+
+	it('reports the canonical sheet URL for a reference with a trailing path segment and query string', async () => {
+		const deps = fakeDeps({ fetchFn: fetchReturning(res({ body: JSON.stringify(character()) })) });
+
+		const result = await run(['digest', 'https://dndbeyond.com/characters/154922980/builder?tab=spells'], deps);
+
+		expect(JSON.parse(result.stdout).sheetUrl).toBe('https://www.dndbeyond.com/characters/154922980');
+	});
+
 	it('prints nothing on stdout for an unreadable reference, and exits 4', async () => {
 		const deps = fakeDeps();
 		const result = await run(['digest', 'not-a-reference!'], deps);

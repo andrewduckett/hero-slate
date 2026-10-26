@@ -121,4 +121,74 @@ describe('renderPreview', () => {
 			}
 		}
 	});
+
+	it("draws a link as its label, the character's palette, and its URL", () => {
+		const draft = {
+			name: 'Sunny',
+			color: 'ocean',
+			links: [{ label: '📜 D&D Beyond', url: 'https://www.dndbeyond.com/characters/154922980' }]
+		};
+		const text = renderPreview(draft).join('\n');
+		expect(text).toContain('📜 D&D Beyond (ocean): https://www.dndbeyond.com/characters/154922980');
+	});
+
+	it('draws a link with no label as its hostname', () => {
+		const draft = { name: 'Sunny', links: [{ url: 'https://www.dndbeyond.com/spells' }] };
+		const text = renderPreview(draft).join('\n');
+		expect(text).toContain('www.dndbeyond.com (neutral): https://www.dndbeyond.com/spells');
+	});
+
+	it("draws a link's own palette over the character's", () => {
+		const draft = {
+			name: 'Sunny',
+			color: 'ocean',
+			links: [{ label: 'Map', url: 'https://example.com/map', color: 'forest' }]
+		};
+		const text = renderPreview(draft).join('\n');
+		expect(text).toContain('Map (forest): https://example.com/map');
+	});
+
+	it('draws links in authored order', () => {
+		const draft = {
+			name: 'Sunny',
+			links: [
+				{ label: 'Sheet', url: 'https://www.dndbeyond.com/characters/1' },
+				{ label: 'Spells', url: 'https://www.dndbeyond.com/spells' },
+				{ label: 'Map', url: 'https://example.com/map' }
+			]
+		};
+		const text = renderPreview(draft).join('\n');
+		const positions = ['Sheet (', 'Spells (', 'Map ('].map((label) => text.indexOf(label));
+		expect(positions.every((p) => p >= 0)).toBe(true);
+		expect(positions).toEqual([...positions].sort((a, b) => a - b));
+	});
+
+	it('does not draw a link the app would drop', () => {
+		const draft = { name: 'Sunny', links: [{ label: 'Bad', url: 'javascript:alert(1)' }] };
+		const text = renderPreview(draft).join('\n');
+		expect(text).not.toContain('alert');
+		expect(text).not.toContain('Bad');
+	});
+
+	it('draws links after sections', () => {
+		const draft = {
+			name: 'Sunny',
+			sections: [{ title: 'Your Turn', rows: [{ body: 'swipe!' }] }],
+			links: [{ label: 'Sheet', url: 'https://www.dndbeyond.com/characters/1' }]
+		};
+		const text = renderPreview(draft).join('\n');
+		expect(text.indexOf('| Links')).toBeGreaterThan(text.indexOf('| Sections'));
+	});
+
+	it('does not list links under Not previewed', () => {
+		const draft = {
+			name: 'Sunny',
+			links: [{ label: 'Sheet', url: 'https://www.dndbeyond.com/characters/1' }],
+			notes: 'a top-level block the preview does not know'
+		};
+		const text = renderPreview(draft).join('\n');
+		const notPreviewedLine = text.split('\n').find((line) => /not previewed/i.test(line)) ?? '';
+		expect(notPreviewedLine).toContain('notes');
+		expect(notPreviewedLine).not.toContain('links');
+	});
 });

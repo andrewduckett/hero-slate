@@ -12,7 +12,7 @@ import { PALETTE_NAMES } from '#lib/theme/palette';
 import { validEntries } from '#lib/character/entries';
 import { MAX_POOL_USES, resolvePools } from '#lib/character/pools';
 import { resolveSections } from '#lib/character/sections';
-
+import { resolveLinks } from '#lib/character/links';
 
 export interface ValidationResult {
 	errors: string[];
@@ -120,6 +120,20 @@ export function validateDraft(text: string, targetId: string): ValidationResult 
 			}
 		}
 		if (rowDropped) warnings.push('the app would drop a row in that section');
+	}
+
+	if (Array.isArray(parsed.links)) {
+		// The character palette only shapes each kept link's colour, never whether it is kept.
+		if (resolveLinks(parsed.links, 'neutral').length < parsed.links.length) {
+			warnings.push('the app would drop a `links` entry');
+		}
+		for (const link of parsed.links) {
+			if (!isMapping(link)) continue;
+			const color = link.color;
+			if (typeof color === 'string' && !(PALETTE_NAMES as readonly string[]).includes(color)) {
+				warnings.push(`link color "${color}" is not a palette name and will fall back to neutral`);
+			}
+		}
 	}
 
 	return { errors, warnings };

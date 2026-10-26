@@ -196,4 +196,18 @@ describe('validateDraft — warnings', () => {
 		expect(result.errors).toEqual([]);
 		expect(result.warnings.some((w) => w.includes('purple'))).toBe(true);
 	});
+
+	it('warns that the app would drop a links entry with an http URL', () => {
+		const body = ['name: Sunny', 'links:', '  - url: http://example.com'].join('\n');
+		const result = validateDraft(body, 'sunny');
+		expect(result.errors).toEqual([]);
+		expect(result.warnings.some((w) => /would drop a `?links`? entry/i.test(w))).toBe(true);
+	});
+
+	it('warns when a link color is not a palette name', () => {
+		const body = ['name: Sunny', 'links:', '  - url: https://example.com', '    color: purple'].join('\n');
+		const result = validateDraft(body, 'sunny');
+		expect(result.errors).toEqual([]);
+		expect(result.warnings.some((w) => w.includes('purple'))).toBe(true);
+	});
 });

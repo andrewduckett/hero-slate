@@ -69,7 +69,8 @@ async function runDigest(reference: string, deps: CliDeps): Promise<CliOutcome> 
 		return fail(EXIT_CODES.fetchFailed, digestResult.message);
 	}
 
-	return ok(JSON.stringify(digestResult.digest, null, 2));
+	const sheetUrl = `https://www.dndbeyond.com/characters/${parsedReference.id}`;
+	return ok(JSON.stringify({ ...digestResult.digest, sheetUrl }, null, 2));
 }
 
 function readDigestFile(path: string, deps: CliDeps): Digest {

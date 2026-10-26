@@ -1,8 +1,8 @@
 /**
  * Draw an ASCII preview of a draft character file, using the same resolvers
- * the app uses, so the preview matches the rendered sheet. Draws only the
- * story-16 blocks — identity, abilities, combat, and hit points — and lists
- * any other top-level block under "Not previewed" without drawing it.
+ * the app uses, so the preview matches the rendered sheet. Draws identity,
+ * abilities, combat, hit points, pools, sections, and links, and lists any
+ * other top-level block under "Not previewed" without drawing it.
  *
  * Emoji in names vary in display width, so the border has no right-hand
  * side: a fixed-width right edge would never line up.
@@ -12,6 +12,8 @@ import { resolveCombat } from '#lib/character/combat';
 import { resolveHitPoints } from '#lib/character/hitPoints';
 import { resolvePools } from '#lib/character/pools';
 import { resolveSections } from '#lib/character/sections';
+import { resolveLinks } from '#lib/character/links';
+import { resolvePalette } from '#lib/theme/resolve';
 
 const DRAWN_BLOCKS = new Set([
 	'id',
@@ -23,7 +25,8 @@ const DRAWN_BLOCKS = new Set([
 	'combat',
 	'hitPoints',
 	'pools',
-	'sections'
+	'sections',
+	'links'
 ]);
 
 function border(): string {
@@ -88,6 +91,16 @@ export function renderPreview(draft: Record<string, unknown>): string[] {
 				if (row.title) lines.push(`|     ${row.title}: ${row.body}`);
 				else lines.push(`|     ${row.body}`);
 			}
+		}
+	}
+
+	const characterPalette = resolvePalette(typeof draft.color === 'string' ? draft.color : undefined);
+	const links = resolveLinks(draft.links, characterPalette);
+	if (links.length > 0) {
+		lines.push('|');
+		lines.push('| Links');
+		for (const link of links) {
+			lines.push(`|   ${link.label} (${link.palette}): ${link.href}`);
 		}
 	}
 
