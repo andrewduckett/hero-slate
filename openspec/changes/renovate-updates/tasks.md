@@ -10,7 +10,7 @@
 
 ## 2. Renovate rules
 
-- [ ] 2.1 [medium] `.github/renovate.json5` tracks npm, GitHub Actions (with the `# renovate:` pins in the workflow) and `mise.toml`; runs `on monday` in UTC with no hourly PR limit; labels PRs `dependencies`; commits `chore(deps):` everywhere; bumps npm ranges; groups minor and patch per ecosystem, npm `dependencies` and `devDependencies` together, and leaves each major alone (verify: `mise exec node@24 -- npx --yes --package renovate@44.181.8 -- renovate-config-validator --strict --no-global .github/renovate.json5`)
+- [x] 2.1 [medium] `.github/renovate.json5` tracks npm, GitHub Actions (with the `# renovate:` pins in the workflow) and `mise.toml`; runs `on monday` in UTC with no hourly PR limit; labels PRs `dependencies`; commits `chore(deps):` everywhere; bumps npm ranges; groups minor and patch per ecosystem, npm `dependencies` and `devDependencies` together, and leaves each major alone (verify: `mise exec node@24 -- npx --yes --package renovate@44.181.8 -- renovate-config-validator --strict --no-global .github/renovate.json5`) (✓ `renovate-config-validator --strict --no-global` passed)
 - [ ] 2.2 [medium] The same config gives Let's Spec its own PR that runs `lets sync` as a post-upgrade task and commits every file it writes, and turns on `vulnerabilityAlerts` with the extra label `security` (verify: `mise exec node@24 -- npx --yes --package renovate@44.181.8 -- renovate-config-validator --strict --no-global .github/renovate.json5`)
 
 ## 3. Runner and repository settings
