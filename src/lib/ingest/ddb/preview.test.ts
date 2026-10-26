@@ -179,4 +179,16 @@ describe('renderPreview', () => {
 		const text = renderPreview(draft).join('\n');
 		expect(text.indexOf('| Links')).toBeGreaterThan(text.indexOf('| Sections'));
 	});
+
+	it('does not list links under Not previewed', () => {
+		const draft = {
+			name: 'Sunny',
+			links: [{ label: 'Sheet', url: 'https://www.dndbeyond.com/characters/1' }],
+			notes: 'a top-level block the preview does not know'
+		};
+		const text = renderPreview(draft).join('\n');
+		const notPreviewedLine = text.split('\n').find((line) => /not previewed/i.test(line)) ?? '';
+		expect(notPreviewedLine).toContain('notes');
+		expect(notPreviewedLine).not.toContain('links');
+	});
 });

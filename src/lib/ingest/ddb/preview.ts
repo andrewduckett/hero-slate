@@ -1,8 +1,8 @@
 /**
  * Draw an ASCII preview of a draft character file, using the same resolvers
- * the app uses, so the preview matches the rendered sheet. Draws only the
- * story-16 blocks — identity, abilities, combat, and hit points — and lists
- * any other top-level block under "Not previewed" without drawing it.
+ * the app uses, so the preview matches the rendered sheet. Draws identity,
+ * abilities, combat, hit points, pools, sections, and links, and lists any
+ * other top-level block under "Not previewed" without drawing it.
  *
  * Emoji in names vary in display width, so the border has no right-hand
  * side: a fixed-width right edge would never line up.
@@ -25,7 +25,8 @@ const DRAWN_BLOCKS = new Set([
 	'combat',
 	'hitPoints',
 	'pools',
-	'sections'
+	'sections',
+	'links'
 ]);
 
 function border(): string {
