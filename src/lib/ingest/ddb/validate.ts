@@ -127,6 +127,13 @@ export function validateDraft(text: string, targetId: string): ValidationResult 
 		if (resolveLinks(parsed.links, 'neutral').length < parsed.links.length) {
 			warnings.push('the app would drop a `links` entry');
 		}
+		for (const link of parsed.links) {
+			if (!isMapping(link)) continue;
+			const color = link.color;
+			if (typeof color === 'string' && !(PALETTE_NAMES as readonly string[]).includes(color)) {
+				warnings.push(`link color "${color}" is not a palette name and will fall back to neutral`);
+			}
+		}
 	}
 
 	return { errors, warnings };
