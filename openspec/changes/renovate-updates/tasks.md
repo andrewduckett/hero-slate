@@ -18,7 +18,7 @@
 - [x] 3.1 [medium] `.github/workflows/renovate.yml` runs Renovate daily and on `workflow_dispatch`, signed in with a token from the `RENOVATE_APP_ID` and `RENOVATE_APP_PRIVATE_KEY` secrets, with `^lets sync$` as the only allowed command and mise's shims on PATH; on a PR that changes the config or the workflow, it only runs the config validator. Push the branch so the validator runs (verify: `gh pr checks 82 | grep -E '^validate\s+pass'`) (✓ `gh pr checks 82` shows `validate pass`)
 - [x] 3.2 [easy] Dependabot opens no version update PRs: delete `.github/dependabot.yml` (verify: `test ! -e .github/dependabot.yml`) (✓ `test ! -e .github/dependabot.yml` passed)
 - [x] 3.3 [easy] The dependency graph and Dependabot alerts are on, and Dependabot security updates stay off (verify: `gh api repos/andrewduckett/hero-slate/vulnerability-alerts --silent && test "$(gh api repos/andrewduckett/hero-slate --jq .security_and_analysis.dependabot_security_updates.status)" = disabled`) (✓ vulnerability-alerts API returns 204; security updates `disabled`)
-- [ ] 3.4 [easy] The repository has a `security` label for Renovate's security PRs (verify: `gh label list --json name --jq '.[].name' | grep -qx security`)
+- [x] 3.4 [easy] The repository has a `security` label for Renovate's security PRs (verify: `gh label list --json name --jq '.[].name' | grep -qx security`) (✓ `gh label list` shows `security`)
 
 ## 4. Documentation
 
