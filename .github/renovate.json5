@@ -1,0 +1,74 @@
+// Renovate's rules for this repository (#81, ADR-0011). The runner settings,
+// such as the token and the one allowed command, live in
+// .github/workflows/renovate.yml, where a repository config can't widen them.
+//
+// Minor and patch updates arrive weekly, as one pull request per ecosystem. Each
+// major update and each Let's Spec update arrives on its own. CI decides
+// whether an update is safe; nothing merges automatically.
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:recommended",
+    // Reads the `# renovate:` comments on the Renovate and Node pins in the workflow.
+    "customManagers:githubActionsVersions",
+  ],
+  // The whole of Monday, so a manual rerun that day still counts.
+  schedule: ["on monday"],
+  timezone: "UTC",
+  // Renovate runs once a day, so the default of two new pull requests an hour
+  // would hold updates back for days.
+  prHourlyLimit: 0,
+  // The main ruleset requires an up-to-date branch, which Renovate can't read.
+  rebaseWhen: "behind-base-branch",
+  labels: ["dependencies"],
+  // chore(deps) for every ecosystem. config:recommended's preset would make a
+  // production dependency fix(deps) through a package rule, which beats the
+  // type set here.
+  ignorePresets: [":semanticPrefixFixDepsChoreOthers"],
+  semanticCommits: "enabled",
+  semanticCommitType: "chore",
+  semanticCommitScope: "deps",
+  // Security pull requests already skip the schedule and the groups, and their
+  // titles end with [SECURITY].
+  vulnerabilityAlerts: {
+    addLabels: ["security"],
+  },
+  // An update moves the range in package.json, as Dependabot did. An exact pin
+  // stays exact.
+  npm: {
+    rangeStrategy: "bump",
+  },
+  // A later rule wins over an earlier one.
+  packageRules: [
+    // One weekly pull request per ecosystem for minor and patch updates. Majors
+    // match no group, so each arrives on its own.
+    {
+      matchManagers: ["npm"],
+      matchUpdateTypes: ["minor", "patch"],
+      groupName: "npm minor and patch",
+    },
+    {
+      matchManagers: ["github-actions", "custom.regex"],
+      matchUpdateTypes: ["minor", "patch"],
+      groupName: "GitHub Actions minor and patch",
+    },
+    {
+      matchManagers: ["mise"],
+      matchUpdateTypes: ["minor", "patch"],
+      groupName: "mise.toml minor and patch",
+    },
+    // Let's Spec on its own, so its rule changes can be reviewed and reverted
+    // alone. `lets sync` writes the skills, schemas and AGENTS.md block the new
+    // version ships; the runner allows no other command.
+    {
+      matchPackageNames: ["sidereal-io/lets-spec"],
+      groupName: "Let's Spec",
+      groupSlug: "lets-spec",
+      postUpgradeTasks: {
+        commands: ["lets sync"],
+        fileFilters: ["**/*"],
+        executionMode: "branch",
+      },
+    },
+  ],
+}

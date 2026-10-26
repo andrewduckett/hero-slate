@@ -3,8 +3,12 @@
 [tools]
 node = "26"
 gh = "2.102"
-"npm:@fission-ai/openspec" = "1.13.2"   # the version in the lets-spec release notes
-"github:sidereal-io/lets-spec" = { version = "0.6.0" }
+# The OpenSpec CLI is an ordinary pin. Renovate moves it with the other tools,
+# not in step with Let's Spec.
+"npm:@fission-ai/openspec" = "1.13.2"
+# Let's Spec: the agent skills, OpenSpec schemas and working rules. Renovate moves
+# only the version, so the asset pattern is a glob.
+"github:sidereal-io/lets-spec" = { version = "0.6.0", asset_pattern = "lets-spec-*.tar.gz" }
 
 [env]
 LETS_SPEC_FLOW = "standard"

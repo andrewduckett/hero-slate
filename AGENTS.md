@@ -44,7 +44,7 @@ The reasoning behind each one is in `docs/decisions/`.
   the OpenSpec CLI and `lets`. Run `mise install` once; with `mise activate` in
   your shell, entering the repo runs `lets sync`. Without it, run
   `mise exec -- lets sync`.
-- **Runtime:** Node 26 (`.nvmrc`). **Package manager:** npm (`package-lock.json`).
+- **Runtime:** Node 26 (`mise.toml`). **Package manager:** npm (`package-lock.json`).
 - **Framework:** SvelteKit + Svelte 5 (runes), TypeScript, Vite.
 - **Tests:** Vitest + `@testing-library/svelte` in a jsdom environment.
 - **Data:** `yaml`. **Deploy:** Cloudflare Workers static assets via `wrangler`.
