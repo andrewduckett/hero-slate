@@ -12,6 +12,8 @@ import { resolveCombat } from '#lib/character/combat';
 import { resolveHitPoints } from '#lib/character/hitPoints';
 import { resolvePools } from '#lib/character/pools';
 import { resolveSections } from '#lib/character/sections';
+import { resolveLinks } from '#lib/character/links';
+import { resolvePalette } from '#lib/theme/resolve';
 
 const DRAWN_BLOCKS = new Set([
 	'id',
@@ -88,6 +90,16 @@ export function renderPreview(draft: Record<string, unknown>): string[] {
 				if (row.title) lines.push(`|     ${row.title}: ${row.body}`);
 				else lines.push(`|     ${row.body}`);
 			}
+		}
+	}
+
+	const characterPalette = resolvePalette(typeof draft.color === 'string' ? draft.color : undefined);
+	const links = resolveLinks(draft.links, characterPalette);
+	if (links.length > 0) {
+		lines.push('|');
+		lines.push('| Links');
+		for (const link of links) {
+			lines.push(`|   ${link.label} (${link.palette}): ${link.href}`);
 		}
 	}
 
