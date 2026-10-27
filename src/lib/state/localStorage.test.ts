@@ -7,16 +7,16 @@ describe('localStorage store — persistence and key layout', () => {
 	});
 
 	it('survives a simulated reload (a fresh store instance reads the value)', async () => {
-		await createLocalStorageStore().write('sunny', 'hp', 30);
+		await createLocalStorageStore().write('test-hero', 'hp', 30);
 
 		// A new instance stands in for a reload: it shares the same localStorage.
 		const reloaded = createLocalStorageStore();
-		expect(await reloaded.read('sunny', 'hp')).toBe(30);
+		expect(await reloaded.read('test-hero', 'hp')).toBe(30);
 	});
 
 	it('uses one application-scoped storage key per id and key', async () => {
 		const store = createLocalStorageStore();
-		await store.write('sunny', 'hp', 30);
+		await store.write('test-hero', 'hp', 30);
 
 		expect(localStorage.length).toBe(1);
 		const storageKey = localStorage.key(0) as string;
@@ -26,9 +26,9 @@ describe('localStorage store — persistence and key layout', () => {
 
 	it('maps each id and key to a distinct storage key (injective layout)', async () => {
 		const store = createLocalStorageStore();
-		await store.write('sunny', 'hp', 1);
-		await store.write('ash', 'hp', 2);
-		await store.write('sunny', 'pools', 3);
+		await store.write('test-hero', 'hp', 1);
+		await store.write('other-hero', 'hp', 2);
+		await store.write('test-hero', 'pools', 3);
 
 		expect(localStorage.length).toBe(3);
 	});
@@ -59,17 +59,17 @@ describe('localStorage store — resilience', () => {
 			throw new Error('blocked');
 		});
 
-		expect(await store.read('sunny', 'hp')).toBeUndefined();
+		expect(await store.read('test-hero', 'hp')).toBeUndefined();
 	});
 
 	it('treats a corrupt (non-JSON) stored value as absent', async () => {
 		const store = createLocalStorageStore();
-		await store.write('sunny', 'hp', 30);
+		await store.write('test-hero', 'hp', 30);
 		// Corrupt the stored value in place.
 		const storageKey = localStorage.key(0) as string;
 		localStorage.setItem(storageKey, 'not json {');
 
-		expect(await store.read('sunny', 'hp')).toBeUndefined();
+		expect(await store.read('test-hero', 'hp')).toBeUndefined();
 	});
 
 	it('fails a write quietly when it cannot persist', async () => {
@@ -78,17 +78,17 @@ describe('localStorage store — resilience', () => {
 			throw new Error('full');
 		});
 
-		await expect(store.write('sunny', 'hp', 30)).resolves.toBeUndefined();
+		await expect(store.write('test-hero', 'hp', 30)).resolves.toBeUndefined();
 	});
 
 	it('treats a syntactically-JSON but non-finite stored value as absent', async () => {
 		const store = createLocalStorageStore();
-		await store.write('sunny', 'hp', 30);
+		await store.write('test-hero', 'hp', 30);
 		// 1e400 is valid JSON syntax but JSON.parse yields Infinity, not a JSON value.
 		const storageKey = localStorage.key(0) as string;
 		localStorage.setItem(storageKey, '1e400');
 
-		expect(await store.read('sunny', 'hp')).toBeUndefined();
+		expect(await store.read('test-hero', 'hp')).toBeUndefined();
 	});
 });
 
@@ -99,17 +99,17 @@ describe('localStorage store — runtime JSON rejection', () => {
 
 	it('rejects NaN and leaves the prior value in place', async () => {
 		const store = createLocalStorageStore();
-		await store.write('sunny', 'hp', 30);
-		await store.write('sunny', 'hp', NaN as unknown as number);
+		await store.write('test-hero', 'hp', 30);
+		await store.write('test-hero', 'hp', NaN as unknown as number);
 
-		expect(await store.read('sunny', 'hp')).toBe(30);
+		expect(await store.read('test-hero', 'hp')).toBe(30);
 	});
 
 	it('persists nothing when a Date is written', async () => {
 		const store = createLocalStorageStore();
-		await store.write('sunny', 'hp', new Date() as unknown as number);
+		await store.write('test-hero', 'hp', new Date() as unknown as number);
 
-		expect(await store.read('sunny', 'hp')).toBeUndefined();
+		expect(await store.read('test-hero', 'hp')).toBeUndefined();
 		expect(localStorage.length).toBe(0);
 	});
 });
@@ -135,8 +135,8 @@ describe('localStorage store — safe without a window', () => {
 				store = createLocalStorageStore();
 			}).not.toThrow();
 
-			await expect(store.read('sunny', 'hp')).resolves.toBeUndefined();
-			await expect(store.write('sunny', 'hp', 30)).resolves.toBeUndefined();
+			await expect(store.read('test-hero', 'hp')).resolves.toBeUndefined();
+			await expect(store.write('test-hero', 'hp', 30)).resolves.toBeUndefined();
 		} finally {
 			if (descriptor) {
 				Object.defineProperty(globalThis, 'localStorage', descriptor);
