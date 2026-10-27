@@ -19,7 +19,7 @@ function normalize(text: string | null | undefined): string {
 describe('HitPointsBlock — rendering', () => {
 	it('shows the readout, the progress bar, and the four adjustment controls', () => {
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'test-hero' }
 		});
 
 		expect(normalize(container.querySelector('.readout')?.textContent)).toBe('30 / 45');
@@ -36,7 +36,7 @@ describe('HitPointsBlock — rendering', () => {
 
 	it('renders no reset control', () => {
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'test-hero' }
 		});
 
 		expect(container.querySelector('[data-hp-adjust="reset"]')).toBeNull();
@@ -45,7 +45,7 @@ describe('HitPointsBlock — rendering', () => {
 
 	it('renders no tracker when the character has no hit points to track', () => {
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 0 }, storedCurrent: undefined, store: fakeStore(), id: 'sunny' }
+			props: { hitPoints: { max: 0 }, storedCurrent: undefined, store: fakeStore(), id: 'test-hero' }
 		});
 
 		expect(container.querySelector('.hit-points')).toBeNull();
@@ -56,7 +56,7 @@ describe('HitPointsBlock — rendering', () => {
 describe('HitPointsBlock — adjustment, persistence, and the down state', () => {
 	it('adjusts current and clamps within 0..max', async () => {
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'test-hero' }
 		});
 
 		await fireEvent.click(container.querySelector('[data-hp-adjust="-5"]') as HTMLElement);
@@ -65,7 +65,7 @@ describe('HitPointsBlock — adjustment, persistence, and the down state', () =>
 
 	it('clamps a down-tap at zero', async () => {
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 3, store: fakeStore(), id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 3, store: fakeStore(), id: 'test-hero' }
 		});
 
 		await fireEvent.click(container.querySelector('[data-hp-adjust="-5"]') as HTMLElement);
@@ -74,7 +74,7 @@ describe('HitPointsBlock — adjustment, persistence, and the down state', () =>
 
 	it('clamps an up-tap at max', async () => {
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 43, store: fakeStore(), id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 43, store: fakeStore(), id: 'test-hero' }
 		});
 
 		await fireEvent.click(container.querySelector('[data-hp-adjust="+5"]') as HTMLElement);
@@ -84,11 +84,11 @@ describe('HitPointsBlock — adjustment, persistence, and the down state', () =>
 	it('persists the new current through the store under the "hp" key', async () => {
 		const store = fakeStore();
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 30, store, id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store, id: 'test-hero' }
 		});
 
 		await fireEvent.click(container.querySelector('[data-hp-adjust="-5"]') as HTMLElement);
-		expect(store.write).toHaveBeenCalledWith('sunny', 'hp', 25);
+		expect(store.write).toHaveBeenCalledWith('test-hero', 'hp', 25);
 	});
 
 	it('does not block the on-screen change when a write fails', async () => {
@@ -97,7 +97,7 @@ describe('HitPointsBlock — adjustment, persistence, and the down state', () =>
 			write: vi.fn().mockRejectedValue(new Error('write failed'))
 		};
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 30, store, id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store, id: 'test-hero' }
 		});
 
 		await fireEvent.click(container.querySelector('[data-hp-adjust="-1"]') as HTMLElement);
@@ -106,7 +106,7 @@ describe('HitPointsBlock — adjustment, persistence, and the down state', () =>
 
 	it('applies the down state with reduced opacity at zero and clears it above zero', async () => {
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 1, store: fakeStore(), id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 1, store: fakeStore(), id: 'test-hero' }
 		});
 
 		const tracker = container.querySelector('.hit-points') as HTMLElement;
@@ -125,7 +125,7 @@ describe('HitPointsBlock — adjustment, persistence, and the down state', () =>
 describe('HitPointsBlock — control order', () => {
 	it('renders the controls in reading order -5, -1, +1, +5, damage before healing', () => {
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'test-hero' }
 		});
 
 		const order = [...container.querySelectorAll('[data-hp-adjust]')].map((el) =>
@@ -138,7 +138,7 @@ describe('HitPointsBlock — control order', () => {
 describe('HitPointsBlock — health role', () => {
 	it('carries the fire palette on a forest character', () => {
 		const { container } = render(HitPointsBlock, {
-			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'sunny' }
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'test-hero' }
 		});
 		const tracker = container.querySelector('.hit-points');
 		expect(tracker?.getAttribute('data-palette')).toBe(ROLE_PALETTE.health);
