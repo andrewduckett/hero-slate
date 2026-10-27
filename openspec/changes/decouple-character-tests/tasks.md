@@ -1,0 +1,12 @@
+## 1. Decouple tests from shipped characters
+
+- [ ] 1.1 [medium] The YAML provider loads the test-owned fixture `src/lib/data/test-hero.yaml` (id `test-hero`, name `Test Hero`) as `found`, with exact identity, abilities, combat and hit-point values asserted in `src/lib/data/yaml.integration.test.ts`; `src/lib/data/sunny.integration.test.ts` is deleted (verify: npm test -- src/lib/data/yaml.integration.test.ts)
+- [ ] 1.2 [medium] Every `static/characters/*.yaml` loads through `createYamlProvider` as `found`, pinning no values, and the test fails when it finds no files, in `src/lib/data/characters.smoke.test.ts` (verify: npm test -- src/lib/data/characters.smoke.test.ts)
+- [ ] 1.3 [easy] Provider unit tests in `src/lib/data/yaml.test.ts` use `test-hero` and `other-hero` in place of real character ids and names (verify: npm test -- src/lib/data/yaml.test.ts)
+- [ ] 1.4 [easy] State store tests in `src/lib/state/` use neutral ids (verify: npm test -- src/lib/state)
+- [ ] 1.5 [easy] Character block tests in `src/lib/character/` (hit points, resource pools, links) use neutral ids and paths (verify: npm test -- src/lib/character)
+- [ ] 1.6 [easy] Sheet-level tests (`CharacterView`, `CharacterSheet`, `AppHeader`) use neutral ids and names (verify: npm test -- src/lib/CharacterView.test.ts src/lib/CharacterSheet.test.ts src/lib/AppHeader.test.ts)
+- [ ] 1.7 [easy] Ingest CLI and input tests (`validate`, `cli`, `reference`, `fetch`, `preview`) use neutral ids, names and paths (verify: npm test -- src/lib/ingest/ddb/validate.test.ts src/lib/ingest/ddb/cli.test.ts src/lib/ingest/ddb/reference.test.ts src/lib/ingest/ddb/fetch.test.ts src/lib/ingest/ddb/preview.test.ts)
+- [ ] 1.8 [easy] Ingest digest tests (`crosscheck`, `digest`, `fixturePrivacy`) use neutral names in their inline data, keeping any emoji or punctuation a test relies on; `digest.acceptance.test.ts` and the `fixtures/*.json` files stay unchanged (verify: npm test -- src/lib/ingest/ddb/crosscheck.test.ts src/lib/ingest/ddb/digest.test.ts src/lib/ingest/ddb/fixturePrivacy.test.ts)
+- [ ] 1.9 [easy] No test file except `digest.acceptance.test.ts` names a shipped character (verify: ! grep -rniwE 'sunny|gimdak|urven|thornwood' src --include='*.test.ts' --exclude=digest.acceptance.test.ts)
+- [ ] 1.10 [easy] The full suite and the static build pass (verify: npm test && npm run build)
