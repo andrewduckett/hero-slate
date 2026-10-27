@@ -4,7 +4,7 @@ import type { Digest } from './digest';
 
 function digest(overrides: Partial<Digest> = {}): Digest {
 	return {
-		name: 'Urven, the Silent Maw',
+		name: 'Test Hero, the Brave',
 		classes: [{ name: 'Monk', level: 6 }],
 		level: 6,
 		abilities: { strength: 14, dexterity: 20, constitution: 16, intelligence: 10, wisdom: 14, charisma: 11 },
@@ -85,7 +85,7 @@ describe('crosscheckDraft', () => {
 	});
 
 	it('never compares the name', () => {
-		const warnings = crosscheckDraft({ name: 'Someone Else' }, digest({ name: 'Urven' }));
+		const warnings = crosscheckDraft({ name: 'Someone Else' }, digest({ name: 'Test Hero' }));
 		expect(warnings).toEqual([]);
 	});
 
