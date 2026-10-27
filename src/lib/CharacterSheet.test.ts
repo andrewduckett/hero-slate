@@ -41,8 +41,8 @@ describe('CharacterSheet — load lifecycle', () => {
 		};
 		render(CharacterSheet, {
 			props: {
-				id: 'sunny',
-				provider: provider({ sunny: found('sunny', 'Sunny', { pools: [{ id: 'magic', label: 'Magic', max: 2 }] }) }),
+				id: 'test-hero',
+				provider: provider({ 'test-hero': found('test-hero', 'Test Hero', { pools: [{ id: 'magic', label: 'Magic', max: 2 }] }) }),
 				store
 			}
 		});
@@ -59,8 +59,8 @@ describe('CharacterSheet — load lifecycle', () => {
 		const store: StateStore = { read: () => storedHp.promise, write: vi.fn().mockResolvedValue(undefined) };
 		render(CharacterSheet, {
 			props: {
-				id: 'sunny',
-				provider: provider({ sunny: found('sunny', 'Sunny', { hitPoints: { max: 45 } }) }),
+				id: 'test-hero',
+				provider: provider({ 'test-hero': found('test-hero', 'Test Hero', { hitPoints: { max: 45 } }) }),
 				store
 			}
 		});
@@ -74,39 +74,39 @@ describe('CharacterSheet — load lifecycle', () => {
 	});
 
 	it('discards a late state read for a previous id after the route id changes', async () => {
-		const sunnyHp = deferred<JsonValue | undefined>();
+		const testHeroHp = deferred<JsonValue | undefined>();
 		const store: StateStore = {
-			read: (id) => (id === 'sunny' ? sunnyHp.promise : Promise.resolve(undefined)),
+			read: (id) => (id === 'test-hero' ? testHeroHp.promise : Promise.resolve(undefined)),
 			write: vi.fn().mockResolvedValue(undefined)
 		};
 		const chars = provider({
-			sunny: found('sunny', 'Sunny Thornwood', { hitPoints: { max: 45 } }),
-			ash: found('ash', 'Ash Emberkin', { hitPoints: { max: 30 } })
+			'test-hero': found('test-hero', 'Test Hero', { hitPoints: { max: 45 } }),
+			'other-hero': found('other-hero', 'Other Hero', { hitPoints: { max: 30 } })
 		});
 
-		const { rerender } = render(CharacterSheet, { props: { id: 'sunny', provider: chars, store } });
+		const { rerender } = render(CharacterSheet, { props: { id: 'test-hero', provider: chars, store } });
 
-		// Navigate to Ash while Sunny's state read is still pending.
-		await rerender({ id: 'ash', provider: chars, store });
-		await waitFor(() => expect(screen.getByText('Ash Emberkin')).toBeTruthy());
+		// Navigate to Other Hero while Test Hero's state read is still pending.
+		await rerender({ id: 'other-hero', provider: chars, store });
+		await waitFor(() => expect(screen.getByText('Other Hero')).toBeTruthy());
 
-		// Sunny's late state read now completes; it must not replace Ash.
-		sunnyHp.resolve(12);
+		// Test Hero's late state read now completes; it must not replace Other Hero.
+		testHeroHp.resolve(12);
 		await Promise.resolve();
-		expect(screen.queryByText('Sunny Thornwood')).toBeNull();
-		expect(screen.getByText('Ash Emberkin')).toBeTruthy();
+		expect(screen.queryByText('Test Hero')).toBeNull();
+		expect(screen.getByText('Other Hero')).toBeTruthy();
 	});
 
 	it('does not overwrite a tap that follows a reduced-max load', async () => {
 		// Store already holds 45; the author has since lowered max to 40.
 		const store = createLocalStorageStore();
 		localStorage.clear();
-		await store.write('sunny', 'hp', 45);
+		await store.write('test-hero', 'hp', 45);
 
 		render(CharacterSheet, {
 			props: {
-				id: 'sunny',
-				provider: provider({ sunny: found('sunny', 'Sunny', { hitPoints: { max: 40 } }) }),
+				id: 'test-hero',
+				provider: provider({ 'test-hero': found('test-hero', 'Test Hero', { hitPoints: { max: 40 } }) }),
 				store
 			}
 		});
@@ -119,29 +119,29 @@ describe('CharacterSheet — load lifecycle', () => {
 		// A tap issued after the write-back must win on the next read.
 		await fireEvent.click(document.querySelector('[data-hp-adjust="-1"]') as HTMLElement);
 		await waitFor(() => expect(readout()).toBe('39 / 40'));
-		expect(await store.read('sunny', 'hp')).toBe(39);
+		expect(await store.read('test-hero', 'hp')).toBe(39);
 	});
 });
 
 describe('CharacterSheet — combined-result guard (round-4)', () => {
-	it("shows Ash, not Sunny, when Sunny's provider read resolves after navigation to Ash", async () => {
-		const sunnyChar = deferred<GetCharacterResult>();
+	it("shows Other Hero, not Test Hero, when Test Hero's provider read resolves after navigation to Other Hero", async () => {
+		const testHeroChar = deferred<GetCharacterResult>();
 		const chars: CharacterProvider = {
 			getCharacter: (id) =>
-				id === 'sunny' ? sunnyChar.promise : Promise.resolve(found('ash', 'Ash Emberkin', { hitPoints: { max: 30 } }))
+				id === 'test-hero' ? testHeroChar.promise : Promise.resolve(found('other-hero', 'Other Hero', { hitPoints: { max: 30 } }))
 		};
-		// Both ids' state reads resolve promptly; only Sunny's character read is slow.
-		const store = readStore({ sunny: undefined, ash: undefined });
+		// Both ids' state reads resolve promptly; only Test Hero's character read is slow.
+		const store = readStore({ 'test-hero': undefined, 'other-hero': undefined });
 
-		const { rerender } = render(CharacterSheet, { props: { id: 'sunny', provider: chars, store } });
+		const { rerender } = render(CharacterSheet, { props: { id: 'test-hero', provider: chars, store } });
 
-		await rerender({ id: 'ash', provider: chars, store });
-		await waitFor(() => expect(screen.getByText('Ash Emberkin')).toBeTruthy());
+		await rerender({ id: 'other-hero', provider: chars, store });
+		await waitFor(() => expect(screen.getByText('Other Hero')).toBeTruthy());
 
-		// Sunny's character read finally resolves; the guard must drop it.
-		sunnyChar.resolve(found('sunny', 'Sunny Thornwood', { hitPoints: { max: 45 } }));
+		// Test Hero's character read finally resolves; the guard must drop it.
+		testHeroChar.resolve(found('test-hero', 'Test Hero', { hitPoints: { max: 45 } }));
 		await Promise.resolve();
-		expect(screen.queryByText('Sunny Thornwood')).toBeNull();
-		expect(screen.getByText('Ash Emberkin')).toBeTruthy();
+		expect(screen.queryByText('Test Hero')).toBeNull();
+		expect(screen.getByText('Other Hero')).toBeTruthy();
 	});
 });

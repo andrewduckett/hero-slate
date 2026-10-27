@@ -3,20 +3,20 @@ import { render, screen } from '@testing-library/svelte';
 import CharacterView from './CharacterView.svelte';
 import type { Character } from '#lib/types';
 
-const sunny: Character = { id: 'sunny', name: 'Sunny Thornwood', level: 6, class: 'Druid' };
+const testHero: Character = { id: 'test-hero', name: 'Test Hero', level: 6, class: 'Druid' };
 
 describe('CharacterView', () => {
 	it('renders the name and descriptor for a found result', () => {
-		render(CharacterView, { props: { result: { status: 'found', character: sunny } } });
+		render(CharacterView, { props: { result: { status: 'found', character: testHero } } });
 
-		expect(screen.getByText('Sunny Thornwood')).toBeTruthy();
+		expect(screen.getByText('Test Hero')).toBeTruthy();
 		expect(screen.getByText('Level 6 Druid')).toBeTruthy();
 	});
 
 	it('renders valid resource pools', () => {
 		render(CharacterView, {
 			props: {
-				result: { status: 'found', character: { ...sunny, pools: [{ id: 'magic', label: 'Magic', max: 2 }] } },
+				result: { status: 'found', character: { ...testHero, pools: [{ id: 'magic', label: 'Magic', max: 2 }] } },
 				storedPools: { magic: 1 }
 			}
 		});
@@ -26,7 +26,7 @@ describe('CharacterView', () => {
 
 	it('themes the header with the resolved palette accent and on-accent', () => {
 		const { container } = render(CharacterView, {
-			props: { result: { status: 'found', character: { ...sunny, color: 'forest' } } }
+			props: { result: { status: 'found', character: { ...testHero, color: 'forest' } } }
 		});
 
 		const root = container.querySelector('[data-palette]') as HTMLElement;
@@ -39,14 +39,14 @@ describe('CharacterView', () => {
 
 	it('falls back to the neutral palette for an unknown or missing color', () => {
 		const unknown = render(CharacterView, {
-			props: { result: { status: 'found', character: { ...sunny, color: 'rainbow' } } }
+			props: { result: { status: 'found', character: { ...testHero, color: 'rainbow' } } }
 		});
 		expect(unknown.container.querySelector('[data-palette]')?.getAttribute('data-palette')).toBe(
 			'neutral'
 		);
 
 		const missing = render(CharacterView, {
-			props: { result: { status: 'found', character: sunny } }
+			props: { result: { status: 'found', character: testHero } }
 		});
 		expect(missing.container.querySelector('[data-palette]')?.getAttribute('data-palette')).toBe(
 			'neutral'
@@ -55,7 +55,7 @@ describe('CharacterView', () => {
 
 	it('renders the identity header, then the abilities block, then the combat block', () => {
 		const character: Character = {
-			...sunny,
+			...testHero,
 			abilities: [{ label: 'Strength', value: 10 }],
 			combat: [{ label: 'Armor Class', value: 16 }]
 		};
@@ -79,7 +79,7 @@ describe('CharacterView', () => {
 
 	it('renders the header with neither block, and no error, for malformed stat data', () => {
 		const character: Character = {
-			...sunny,
+			...testHero,
 			abilities: [null, 3, { value: 10 }], // all invalid members
 			combat: { armorClass: 16 } // not a list
 		};
@@ -127,7 +127,7 @@ describe('CharacterView', () => {
 
 /** A character with every block, for the order and heading tests. */
 const full: Character = {
-	...sunny,
+	...testHero,
 	abilities: [{ label: 'Strength', value: 10 }],
 	combat: [{ label: 'Armor Class', value: 16 }],
 	hitPoints: { max: 45 },
@@ -161,7 +161,7 @@ describe('CharacterView: sheet block order', () => {
 	});
 
 	it('renders the abilities before the hit points tracker', () => {
-		const character: Character = { ...sunny, abilities: full.abilities, hitPoints: { max: 10 } };
+		const character: Character = { ...testHero, abilities: full.abilities, hitPoints: { max: 10 } };
 		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
 
 		const abilities = container.querySelector('[data-block="abilities"]') as HTMLElement;
@@ -242,7 +242,7 @@ describe('CharacterView: group headings', () => {
 	});
 
 	it('shows the Stats heading above the combat block when no abilities are valid', () => {
-		const character: Character = { ...sunny, abilities: [null], combat: full.combat };
+		const character: Character = { ...testHero, abilities: [null], combat: full.combat };
 		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
 
 		expect(groupHeadings(container)).toEqual(['Stats']);
@@ -251,7 +251,7 @@ describe('CharacterView: group headings', () => {
 	});
 
 	it('shows no group headings for a character with only a name', () => {
-		const { container } = render(CharacterView, { props: { result: { status: 'found', character: sunny } } });
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: testHero } } });
 
 		expect(groupHeadings(container)).toEqual([]);
 	});
