@@ -38,7 +38,7 @@ function fetchReturning(response: DdbHttpResponse): DdbFetchLike {
 	return async () => response;
 }
 
-const VALID_DRAFT = ['name: Sunny Thornwood', 'level: 6', 'class: Druid', 'color: forest'].join('\n');
+const VALID_DRAFT = ['name: Test Hero', 'level: 6', 'class: Druid', 'color: forest'].join('\n');
 
 const INVALID_DRAFT = 'level: 6';
 
@@ -118,28 +118,28 @@ describe('cli run — digest', () => {
 describe('cli run — preview', () => {
 	it('exits 1 on a draft error and does not draw', async () => {
 		const deps = fakeDeps({ readFile: () => INVALID_DRAFT });
-		const result = await run(['preview', '.workspace/sunny.yaml'], deps);
+		const result = await run(['preview', '.workspace/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(1);
 		expect(result.stdout).toBe('');
 	});
 
 	it('exits 3 when the target already exists, and does not draw', async () => {
 		const deps = fakeDeps({ exists: () => true });
-		const result = await run(['preview', '.workspace/sunny.yaml'], deps);
+		const result = await run(['preview', '.workspace/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(3);
 		expect(result.stdout).toBe('');
 	});
 
 	it('draws the preview when there are no errors and the target does not exist', async () => {
 		const deps = fakeDeps();
-		const result = await run(['preview', '.workspace/sunny.yaml'], deps);
+		const result = await run(['preview', '.workspace/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(0);
-		expect(result.stdout).toContain('Sunny Thornwood');
+		expect(result.stdout).toContain('Test Hero');
 	});
 
 	it('adds cross-check warnings with --digest', async () => {
 		const digestJson = JSON.stringify({
-			name: 'Sunny Thornwood',
+			name: 'Test Hero',
 			classes: [],
 			level: 9,
 			abilities: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
@@ -152,7 +152,7 @@ describe('cli run — preview', () => {
 		const deps = fakeDeps({
 			readFile: (path: string) => (path.endsWith('.yaml') ? VALID_DRAFT : digestJson)
 		});
-		const result = await run(['preview', '.workspace/sunny.yaml', '--digest', '.workspace/sunny.digest.json'], deps);
+		const result = await run(['preview', '.workspace/test-hero.yaml', '--digest', '.workspace/test-hero.digest.json'], deps);
 		expect(result.exitCode).toBe(0);
 		expect(result.stdout).toMatch(/level/i);
 	});
@@ -161,36 +161,36 @@ describe('cli run — preview', () => {
 describe('cli run — write', () => {
 	it('exits 1 on a draft error and writes nothing', async () => {
 		const deps = fakeDeps({ readFile: () => INVALID_DRAFT });
-		const result = await run(['write', '.workspace/sunny.yaml'], deps);
+		const result = await run(['write', '.workspace/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(1);
 		expect(Object.keys(deps.writes)).toHaveLength(0);
 	});
 
 	it('exits 3 when the target already exists, and writes nothing', async () => {
 		const deps = fakeDeps({ exists: () => true });
-		const result = await run(['write', '.workspace/sunny.yaml'], deps);
+		const result = await run(['write', '.workspace/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(3);
 		expect(Object.keys(deps.writes)).toHaveLength(0);
 	});
 
 	it('takes the id from the base name, ignoring the draft directory', async () => {
 		const deps = fakeDeps();
-		const result = await run(['write', '.workspace/nested/dir/sunny.yaml'], deps);
+		const result = await run(['write', '.workspace/nested/dir/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(0);
-		expect(deps.writes['static/characters/sunny.yaml']).toBe(VALID_DRAFT);
+		expect(deps.writes['static/characters/test-hero.yaml']).toBe(VALID_DRAFT);
 	});
 
-	it('refuses a file name outside the id grammar, such as Urven.yaml', async () => {
-		const deps = fakeDeps({ readFile: () => 'name: Urven' });
-		const result = await run(['write', '.workspace/Urven.yaml'], deps);
+	it('refuses a file name outside the id grammar, such as Test-Hero.yaml', async () => {
+		const deps = fakeDeps({ readFile: () => 'name: Test Hero' });
+		const result = await run(['write', '.workspace/Test-Hero.yaml'], deps);
 		expect(result.exitCode).toBe(1);
 		expect(Object.keys(deps.writes)).toHaveLength(0);
 	});
 
 	it('writes the draft byte for byte', async () => {
 		const deps = fakeDeps();
-		await run(['write', '.workspace/sunny.yaml'], deps);
-		expect(deps.writes['static/characters/sunny.yaml']).toBe(VALID_DRAFT);
+		await run(['write', '.workspace/test-hero.yaml'], deps);
+		expect(deps.writes['static/characters/test-hero.yaml']).toBe(VALID_DRAFT);
 	});
 
 	it('exits 3 when the write itself refuses an existing file (a race with the check)', async () => {
@@ -199,7 +199,7 @@ describe('cli run — write', () => {
 				throw new Error('EEXIST');
 			}
 		});
-		const result = await run(['write', '.workspace/sunny.yaml'], deps);
+		const result = await run(['write', '.workspace/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(3);
 	});
 });

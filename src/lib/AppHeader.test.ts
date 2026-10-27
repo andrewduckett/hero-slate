@@ -23,12 +23,12 @@ beforeEach(() => {
 
 describe('AppHeader', () => {
 	it('renders the title', () => {
-		render(AppHeader, { props: { title: 'Sunny Thornwood' } });
-		expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('Sunny Thornwood');
+		render(AppHeader, { props: { title: 'Test Hero' } });
+		expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('Test Hero');
 	});
 
 	it('renders a subtitle when provided', () => {
-		render(AppHeader, { props: { title: 'Sunny Thornwood', subtitle: 'Level 6 Druid' } });
+		render(AppHeader, { props: { title: 'Test Hero', subtitle: 'Level 6 Druid' } });
 		expect(screen.getByText('Level 6 Druid')).toBeTruthy();
 	});
 
@@ -38,7 +38,7 @@ describe('AppHeader', () => {
 	});
 
 	it('sets data-palette to the given palette name', () => {
-		const { container } = render(AppHeader, { props: { title: 'Sunny', palette: 'forest' } });
+		const { container } = render(AppHeader, { props: { title: 'Test Hero', palette: 'forest' } });
 		const header = container.querySelector('header');
 		expect(header?.getAttribute('data-palette')).toBe('forest');
 	});

@@ -41,43 +41,43 @@ describe('createYamlProvider', () => {
 	});
 
 	it('fetches the fixed asset path for a valid id', async () => {
-		const { fn, calls } = fetchReturning(res({ body: 'name: Sunny Thornwood' }));
+		const { fn, calls } = fetchReturning(res({ body: 'name: Test Hero' }));
 		const provider = createYamlProvider(fn);
 
-		await provider.getCharacter('sunny');
+		await provider.getCharacter('test-hero');
 
-		expect(calls).toEqual(['/characters/sunny.yaml']);
+		expect(calls).toEqual(['/characters/test-hero.yaml']);
 	});
 
 	it('stamps the id from the request, ignoring an absent file id', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Sunny Thornwood\nlevel: 6\nclass: Druid' }));
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero\nlevel: 6\nclass: Druid' }));
 		const provider = createYamlProvider(fn);
 
-		const result = await provider.getCharacter('sunny');
+		const result = await provider.getCharacter('test-hero');
 
 		expect(result.status).toBe('found');
 		if (result.status === 'found') {
-			expect(result.character.id).toBe('sunny');
-			expect(result.character.name).toBe('Sunny Thornwood');
+			expect(result.character.id).toBe('test-hero');
+			expect(result.character.name).toBe('Test Hero');
 			expect(result.character.level).toBe(6);
 			expect(result.character.class).toBe('Druid');
 		}
 	});
 
 	it('rejects a conflicting file id as invalid', async () => {
-		const { fn } = fetchReturning(res({ body: 'id: moon\nname: Sunny Thornwood' }));
+		const { fn } = fetchReturning(res({ body: 'id: other-hero\nname: Test Hero' }));
 		const provider = createYamlProvider(fn);
 
-		const result = await provider.getCharacter('sunny');
+		const result = await provider.getCharacter('test-hero');
 
 		expect(result.status).toBe('invalid');
 	});
 
 	it('accepts a matching file id', async () => {
-		const { fn } = fetchReturning(res({ body: 'id: sunny\nname: Sunny Thornwood' }));
+		const { fn } = fetchReturning(res({ body: 'id: test-hero\nname: Test Hero' }));
 		const provider = createYamlProvider(fn);
 
-		const result = await provider.getCharacter('sunny');
+		const result = await provider.getCharacter('test-hero');
 
 		expect(result.status).toBe('found');
 	});
@@ -86,7 +86,7 @@ describe('createYamlProvider', () => {
 		const { fn } = fetchReturning(res({ body: 'level: 6\nclass: Druid' }));
 		const provider = createYamlProvider(fn);
 
-		const result = await provider.getCharacter('sunny');
+		const result = await provider.getCharacter('test-hero');
 
 		expect(result.status).toBe('invalid');
 	});
@@ -95,44 +95,44 @@ describe('createYamlProvider', () => {
 		const { fn } = fetchReturning(res({ body: 'name: ""' }));
 		const provider = createYamlProvider(fn);
 
-		expect((await provider.getCharacter('sunny')).status).toBe('invalid');
+		expect((await provider.getCharacter('test-hero')).status).toBe('invalid');
 	});
 
 	it('treats a non-number level as invalid', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Sunny\nlevel: "six"' }));
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero\nlevel: "six"' }));
 		const provider = createYamlProvider(fn);
 
-		expect((await provider.getCharacter('sunny')).status).toBe('invalid');
+		expect((await provider.getCharacter('test-hero')).status).toBe('invalid');
 	});
 
 	it('treats a non-finite level as invalid', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Sunny\nlevel: .inf' }));
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero\nlevel: .inf' }));
 		const provider = createYamlProvider(fn);
 
-		expect((await provider.getCharacter('sunny')).status).toBe('invalid');
+		expect((await provider.getCharacter('test-hero')).status).toBe('invalid');
 
-		const nan = fetchReturning(res({ body: 'name: Sunny\nlevel: .nan' }));
-		expect((await createYamlProvider(nan.fn).getCharacter('sunny')).status).toBe('invalid');
+		const nan = fetchReturning(res({ body: 'name: Test Hero\nlevel: .nan' }));
+		expect((await createYamlProvider(nan.fn).getCharacter('test-hero')).status).toBe('invalid');
 	});
 
 	it('treats a non-string class as invalid', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Sunny\nclass: 42' }));
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero\nclass: 42' }));
 		const provider = createYamlProvider(fn);
 
-		expect((await provider.getCharacter('sunny')).status).toBe('invalid');
+		expect((await provider.getCharacter('test-hero')).status).toBe('invalid');
 	});
 
 	it('treats a non-string color as invalid', async () => {
-		const num = fetchReturning(res({ body: 'name: Sunny\ncolor: 42' }));
-		expect((await createYamlProvider(num.fn).getCharacter('sunny')).status).toBe('invalid');
+		const num = fetchReturning(res({ body: 'name: Test Hero\ncolor: 42' }));
+		expect((await createYamlProvider(num.fn).getCharacter('test-hero')).status).toBe('invalid');
 
-		const list = fetchReturning(res({ body: 'name: Sunny\ncolor:\n  - forest' }));
-		expect((await createYamlProvider(list.fn).getCharacter('sunny')).status).toBe('invalid');
+		const list = fetchReturning(res({ body: 'name: Test Hero\ncolor:\n  - forest' }));
+		expect((await createYamlProvider(list.fn).getCharacter('test-hero')).status).toBe('invalid');
 	});
 
 	it('carries a known color string through unresolved', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Sunny\ncolor: forest' }));
-		const result = await createYamlProvider(fn).getCharacter('sunny');
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero\ncolor: forest' }));
+		const result = await createYamlProvider(fn).getCharacter('test-hero');
 
 		expect(result.status).toBe('found');
 		if (result.status === 'found') {
@@ -141,8 +141,8 @@ describe('createYamlProvider', () => {
 	});
 
 	it('carries an unknown color name through as valid data', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Sunny\ncolor: rainbow' }));
-		const result = await createYamlProvider(fn).getCharacter('sunny');
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero\ncolor: rainbow' }));
+		const result = await createYamlProvider(fn).getCharacter('test-hero');
 
 		expect(result.status).toBe('found');
 		if (result.status === 'found') {
@@ -151,8 +151,8 @@ describe('createYamlProvider', () => {
 	});
 
 	it('reports an absent color as absent, not defaulted', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Sunny' }));
-		const result = await createYamlProvider(fn).getCharacter('sunny');
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero' }));
+		const result = await createYamlProvider(fn).getCharacter('test-hero');
 
 		expect(result.status).toBe('found');
 		if (result.status === 'found') {
@@ -162,7 +162,7 @@ describe('createYamlProvider', () => {
 
 	it('carries provisional fields through unchanged', async () => {
 		const body = [
-			'name: Sunny Thornwood',
+			'name: Test Hero',
 			'abilities:',
 			'  str: 10',
 			'  wis: 18',
@@ -173,7 +173,7 @@ describe('createYamlProvider', () => {
 		const { fn } = fetchReturning(res({ body }));
 		const provider = createYamlProvider(fn);
 
-		const result = await provider.getCharacter('sunny');
+		const result = await provider.getCharacter('test-hero');
 
 		expect(result.status).toBe('found');
 		if (result.status === 'found') {
@@ -193,7 +193,7 @@ describe('createYamlProvider', () => {
 		for (const status of [403, 429, 503]) {
 			const { fn } = fetchReturning(res({ status, body: '' }));
 			const provider = createYamlProvider(fn);
-			expect((await provider.getCharacter('sunny')).status).toBe('error');
+			expect((await provider.getCharacter('test-hero')).status).toBe('error');
 		}
 	});
 
@@ -203,14 +203,14 @@ describe('createYamlProvider', () => {
 		};
 		const provider = createYamlProvider(fn);
 
-		expect((await provider.getCharacter('sunny')).status).toBe('error');
+		expect((await provider.getCharacter('test-hero')).status).toBe('error');
 	});
 
 	it('maps a body-read failure to error', async () => {
 		const { fn } = fetchReturning(res({ throwOnText: true }));
 		const provider = createYamlProvider(fn);
 
-		expect((await provider.getCharacter('sunny')).status).toBe('error');
+		expect((await provider.getCharacter('test-hero')).status).toBe('error');
 	});
 
 	it('treats a 200 text/html shell as not-found without validating identity', async () => {
@@ -219,21 +219,21 @@ describe('createYamlProvider', () => {
 		);
 		const provider = createYamlProvider(fn);
 
-		expect((await provider.getCharacter('sunny')).status).toBe('not-found');
+		expect((await provider.getCharacter('test-hero')).status).toBe('not-found');
 	});
 
 	it('treats a non-mapping body as not-found', async () => {
 		const { fn } = fetchReturning(res({ body: 'just a string' }));
 		const provider = createYamlProvider(fn);
 
-		expect((await provider.getCharacter('sunny')).status).toBe('not-found');
+		expect((await provider.getCharacter('test-hero')).status).toBe('not-found');
 	});
 
 	it('treats an unparseable non-HTML body as invalid', async () => {
 		const { fn } = fetchReturning(res({ contentType: 'application/yaml', body: 'name: "unterminated' }));
 		const provider = createYamlProvider(fn);
 
-		expect((await provider.getCharacter('sunny')).status).toBe('invalid');
+		expect((await provider.getCharacter('test-hero')).status).toBe('invalid');
 	});
 
 	it('never throws across any path', async () => {
@@ -241,6 +241,6 @@ describe('createYamlProvider', () => {
 			throw new Error('boom');
 		};
 		const provider = createYamlProvider(fn);
-		await expect(provider.getCharacter('sunny')).resolves.toBeDefined();
+		await expect(provider.getCharacter('test-hero')).resolves.toBeDefined();
 	});
 });

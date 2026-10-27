@@ -14,7 +14,7 @@ describe('ResourcePoolsBlock', () => {
 				pools: [{ id: 'magic', label: 'Magic', color: 'ocean', max: 4 }],
 				storedPools: { magic: 2 },
 				store: store(),
-				id: 'sunny'
+				id: 'test-hero'
 			}
 		});
 
@@ -27,15 +27,15 @@ describe('ResourcePoolsBlock', () => {
 	it('sets the remaining uses from a selected dot', async () => {
 		const state = store();
 		render(ResourcePoolsBlock, {
-			props: { pools: [{ id: 'magic', label: 'Magic', max: 4 }], storedPools: { magic: 2 }, store: state, id: 'sunny' }
+			props: { pools: [{ id: 'magic', label: 'Magic', max: 4 }], storedPools: { magic: 2 }, store: state, id: 'test-hero' }
 		});
 		state.write.mockClear();
 
 		await fireEvent.click(screen.getByRole('button', { name: 'Magic: 1 remaining' }));
-		expect(state.write).toHaveBeenLastCalledWith('sunny', 'pools', { magic: 0 });
+		expect(state.write).toHaveBeenLastCalledWith('test-hero', 'pools', { magic: 0 });
 
 		await fireEvent.click(screen.getByRole('button', { name: 'Magic: 4 remaining' }));
-		expect(state.write).toHaveBeenLastCalledWith('sunny', 'pools', { magic: 4 });
+		expect(state.write).toHaveBeenLastCalledWith('test-hero', 'pools', { magic: 4 });
 	});
 
 	it('keeps earlier pool changes in a rapid later save', async () => {
@@ -43,32 +43,32 @@ describe('ResourcePoolsBlock', () => {
 		render(ResourcePoolsBlock, {
 			props: {
 				pools: [{ id: 'wild-shape', label: 'Wild Shape', max: 2 }, { id: 'magic', label: 'Magic', max: 4 }],
-				storedPools: undefined, store: state, id: 'sunny'
+				storedPools: undefined, store: state, id: 'test-hero'
 			}
 		});
 		state.write.mockClear();
 
 		await fireEvent.click(screen.getByRole('button', { name: 'Wild Shape: 1 remaining' }));
 		await fireEvent.click(screen.getByRole('button', { name: 'Magic: 3 remaining' }));
-		expect(state.write).toHaveBeenLastCalledWith('sunny', 'pools', { 'wild-shape': 0, magic: 2 });
+		expect(state.write).toHaveBeenLastCalledWith('test-hero', 'pools', { 'wild-shape': 0, magic: 2 });
 	});
 
 	it('keeps clamped controls usable after a correction write fails', async () => {
 		const state = store();
 		state.write.mockRejectedValue(new Error('storage unavailable'));
 		render(ResourcePoolsBlock, {
-			props: { pools: [{ id: 'magic', label: 'Magic', max: 2 }], storedPools: { magic: 4 }, store: state, id: 'sunny' }
+			props: { pools: [{ id: 'magic', label: 'Magic', max: 2 }], storedPools: { magic: 4 }, store: state, id: 'test-hero' }
 		});
 
 		expect(screen.getByRole('button', { name: 'Magic: 2 remaining' })).toBeTruthy();
 		await fireEvent.click(screen.getByRole('button', { name: 'Magic: 1 remaining' }));
-		expect(state.write).toHaveBeenLastCalledWith('sunny', 'pools', { magic: 0 });
+		expect(state.write).toHaveBeenLastCalledWith('test-hero', 'pools', { magic: 0 });
 	});
 
 	describe('form', () => {
 		it('draws a pool of 12 uses as dots', () => {
 			const { container } = render(ResourcePoolsBlock, {
-				props: { pools: [{ id: 'ki', label: 'Ki', max: 12 }], storedPools: undefined, store: store(), id: 'sunny' }
+				props: { pools: [{ id: 'ki', label: 'Ki', max: 12 }], storedPools: undefined, store: store(), id: 'test-hero' }
 			});
 
 			expect(container.querySelectorAll('[data-pool-dot]')).toHaveLength(12);
@@ -78,7 +78,7 @@ describe('ResourcePoolsBlock', () => {
 
 		it('draws a pool of 13 uses as a counter', () => {
 			const { container } = render(ResourcePoolsBlock, {
-				props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 13 }], storedPools: undefined, store: store(), id: 'gimdak' }
+				props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 13 }], storedPools: undefined, store: store(), id: 'test-hero' }
 			});
 
 			expect(container.querySelector('[data-pool-form]')?.getAttribute('data-pool-form')).toBe('counter');
@@ -88,7 +88,7 @@ describe('ResourcePoolsBlock', () => {
 
 		it('marks no card with a dot size', () => {
 			const { container } = render(ResourcePoolsBlock, {
-				props: { pools: [{ id: 'focus', label: 'Focus Points', max: 7 }], storedPools: undefined, store: store(), id: 'urven' }
+				props: { pools: [{ id: 'focus', label: 'Focus Points', max: 7 }], storedPools: undefined, store: store(), id: 'test-hero' }
 			});
 
 			expect(container.querySelector('[data-pool-size]')).toBeNull();
@@ -98,7 +98,7 @@ describe('ResourcePoolsBlock', () => {
 	describe('counter', () => {
 		function renderCounter(stored: unknown = undefined, state = store()) {
 			return render(ResourcePoolsBlock, {
-				props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 35 }], storedPools: stored, store: state, id: 'gimdak' }
+				props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 35 }], storedPools: stored, store: state, id: 'test-hero' }
 			});
 		}
 
@@ -142,7 +142,7 @@ describe('ResourcePoolsBlock', () => {
 			await fireEvent.click(screen.getByRole('button', { name: control }));
 
 			expect(container.querySelector('.readout')?.textContent?.replace(/\s+/g, ' ').trim()).toBe(`${expected} / 35`);
-			expect(state.write).toHaveBeenLastCalledWith('gimdak', 'pools', { 'lay-on-hands': expected });
+			expect(state.write).toHaveBeenLastCalledWith('test-hero', 'pools', { 'lay-on-hands': expected });
 		});
 
 		it('looks the same at zero uses', () => {
@@ -164,19 +164,19 @@ describe('ResourcePoolsBlock', () => {
 			render(ResourcePoolsBlock, {
 				props: {
 					pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 35 }, { id: 'channel', label: 'Channel Divinity', max: 2 }],
-					storedPools: undefined, store: state, id: 'gimdak'
+					storedPools: undefined, store: state, id: 'test-hero'
 				}
 			});
 			state.write.mockClear();
 
 			await fireEvent.click(screen.getByRole('button', { name: 'Channel Divinity: 2 remaining' }));
 			await fireEvent.click(screen.getByRole('button', { name: 'Lay On Hands: -1' }));
-			expect(state.write).toHaveBeenLastCalledWith('gimdak', 'pools', { 'lay-on-hands': 34, channel: 1 });
+			expect(state.write).toHaveBeenLastCalledWith('test-hero', 'pools', { 'lay-on-hands': 34, channel: 1 });
 		});
 
 		it('keeps a stored count when the maximum crosses the dot limit', () => {
 			const { container } = render(ResourcePoolsBlock, {
-				props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 20 }], storedPools: { 'lay-on-hands': 8 }, store: store(), id: 'gimdak' }
+				props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 20 }], storedPools: { 'lay-on-hands': 8 }, store: store(), id: 'test-hero' }
 			});
 
 			expect(container.querySelector('.readout')?.textContent?.replace(/\s+/g, ' ').trim()).toBe('8 / 20');

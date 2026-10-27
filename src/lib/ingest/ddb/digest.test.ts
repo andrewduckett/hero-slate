@@ -250,9 +250,9 @@ describe('computeDigest — limited-use source fields', () => {
 
 describe('computeDigest — identity facts', () => {
 	it('returns the name verbatim, emoji included', () => {
-		const result = computeDigest(character({ name: '🐻‍❄️ Urven, the Silent Maw' }));
+		const result = computeDigest(character({ name: '🐻‍❄️ Test Hero, the Brave' }));
 		expect(result.status).toBe('ok');
-		if (result.status === 'ok') expect(result.digest.name).toBe('🐻‍❄️ Urven, the Silent Maw');
+		if (result.status === 'ok') expect(result.digest.name).toBe('🐻‍❄️ Test Hero, the Brave');
 	});
 
 	it('lists each class with its subclass and level', () => {

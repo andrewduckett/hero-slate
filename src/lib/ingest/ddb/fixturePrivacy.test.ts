@@ -34,7 +34,7 @@ function recordedResponse(overrides: Record<string, unknown> = {}): unknown {
 			skin: 'Tan',
 			height: "5'4\"",
 			weight: '120 lb',
-			name: 'Sunny Thornwood',
+			name: 'Test Hero',
 			classSpells: [{ characterClassId: 1, spells: [{ definition: { name: 'Thorn Whip' } }] }],
 			...overrides
 		}
@@ -80,7 +80,7 @@ describe('blankFixture', () => {
 
 	it('leaves a spell list and every other field unchanged', () => {
 		const blanked = data(blankFixture(recordedResponse()));
-		expect(blanked.name).toBe('Sunny Thornwood');
+		expect(blanked.name).toBe('Test Hero');
 		expect(blanked.id).toBe(159173087);
 		expect(blanked.classSpells).toEqual([
 			{ characterClassId: 1, spells: [{ definition: { name: 'Thorn Whip' } }] }

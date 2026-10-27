@@ -40,7 +40,7 @@ describe('resolveLinks: URL scheme and shape checks', () => {
 	});
 
 	it('drops a relative URL', () => {
-		expect(resolveLinks([{ url: '/sunny' }], 'neutral')).toEqual([]);
+		expect(resolveLinks([{ url: '/test-hero' }], 'neutral')).toEqual([]);
 	});
 
 	it('drops a malformed URL', () => {

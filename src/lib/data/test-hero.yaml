@@ -1,0 +1,29 @@
+# Test-owned fixture for yaml.integration.test.ts. Not a shipped character.
+name: Test Hero
+level: 3
+class: Fighter
+color: ocean
+
+abilities:
+  - label: Strength
+    value: 16
+  - label: Dexterity
+    value: 12
+  - label: Constitution
+    value: 14
+  - label: Intelligence
+    value: 10
+  - label: Wisdom
+    value: 13
+  - label: Charisma
+    value: 8
+combat:
+  - label: Armor Class
+    value: 17
+  - label: Speed
+    value: 30
+  - label: Initiative
+    value: "+1"
+
+hitPoints:
+  max: 28

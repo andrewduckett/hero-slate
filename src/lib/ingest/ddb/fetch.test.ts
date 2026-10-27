@@ -31,11 +31,11 @@ describe('fetchCharacter', () => {
 	});
 
 	it('returns the parsed body on a 200 JSON response', async () => {
-		const { fn } = fetchReturning(res({ body: '{"data":{"name":"Urven"}}' }));
+		const { fn } = fetchReturning(res({ body: '{"data":{"name":"Test Hero"}}' }));
 
 		const result = await fetchCharacter('154922980', fn);
 
-		expect(result).toEqual({ status: 'ok', body: { data: { name: 'Urven' } } });
+		expect(result).toEqual({ status: 'ok', body: { data: { name: 'Test Hero' } } });
 	});
 
 	it('maps a 403 to private, with a message telling the Author to set it Public', async () => {
