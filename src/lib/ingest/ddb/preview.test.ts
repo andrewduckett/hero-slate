@@ -3,7 +3,7 @@ import { renderPreview } from './preview';
 
 describe('renderPreview', () => {
 	it('draws a computed ability modifier', () => {
-		const draft = { name: 'Sunny', abilities: [{ label: 'Dexterity', value: 20 }] };
+		const draft = { name: 'Test Hero', abilities: [{ label: 'Dexterity', value: 20 }] };
 		const lines = renderPreview(draft);
 		const text = lines.join('\n');
 		expect(text).toContain('Dexterity');
@@ -12,21 +12,21 @@ describe('renderPreview', () => {
 	});
 
 	it('draws combat entries', () => {
-		const draft = { name: 'Sunny', combat: [{ label: 'Armor Class', value: 15 }] };
+		const draft = { name: 'Test Hero', combat: [{ label: 'Armor Class', value: 15 }] };
 		const text = renderPreview(draft).join('\n');
 		expect(text).toContain('Armor Class');
 		expect(text).toContain('15');
 	});
 
 	it('draws hit points', () => {
-		const draft = { name: 'Sunny', hitPoints: { max: 30 } };
+		const draft = { name: 'Test Hero', hitPoints: { max: 30 } };
 		const text = renderPreview(draft).join('\n');
 		expect(text).toContain('30');
 	});
 
 	it('leaves out an ability entry the app would drop', () => {
 		const draft = {
-			name: 'Sunny',
+			name: 'Test Hero',
 			abilities: [
 				{ label: 'Strength', value: 14 },
 				{ value: 10 }
@@ -39,7 +39,7 @@ describe('renderPreview', () => {
 
 	it('lists an unrecognized block, but not pools or sections, under Not previewed', () => {
 		const draft = {
-			name: 'Sunny',
+			name: 'Test Hero',
 			pools: [{ id: 'ki', label: 'Ki', max: 5 }],
 			sections: [{ title: 'Your Turn', rows: [{ title: 'Attack', body: 'swipe!' }] }],
 			notes: 'a top-level block the preview does not know'
@@ -56,7 +56,7 @@ describe('renderPreview', () => {
 
 	it('draws a section with its palette name and a row keeping its pill', () => {
 		const draft = {
-			name: 'Sunny',
+			name: 'Test Hero',
 			sections: [
 				{
 					title: 'Strengths',
@@ -74,7 +74,7 @@ describe('renderPreview', () => {
 
 	it('does not draw a row with no body', () => {
 		const draft = {
-			name: 'Sunny',
+			name: 'Test Hero',
 			sections: [
 				{
 					title: 'Strengths',
@@ -91,25 +91,25 @@ describe('renderPreview', () => {
 	});
 
 	it('draws a pool as its label followed by one dot per use', () => {
-		const draft = { name: 'Sunny', pools: [{ id: 'focus', label: 'Focus Points', max: 6 }] };
+		const draft = { name: 'Test Hero', pools: [{ id: 'focus', label: 'Focus Points', max: 6 }] };
 		const text = renderPreview(draft).join('\n');
 		expect(text).toContain('Focus Points');
 		expect(text).toContain('o'.repeat(6));
 	});
 
 	it('does not draw a pool the app would drop', () => {
-		const draft = { name: 'Sunny', pools: [{ id: 'sorcery', label: 'Sorcery Points', max: 101 }] };
+		const draft = { name: 'Test Hero', pools: [{ id: 'sorcery', label: 'Sorcery Points', max: 101 }] };
 		const text = renderPreview(draft).join('\n');
 		expect(text).not.toContain('Sorcery Points');
 	});
 
 	it('draws the character name', () => {
-		const text = renderPreview({ name: 'Sunny Thornwood' }).join('\n');
-		expect(text).toContain('Sunny Thornwood');
+		const text = renderPreview({ name: 'Test Hero' }).join('\n');
+		expect(text).toContain('Test Hero');
 	});
 
 	it('uses ASCII borders with no right-hand border', () => {
-		const draft = { name: '🐻‍❄️ Urven, the Silent Maw', abilities: [{ label: 'Dexterity', value: 20 }] };
+		const draft = { name: '🐻‍❄️ Test Hero, the Brave', abilities: [{ label: 'Dexterity', value: 20 }] };
 		const lines = renderPreview(draft);
 		expect(lines.length).toBeGreaterThan(0);
 		for (const line of lines) {
@@ -124,7 +124,7 @@ describe('renderPreview', () => {
 
 	it("draws a link as its label, the character's palette, and its URL", () => {
 		const draft = {
-			name: 'Sunny',
+			name: 'Test Hero',
 			color: 'ocean',
 			links: [{ label: '📜 D&D Beyond', url: 'https://www.dndbeyond.com/characters/154922980' }]
 		};
@@ -133,14 +133,14 @@ describe('renderPreview', () => {
 	});
 
 	it('draws a link with no label as its hostname', () => {
-		const draft = { name: 'Sunny', links: [{ url: 'https://www.dndbeyond.com/spells' }] };
+		const draft = { name: 'Test Hero', links: [{ url: 'https://www.dndbeyond.com/spells' }] };
 		const text = renderPreview(draft).join('\n');
 		expect(text).toContain('www.dndbeyond.com (neutral): https://www.dndbeyond.com/spells');
 	});
 
 	it("draws a link's own palette over the character's", () => {
 		const draft = {
-			name: 'Sunny',
+			name: 'Test Hero',
 			color: 'ocean',
 			links: [{ label: 'Map', url: 'https://example.com/map', color: 'forest' }]
 		};
@@ -150,7 +150,7 @@ describe('renderPreview', () => {
 
 	it('draws links in authored order', () => {
 		const draft = {
-			name: 'Sunny',
+			name: 'Test Hero',
 			links: [
 				{ label: 'Sheet', url: 'https://www.dndbeyond.com/characters/1' },
 				{ label: 'Spells', url: 'https://www.dndbeyond.com/spells' },
@@ -164,7 +164,7 @@ describe('renderPreview', () => {
 	});
 
 	it('does not draw a link the app would drop', () => {
-		const draft = { name: 'Sunny', links: [{ label: 'Bad', url: 'javascript:alert(1)' }] };
+		const draft = { name: 'Test Hero', links: [{ label: 'Bad', url: 'javascript:alert(1)' }] };
 		const text = renderPreview(draft).join('\n');
 		expect(text).not.toContain('alert');
 		expect(text).not.toContain('Bad');
@@ -172,7 +172,7 @@ describe('renderPreview', () => {
 
 	it('draws links after sections', () => {
 		const draft = {
-			name: 'Sunny',
+			name: 'Test Hero',
 			sections: [{ title: 'Your Turn', rows: [{ body: 'swipe!' }] }],
 			links: [{ label: 'Sheet', url: 'https://www.dndbeyond.com/characters/1' }]
 		};
@@ -182,7 +182,7 @@ describe('renderPreview', () => {
 
 	it('does not list links under Not previewed', () => {
 		const draft = {
-			name: 'Sunny',
+			name: 'Test Hero',
 			links: [{ label: 'Sheet', url: 'https://www.dndbeyond.com/characters/1' }],
 			notes: 'a top-level block the preview does not know'
 		};

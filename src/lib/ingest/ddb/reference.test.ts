@@ -33,8 +33,8 @@ describe('parseReference', () => {
 	});
 
 	it('rejects a non-numeric id', () => {
-		expect(parseReference('urven')).toEqual({ status: 'unreadable' });
-		expect(parseReference('https://www.dndbeyond.com/characters/urven')).toEqual({
+		expect(parseReference('test-hero')).toEqual({ status: 'unreadable' });
+		expect(parseReference('https://www.dndbeyond.com/characters/test-hero')).toEqual({
 			status: 'unreadable'
 		});
 	});
