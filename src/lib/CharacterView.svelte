@@ -121,6 +121,28 @@
 		gap: var(--space-5);
 	}
 
+	/* Each column keeps the article's gap, so stacked columns space their
+	   blocks exactly as one flat list would. */
+	.column {
+		display: grid;
+		gap: var(--space-5);
+	}
+
+	/* 64rem also sets the wider page cap in base.css; custom properties cannot
+	   appear in media queries, so keep the two values in step by hand. */
+	@media (min-width: 64rem) {
+		article {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			column-gap: var(--space-6);
+			align-items: start;
+		}
+
+		article > :global(header),
+		.column[data-span='full'] {
+			grid-column: 1 / -1;
+		}
+	}
+
 	.group {
 		display: grid;
 		gap: var(--space-3);
