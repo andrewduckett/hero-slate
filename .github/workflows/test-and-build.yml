@@ -1,0 +1,19 @@
+# Fails when a test fails or the static site does not build, so a green pull
+# request means the app works. No branch filter on pull_request, so stacked
+# pull requests get the check too.
+name: test and build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build:
+    name: test and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
