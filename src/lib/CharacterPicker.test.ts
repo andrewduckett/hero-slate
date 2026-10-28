@@ -86,4 +86,25 @@ describe('CharacterPicker', () => {
 		const card = await screen.findByRole('listitem');
 		expect(card.getAttribute('data-palette')).toBe(palette);
 	});
+
+	it('shows a retry message and no cards when the listing fails', async () => {
+		render(CharacterPicker, { props: { provider: listing({ status: 'error' }) } });
+
+		expect(await screen.findByText('Could not load characters. Try again.')).toBeTruthy();
+		expect(screen.queryAllByRole('listitem')).toHaveLength(0);
+	});
+
+	it('shows an empty message and no cards for an empty roster', async () => {
+		render(CharacterPicker, { props: { provider: found() } });
+
+		expect(await screen.findByText('No characters yet.')).toBeTruthy();
+		expect(screen.queryAllByRole('listitem')).toHaveLength(0);
+	});
+
+	it('removes Loading… once the listing resolves', async () => {
+		render(CharacterPicker, { props: { provider: found(sunny) } });
+
+		await screen.findByRole('listitem');
+		expect(screen.queryByText('Loading…')).toBeNull();
+	});
 });

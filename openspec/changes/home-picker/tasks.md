@@ -18,7 +18,7 @@
 
 - [x] 3.1 [parallel] [medium] `CharacterPicker` takes a provider, shows the header "Hero Slate" / "Choose your hero" in the neutral palette and "Loading…" while pending, then one card per summary in order, each showing the name and the `formatIdentity` descriptor as text (verify: `npm test -- src/lib/CharacterPicker.test.ts`) (✓ `npm test -- src/lib/CharacterPicker.test.ts` passed)
 - [x] 3.2 [easy] Each card is a link to `/<id>` whose accessible name includes the character's name, and its `<li>` carries `data-palette` from `resolvePalette`, so an unknown or missing color yields `neutral`; the card is styled as a mini header (accent fill, on-accent text, 44px minimum, `minmax(16rem, 1fr)` grid) (verify: `npm test -- src/lib/CharacterPicker.test.ts`) (✓ `npm test -- src/lib/CharacterPicker.test.ts` passed)
-- [ ] 3.3 [easy] An `error` result shows "Could not load characters. Try again." and no cards; a `found` result with no summaries shows "No characters yet." and no cards; "Loading…" disappears once the listing resolves (verify: `npm test -- src/lib/CharacterPicker.test.ts`)
+- [x] 3.3 [easy] An `error` result shows "Could not load characters. Try again." and no cards; a `found` result with no summaries shows "No characters yet." and no cards; "Loading…" disappears once the listing resolves (verify: `npm test -- src/lib/CharacterPicker.test.ts`) (✓ `npm test -- src/lib/CharacterPicker.test.ts` passed)
 
 ## 4. Integration [depends-on: 2, 3]
 

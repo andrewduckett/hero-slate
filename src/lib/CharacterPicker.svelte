@@ -26,7 +26,11 @@
 
 	{#if result.status === 'loading'}
 		<p>Loading…</p>
-	{:else if result.status === 'found'}
+	{:else if result.status === 'error'}
+		<p>Could not load characters. Try again.</p>
+	{:else if result.characters.length === 0}
+		<p>No characters yet.</p>
+	{:else}
 		<ul data-block="picker">
 			{#each result.characters as summary (summary.id)}
 				{@const descriptor = formatIdentity(summary)}
