@@ -63,7 +63,7 @@ The logical id `manifest` SHALL be reserved, because the manifest lives beside t
 
 ### Requirement: Listing skips entries that do not load
 
-The provider SHALL include a summary only for a listed entry that `getCharacter` returns as `found`. It SHALL skip an entry that is not a string, that fails the logical-id grammar, or whose definition resolves to `not-found` or `invalid`. It SHALL skip a duplicate id after its first occurrence. A `found` result with every entry skipped is `found` with an empty list.
+The provider SHALL include a summary only for a listed entry that `getCharacter` returns as `found`. It SHALL skip an entry that is not a string, or that fails the logical-id grammar. It SHALL skip an entry whose definition resolves to `not-found`, `invalid` or `error`, so one failing file never empties the roster. It SHALL skip a duplicate id after its first occurrence. A result with every entry skipped is `found` with an empty list.
 
 #### Scenario: A missing or invalid definition is skipped
 
@@ -81,23 +81,19 @@ The provider SHALL include a summary only for a listed entry that `getCharacter`
 - **WHEN** the manifest names `sunny`, `urven` and `sunny`
 - **THEN** the provider returns two summaries, `sunny` then `urven`
 
+#### Scenario: A transient failure on one entry skips that entry
+
+- **WHEN** the manifest names `sunny` and `urven`, and the fetch for `urven` returns HTTP 503
+- **THEN** the provider returns `found` with one summary, for `sunny`
+
 #### Scenario: Every entry skipped is found and empty
 
 - **WHEN** the manifest names only `nobody`, which resolves to `not-found`
 - **THEN** the provider returns `found` with an empty list
 
-### Requirement: A transient failure on one entry fails the listing
-
-When a listed entry's definition resolves to `error`, the listing SHALL return `error`, because the roster is then incomplete for a reason a retry can fix.
-
-#### Scenario: A transient failure on one entry fails the listing
-
-- **WHEN** the manifest names `sunny` and `urven`, and the fetch for `urven` returns HTTP 503
-- **THEN** the provider returns `error`
-
 ### Requirement: Manifest load outcomes map to typed results
 
-The provider SHALL map every manifest load outcome to a typed result. A rejected fetch, a non-2xx status, a body-read failure, a `text/html` content type, a body that cannot be parsed as YAML, or a body that is not a mapping with a `characters` list SHALL return `error`. An empty `characters` list SHALL return `found` with an empty list.
+The provider SHALL map every manifest load outcome to a typed result. A rejected fetch, a non-2xx status or a body-read failure SHALL return `error`. A `text/html` content type SHALL return `error`. A body that cannot be parsed as YAML, or that is not a mapping with a `characters` list, SHALL return `error`. An empty `characters` list SHALL return `found` with an empty list.
 
 #### Scenario: A missing manifest is an error
 

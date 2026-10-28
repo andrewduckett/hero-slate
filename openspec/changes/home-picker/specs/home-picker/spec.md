@@ -35,12 +35,7 @@ The system SHALL render, at `/`, one card for each character summary the data pr
 
 Each card SHALL be a link whose destination is `/<id>`, where `<id>` is the summary's logical id. The link's accessible name SHALL include the character's name. The system SHALL NOT reference a file name or a storage location in the destination.
 
-#### Scenario: Tapping a card opens the sheet
-
-- **WHEN** a player activates the card for `sunny`
-- **THEN** the browser navigates to `/sunny`
-
-#### Scenario: The card link is named after the character
+#### Scenario: The card links to the sheet and is named after the character
 
 - **WHEN** the card for "Sunny Thornwood" renders
 - **THEN** a link with an accessible name containing "Sunny Thornwood" exists
