@@ -256,3 +256,75 @@ describe('CharacterView: group headings', () => {
 		expect(groupHeadings(container)).toEqual([]);
 	});
 });
+
+/** The `data-block` names inside one column wrapper, in document order. */
+function columnBlocks(container: HTMLElement, column: 'left' | 'right'): string[] {
+	const wrapper = container.querySelector(`[data-column="${column}"]`);
+	if (!wrapper) return [];
+	return [...wrapper.querySelectorAll('[data-block]')].map((el) => el.getAttribute('data-block') ?? '');
+}
+
+describe('CharacterView: sheet columns', () => {
+	it('puts the Stats, Health and Pools groups in the left column', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: fullWithLinks } } });
+
+		expect(columnBlocks(container, 'left')).toEqual(['abilities', 'combat', 'hit-points', 'pools']);
+	});
+
+	it('puts the sections and then the Links group in the right column', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: fullWithLinks } } });
+
+		expect(columnBlocks(container, 'right')).toEqual(['sections', 'links']);
+	});
+
+	it('keeps the header outside both columns and before them', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: fullWithLinks } } });
+
+		const header = container.querySelector('[data-block="header"]') as HTMLElement;
+		const left = container.querySelector('[data-column="left"]') as HTMLElement;
+		expect(header.closest('[data-column]')).toBeNull();
+		expect(header.compareDocumentPosition(left) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	});
+});
+
+describe('CharacterView: a lone column', () => {
+	const span = (container: HTMLElement, column: 'left' | 'right') =>
+		container.querySelector(`[data-column="${column}"]`)?.getAttribute('data-span') ?? null;
+
+	it('marks neither column to span when both render', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: fullWithLinks } } });
+
+		expect(span(container, 'left')).toBeNull();
+		expect(span(container, 'right')).toBeNull();
+	});
+
+	it('renders only the left column, spanning, with no sections and no links', () => {
+		const character: Character = { ...full, sections: undefined };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(container.querySelector('[data-column="right"]')).toBeNull();
+		expect(span(container, 'left')).toBe('full');
+	});
+
+	it('treats sections that resolve to nothing as no sections', () => {
+		const character: Character = { ...full, sections: [{ rows: [] }] };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(container.querySelector('[data-column="right"]')).toBeNull();
+		expect(span(container, 'left')).toBe('full');
+	});
+
+	it('renders only the right column, spanning, with only sections', () => {
+		const character: Character = { ...testHero, sections: full.sections };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(container.querySelector('[data-column="left"]')).toBeNull();
+		expect(span(container, 'right')).toBe('full');
+	});
+
+	it('renders neither column for a character with only a name', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: testHero } } });
+
+		expect(container.querySelector('[data-column]')).toBeNull();
+	});
+});

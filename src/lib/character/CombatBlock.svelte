@@ -26,9 +26,10 @@
 {/if}
 
 <style>
+	/* Always 3 per row: auto-fit stretched 1 or 2 tiles and left short rows. */
 	.combat {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: var(--space-3);
 	}
 
