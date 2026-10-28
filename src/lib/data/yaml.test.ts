@@ -40,6 +40,16 @@ describe('createYamlProvider', () => {
 		expect(calls).toHaveLength(0);
 	});
 
+	it('reports the reserved manifest id as not-found before any fetch', async () => {
+		const { fn, calls } = fetchReturning(res({ body: 'name: Manifest' }));
+		const provider = createYamlProvider(fn);
+
+		const result = await provider.getCharacter('manifest');
+
+		expect(result.status).toBe('not-found');
+		expect(calls).toHaveLength(0);
+	});
+
 	it('fetches the fixed asset path for a valid id', async () => {
 		const { fn, calls } = fetchReturning(res({ body: 'name: Test Hero' }));
 		const provider = createYamlProvider(fn);

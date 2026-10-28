@@ -15,6 +15,8 @@ export type FetchLike = (url: string) => Promise<HttpResponse>;
 /** Logical ids are lowercase, start alphanumeric, then alphanumeric or hyphen. */
 export const ID_GRAMMAR = /^[a-z0-9][a-z0-9-]*$/;
 
+const MANIFEST_ID = 'manifest';
+
 /**
  * A `CharacterProvider` backed by a YAML asset fetched at runtime.
  *
@@ -31,6 +33,10 @@ export function createYamlProvider(fetchFn: FetchLike = fetch): CharacterProvide
 			// 1. Validate the id at the boundary — no fetch for a bad id.
 			if (!ID_GRAMMAR.test(id)) {
 				return { status: 'invalid', reason: 'id does not match the allowed grammar' };
+			}
+			// The manifest shares the characters folder, so its id is reserved (D2).
+			if (id === MANIFEST_ID) {
+				return { status: 'not-found' };
 			}
 
 			// 2. Fetch; a rejected fetch is a transient error.
