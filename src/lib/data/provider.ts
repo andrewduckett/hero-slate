@@ -18,11 +18,26 @@ export type GetCharacterResult =
 	| { status: 'error' };
 
 /**
- * Loads a character definition by its stable logical id.
+ * The identity fields of a loaded definition, as a card shows them. Built from
+ * a `found` definition, so it carries no field the definition did not.
+ */
+export type CharacterSummary = Pick<Character, 'id' | 'name' | 'level' | 'class' | 'color'>;
+
+/**
+ * The result of listing the roster: `found` with summaries in roster order,
+ * or `error` when the roster itself could not be loaded.
+ */
+export type ListCharactersResult =
+	| { status: 'found'; characters: CharacterSummary[] }
+	| { status: 'error' };
+
+/**
+ * Loads character definitions by stable logical id, and lists the roster.
  *
  * Consumers depend only on this interface — never on a storage location, URL,
  * or file path — so a future hosted backend is a swap of the implementation.
  */
 export interface CharacterProvider {
 	getCharacter(id: string): Promise<GetCharacterResult>;
+	listCharacters(): Promise<ListCharactersResult>;
 }

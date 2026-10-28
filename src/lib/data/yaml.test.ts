@@ -254,3 +254,35 @@ describe('createYamlProvider', () => {
 		await expect(provider.getCharacter('test-hero')).resolves.toBeDefined();
 	});
 });
+
+/** A fetch that serves YAML bodies by URL, 404s the rest, and records the URLs it was called with. */
+function fetchServing(bodies: Record<string, string>): { fn: FetchLike; calls: string[] } {
+	const calls: string[] = [];
+	const fn: FetchLike = async (url) => {
+		calls.push(url);
+		const body = bodies[url];
+		return body === undefined ? res({ status: 404 }) : res({ body });
+	};
+	return { fn, calls };
+}
+
+describe('listCharacters', () => {
+	it('returns identity-only summaries in manifest order', async () => {
+		const { fn } = fetchServing({
+			'/characters/manifest.yaml': 'characters: [sunny, gimdak]',
+			'/characters/sunny.yaml':
+				'name: Sunny Thornwood\nlevel: 7\nclass: Druid\ncolor: forest\nabilities: { wis: 18 }',
+			'/characters/gimdak.yaml': 'name: Gimdak Steelward'
+		});
+
+		const result = await createYamlProvider(fn).listCharacters();
+
+		expect(result).toEqual({
+			status: 'found',
+			characters: [
+				{ id: 'sunny', name: 'Sunny Thornwood', level: 7, class: 'Druid', color: 'forest' },
+				{ id: 'gimdak', name: 'Gimdak Steelward' }
+			]
+		});
+	});
+});

@@ -1,6 +1,11 @@
 import { parse as parseYaml } from 'yaml';
 import type { Character } from '#lib/types';
-import type { CharacterProvider, GetCharacterResult } from './provider';
+import type {
+	CharacterProvider,
+	CharacterSummary,
+	GetCharacterResult,
+	ListCharactersResult
+} from './provider';
 
 /** The minimal HTTP response surface the provider reads. `fetch`'s `Response` satisfies it. */
 export interface HttpResponse {
@@ -16,6 +21,7 @@ export type FetchLike = (url: string) => Promise<HttpResponse>;
 export const ID_GRAMMAR = /^[a-z0-9][a-z0-9-]*$/;
 
 const MANIFEST_ID = 'manifest';
+const MANIFEST_URL = `/characters/${MANIFEST_ID}.yaml`;
 
 /**
  * A `CharacterProvider` backed by a YAML asset fetched at runtime.
@@ -28,7 +34,7 @@ const MANIFEST_ID = 'manifest';
  * @param fetchFn injectable for testing; defaults to the global `fetch`.
  */
 export function createYamlProvider(fetchFn: FetchLike = fetch): CharacterProvider {
-	return {
+	const provider: CharacterProvider = {
 		async getCharacter(id: string): Promise<GetCharacterResult> {
 			// 1. Validate the id at the boundary — no fetch for a bad id.
 			if (!ID_GRAMMAR.test(id)) {
@@ -83,8 +89,30 @@ export function createYamlProvider(fetchFn: FetchLike = fetch): CharacterProvide
 
 			// 6. Validate identity and stamp the id from the request.
 			return toFoundOrInvalid(id, parsed);
+		},
+
+		async listCharacters(): Promise<ListCharactersResult> {
+			const response = await fetchFn(MANIFEST_URL);
+			const parsed: unknown = parseYaml(await response.text());
+			const ids = (parsed as { characters: string[] }).characters;
+
+			const results = await Promise.all(ids.map((id) => provider.getCharacter(id)));
+			const characters = results.flatMap((result) =>
+				result.status === 'found' ? [toSummary(result.character)] : []
+			);
+			return { status: 'found', characters };
 		}
 	};
+	return provider;
+}
+
+/** Copy identity fields one by one, so no provisional field reaches a summary. */
+function toSummary(character: Character): CharacterSummary {
+	const summary: CharacterSummary = { id: character.id, name: character.name };
+	if (character.level !== undefined) summary.level = character.level;
+	if (character.class !== undefined) summary.class = character.class;
+	if (character.color !== undefined) summary.color = character.color;
+	return summary;
 }
 
 /** A YAML mapping is a plain object — not null, not an array. */
