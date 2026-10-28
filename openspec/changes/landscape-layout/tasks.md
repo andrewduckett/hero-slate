@@ -6,7 +6,7 @@
 
 ## 2. Tiles and content width
 
-- [ ] 2.1 [parallel] [medium] `AbilitiesBlock` makes its section an inline-size container and lays out the tiles in an inner `div.tiles` grid: 3 per row by default, and 6 per row from `@container (min-width: 40rem)`. Each tile keeps its `.ability` class (design Decision 3; spec "Ability tiles sit 3 or 6 per row"). (verify: npx vitest run src/lib/character/AbilitiesBlock.test.ts)
+- [x] 2.1 [parallel] [medium] `AbilitiesBlock` makes its section an inline-size container and lays out the tiles in an inner `div.tiles` grid: 3 per row by default, and 6 per row from `@container (min-width: 40rem)`. Each tile keeps its `.ability` class (design Decision 3; spec "Ability tiles sit 3 or 6 per row"). (verify: npx vitest run src/lib/character/AbilitiesBlock.test.ts) (✓ npx vitest run src/lib/character/AbilitiesBlock.test.ts passed, 5 tests)
 - [ ] 2.2 [parallel] [easy] `CombatBlock` lays out its tiles with `repeat(3, minmax(0, 1fr))` at every width, replacing `auto-fit` (design Decision 4; spec "Combat tiles sit 3 per row"). (verify: npx vitest run src/lib/character/CombatBlock.test.ts)
 - [ ] 2.3 [parallel] [easy] On the `/[id]` route, `+layout.svelte` adds `page--sheet` to `<main>`, reading `page.route.id` from `$app/state`. From `@media (min-width: 64rem)`, `base.css` widens `.page--sheet` to `max-width: 80rem`, and a comment names `CharacterView` as the other `64rem` site. `/` keeps 44rem (design Decision 5; spec "Wide sheet content width"). (verify: npm run build)
 
@@ -18,3 +18,5 @@
 ## Deviations Ledger
 
 <!-- Dated notes on small departures from the plan, written during apply. Stop and ask the user about a large one. -->
+
+- 2026-10-27, task 2.1: the ability tile grid uses `repeat(3, minmax(0, 1fr))` and `repeat(6, minmax(0, 1fr))`, not the design's bare `1fr`. A bare `1fr` keeps a tile's minimum content width, so a long label could push the grid past its column. This matches the combat grid in task 2.2.

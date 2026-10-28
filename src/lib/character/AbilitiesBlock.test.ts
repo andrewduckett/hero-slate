@@ -63,4 +63,14 @@ describe('AbilitiesBlock', () => {
 		expect(container.querySelector('b')).toBeNull();
 		expect(container.querySelector('img')).toBeNull();
 	});
+
+	it('lays the tiles out in an inner tiles grid inside the section', () => {
+		const { container } = render(AbilitiesBlock, {
+			props: { abilities: [{ label: 'Strength', value: 10 }, { label: 'Dexterity', value: 14 }] }
+		});
+
+		const tiles = container.querySelector('[data-block="abilities"] > .tiles') as HTMLElement;
+		expect(tiles).toBeTruthy();
+		expect(tiles.querySelectorAll(':scope > .ability')).toHaveLength(2);
+	});
 });

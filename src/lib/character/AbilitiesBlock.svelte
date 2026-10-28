@@ -12,24 +12,39 @@
 
 {#if entries.length > 0}
 	<section class="abilities" aria-label="Abilities" data-block="abilities">
-		{#each entries as entry}
-			<div class="ability">
-				<span class="label">{entry.label}</span>
-				<span class="modifier">{entry.modifier}</span>
-				{#if entry.score !== null}
-					<span class="score">{entry.score}</span>
-				{/if}
-			</div>
-		{/each}
+		<div class="tiles">
+			{#each entries as entry}
+				<div class="ability">
+					<span class="label">{entry.label}</span>
+					<span class="modifier">{entry.modifier}</span>
+					{#if entry.score !== null}
+						<span class="score">{entry.score}</span>
+					{/if}
+				</div>
+			{/each}
+		</div>
 	</section>
 {/if}
 
 <style>
-	/* Six tiles on one row at desktop widths; 3 by 2 at 360px. */
+	/* The tile count follows the block's own width, not the viewport's, so the
+	   block needs no knowledge of the page's column breakpoint. */
 	.abilities {
+		container-type: inline-size;
+	}
+
+	/* 3 or 6 per row, never a count that leaves a short row. 40rem fits six
+	   tiles of at least 6rem. */
+	.tiles {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: var(--space-3);
+	}
+
+	@container (min-width: 40rem) {
+		.tiles {
+			grid-template-columns: repeat(6, minmax(0, 1fr));
+		}
 	}
 
 	/* A raised tile with a structural top border. */
