@@ -13,5 +13,5 @@
 
 ## 3. Prove it on GitHub
 
-- [ ] 3.1 [easy] Push the branch; the `test and build` check runs on pull request #94 and passes (verify: gh pr checks 94 --watch)
+- [x] 3.1 [easy] Push the branch; the `test and build` check runs on pull request #94 and passes (verify: gh pr checks 94 --watch) (✓ gh pr checks 94: test and build passed, run 40635313630)
 - [ ] 3.2 [medium] Prove the failure path and the stacked case: on a throwaway branch `ci-test-gate-red` off `ci-test-gate`, commit one deliberately failing test, open a draft pull request that targets `ci-test-gate`, and confirm `test and build` runs and fails. Then close that pull request and delete the branch, local and remote (verify: gh pr checks ci-test-gate-red --watch; test $? -eq 1)
