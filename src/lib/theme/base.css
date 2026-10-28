@@ -51,3 +51,12 @@ h3 {
 	margin: 0 auto;
 	padding: var(--space-4) var(--space-4) var(--space-6);
 }
+
+/* The sheet grows past 44rem on wide screens to make room for its two
+   columns. 64rem also sets the column rule in CharacterView.svelte; custom
+   properties cannot appear in media queries, so keep the two in step by hand. */
+@media (min-width: 64rem) {
+	.page--sheet {
+		max-width: 80rem;
+	}
+}

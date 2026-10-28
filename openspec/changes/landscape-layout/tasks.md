@@ -8,7 +8,7 @@
 
 - [x] 2.1 [parallel] [medium] `AbilitiesBlock` makes its section an inline-size container and lays out the tiles in an inner `div.tiles` grid: 3 per row by default, and 6 per row from `@container (min-width: 40rem)`. Each tile keeps its `.ability` class (design Decision 3; spec "Ability tiles sit 3 or 6 per row"). (verify: npx vitest run src/lib/character/AbilitiesBlock.test.ts) (✓ npx vitest run src/lib/character/AbilitiesBlock.test.ts passed, 5 tests)
 - [x] 2.2 [parallel] [easy] `CombatBlock` lays out its tiles with `repeat(3, minmax(0, 1fr))` at every width, replacing `auto-fit` (design Decision 4; spec "Combat tiles sit 3 per row"). (verify: npx vitest run src/lib/character/CombatBlock.test.ts) (✓ npx vitest run src/lib/character/CombatBlock.test.ts passed)
-- [ ] 2.3 [parallel] [easy] On the `/[id]` route, `+layout.svelte` adds `page--sheet` to `<main>`, reading `page.route.id` from `$app/state`. From `@media (min-width: 64rem)`, `base.css` widens `.page--sheet` to `max-width: 80rem`, and a comment names `CharacterView` as the other `64rem` site. `/` keeps 44rem (design Decision 5; spec "Wide sheet content width"). (verify: npm run build)
+- [x] 2.3 [parallel] [easy] On the `/[id]` route, `+layout.svelte` adds `page--sheet` to `<main>`, reading `page.route.id` from `$app/state`. From `@media (min-width: 64rem)`, `base.css` widens `.page--sheet` to `max-width: 80rem`, and a comment names `CharacterView` as the other `64rem` site. `/` keeps 44rem (design Decision 5; spec "Wide sheet content width"). (verify: npm run build) (✓ npm run build passed)
 
 ## 3. Verification [depends-on: 1, 2]
 
