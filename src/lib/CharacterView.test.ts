@@ -286,3 +286,45 @@ describe('CharacterView: sheet columns', () => {
 		expect(header.compareDocumentPosition(left) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 	});
 });
+
+describe('CharacterView: a lone column', () => {
+	const span = (container: HTMLElement, column: 'left' | 'right') =>
+		container.querySelector(`[data-column="${column}"]`)?.getAttribute('data-span') ?? null;
+
+	it('marks neither column to span when both render', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: fullWithLinks } } });
+
+		expect(span(container, 'left')).toBeNull();
+		expect(span(container, 'right')).toBeNull();
+	});
+
+	it('renders only the left column, spanning, with no sections and no links', () => {
+		const character: Character = { ...full, sections: undefined };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(container.querySelector('[data-column="right"]')).toBeNull();
+		expect(span(container, 'left')).toBe('full');
+	});
+
+	it('treats sections that resolve to nothing as no sections', () => {
+		const character: Character = { ...full, sections: [{ rows: [] }] };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(container.querySelector('[data-column="right"]')).toBeNull();
+		expect(span(container, 'left')).toBe('full');
+	});
+
+	it('renders only the right column, spanning, with only sections', () => {
+		const character: Character = { ...testHero, sections: full.sections };
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character } } });
+
+		expect(container.querySelector('[data-column="left"]')).toBeNull();
+		expect(span(container, 'right')).toBe('full');
+	});
+
+	it('renders neither column for a character with only a name', () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: testHero } } });
+
+		expect(container.querySelector('[data-column]')).toBeNull();
+	});
+});

@@ -14,6 +14,7 @@
 	import { resolveHitPoints } from '#lib/character/hitPoints';
 	import { resolvePools } from '#lib/character/pools';
 	import { resolveLinks } from '#lib/character/links';
+	import { resolveSections } from '#lib/character/sections';
 	import AppHeader from '#lib/AppHeader.svelte';
 
 	type ViewState = GetCharacterResult | { status: 'loading' };
@@ -43,6 +44,13 @@
 	const hasLinks = $derived(
 		character !== null && resolveLinks(character.links, resolvePalette(character.color)).length > 0
 	);
+	const hasSections = $derived(character !== null && resolveSections(character.sections).length > 0);
+
+	// A column renders only when one of its blocks does. A lone column is marked
+	// to span the full width on wide screens.
+	const hasLeft = $derived(hasStats || hasHealth || hasPools);
+	const hasRight = $derived(hasSections || hasLinks);
+	const loneSpan = $derived(hasLeft !== hasRight ? 'full' : undefined);
 </script>
 
 {#if result.status === 'loading'}
@@ -60,41 +68,45 @@
 		     authored sections, then the links. Each group heading sits directly
 		     before its blocks. The two column wrappers group adjacent blocks, so
 		     the document order stays the same in one column and in two. -->
-		<div class="column" data-column="left">
-			{#if hasStats}
-				<div class="group">
-					<h2 class="group-heading" data-group-heading>Stats</h2>
-					<AbilitiesBlock abilities={result.character.abilities} />
-					<CombatBlock combat={result.character.combat} palette={result.character.color} />
-				</div>
-			{/if}
-			{#if hasHealth}
-				<div class="group">
-					<h2 class="group-heading" data-group-heading>Health</h2>
-					<HitPointsBlock
-						hitPoints={result.character.hitPoints}
-						storedCurrent={storedHp}
-						{store}
-						{id}
-					/>
-				</div>
-			{/if}
-			{#if hasPools}
-				<div class="group">
-					<h2 class="group-heading" data-group-heading>Pools</h2>
-					<ResourcePoolsBlock pools={result.character.pools} {storedPools} {store} {id} />
-				</div>
-			{/if}
-		</div>
-		<div class="column" data-column="right">
-			<SectionsBlock sections={result.character.sections} />
-			{#if hasLinks}
-				<div class="group">
-					<h2 class="group-heading" data-group-heading>Links</h2>
-					<LinksBlock links={result.character.links} palette={resolvePalette(result.character.color)} />
-				</div>
-			{/if}
-		</div>
+		{#if hasLeft}
+			<div class="column" data-column="left" data-span={loneSpan}>
+				{#if hasStats}
+					<div class="group">
+						<h2 class="group-heading" data-group-heading>Stats</h2>
+						<AbilitiesBlock abilities={result.character.abilities} />
+						<CombatBlock combat={result.character.combat} palette={result.character.color} />
+					</div>
+				{/if}
+				{#if hasHealth}
+					<div class="group">
+						<h2 class="group-heading" data-group-heading>Health</h2>
+						<HitPointsBlock
+							hitPoints={result.character.hitPoints}
+							storedCurrent={storedHp}
+							{store}
+							{id}
+						/>
+					</div>
+				{/if}
+				{#if hasPools}
+					<div class="group">
+						<h2 class="group-heading" data-group-heading>Pools</h2>
+						<ResourcePoolsBlock pools={result.character.pools} {storedPools} {store} {id} />
+					</div>
+				{/if}
+			</div>
+		{/if}
+		{#if hasRight}
+			<div class="column" data-column="right" data-span={loneSpan}>
+				<SectionsBlock sections={result.character.sections} />
+				{#if hasLinks}
+					<div class="group">
+						<h2 class="group-heading" data-group-heading>Links</h2>
+						<LinksBlock links={result.character.links} palette={resolvePalette(result.character.color)} />
+					</div>
+				{/if}
+			</div>
+		{/if}
 	</article>
 {:else if result.status === 'error'}
 	<p>Could not load this character. Try again.</p>
