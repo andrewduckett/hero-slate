@@ -1,5 +1,9 @@
 <script lang="ts">
-	import AppHeader from '#lib/AppHeader.svelte';
+	import { createYamlProvider } from '#lib/data/yaml';
+	import CharacterPicker from '#lib/CharacterPicker.svelte';
+
+	// The route wires only the concrete provider; the picker owns the listing.
+	const provider = createYamlProvider();
 </script>
 
-<AppHeader title="Hero Slate" subtitle="Open a character by its link, for example /sunny." />
+<CharacterPicker {provider} />
