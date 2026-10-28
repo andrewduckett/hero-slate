@@ -285,4 +285,57 @@ describe('listCharacters', () => {
 			]
 		});
 	});
+
+	it('skips malformed entries before any fetch', async () => {
+		const { fn, calls } = fetchServing({
+			'/characters/manifest.yaml': "characters: [sunny, '../secret', 7, manifest]",
+			'/characters/sunny.yaml': 'name: Sunny Thornwood'
+		});
+
+		const result = await createYamlProvider(fn).listCharacters();
+
+		expect(result).toEqual({ status: 'found', characters: [{ id: 'sunny', name: 'Sunny Thornwood' }] });
+		expect(calls).toEqual(['/characters/manifest.yaml', '/characters/sunny.yaml']);
+	});
+
+	it('lists a repeated id once, at its first position', async () => {
+		const { fn } = fetchServing({
+			'/characters/manifest.yaml': 'characters: [sunny, urven, sunny]',
+			'/characters/sunny.yaml': 'name: Sunny Thornwood',
+			'/characters/urven.yaml': 'name: Urven'
+		});
+
+		const result = await createYamlProvider(fn).listCharacters();
+
+		expect(result.status === 'found' && result.characters.map((c) => c.id)).toEqual(['sunny', 'urven']);
+	});
+
+	it('skips entries whose definition does not load', async () => {
+		const fn: FetchLike = async (url) => {
+			switch (url) {
+				case '/characters/manifest.yaml':
+					return res({ body: 'characters: [sunny, nobody, broken, flaky]' });
+				case '/characters/sunny.yaml':
+					return res({ body: 'name: Sunny Thornwood' });
+				case '/characters/broken.yaml':
+					return res({ body: 'level: 3' });
+				case '/characters/flaky.yaml':
+					return res({ status: 503 });
+				default:
+					return res({ status: 404 });
+			}
+		};
+
+		const result = await createYamlProvider(fn).listCharacters();
+
+		expect(result).toEqual({ status: 'found', characters: [{ id: 'sunny', name: 'Sunny Thornwood' }] });
+	});
+
+	it('returns found and empty when every entry is skipped', async () => {
+		const { fn } = fetchServing({ '/characters/manifest.yaml': 'characters: [nobody]' });
+
+		const result = await createYamlProvider(fn).listCharacters();
+
+		expect(result).toEqual({ status: 'found', characters: [] });
+	});
 });

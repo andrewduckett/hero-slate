@@ -7,7 +7,7 @@
 
 - [x] 1.1 [easy] `getCharacter("manifest")` returns `not-found` without fetching, because the manifest's id is reserved (verify: `npm test -- src/lib/data/yaml.test.ts`) (✓ `npm test -- src/lib/data/yaml.test.ts` passed)
 - [x] 1.2 [medium] `CharacterProvider.listCharacters()` and `CharacterSummary` exist; the YAML provider fetches `/characters/manifest.yaml`, reads its `characters` list, loads each id through `getCharacter` in parallel, and returns `found` with identity-only summaries in manifest order. The `provider()` double in `CharacterSheet.test.ts` gains a stub (verify: `npm test -- src/lib/data/yaml.test.ts src/lib/CharacterSheet.test.ts`) (✓ `npm test -- src/lib/data/yaml.test.ts src/lib/CharacterSheet.test.ts` passed)
-- [ ] 1.3 [medium] The listing skips an entry that is not a string, fails the id grammar, is `manifest`, repeats an earlier id, or resolves to `not-found`, `invalid` or `error`, with no fetch for the first three; every entry skipped is `found` with an empty list (verify: `npm test -- src/lib/data/yaml.test.ts`)
+- [x] 1.3 [medium] The listing skips an entry that is not a string, fails the id grammar, is `manifest`, repeats an earlier id, or resolves to `not-found`, `invalid` or `error`, with no fetch for the first three; every entry skipped is `found` with an empty list (verify: `npm test -- src/lib/data/yaml.test.ts`) (✓ `npm test -- src/lib/data/yaml.test.ts` passed)
 - [ ] 1.4 [easy] A manifest that 404s, is the `text/html` shell, rejects, returns 5xx, fails to parse, or is not a mapping with a `characters` list returns `error`; `characters: []` returns `found` with an empty list (verify: `npm test -- src/lib/data/yaml.test.ts`)
 
 ## 2. Shipped roster [depends-on: 1]

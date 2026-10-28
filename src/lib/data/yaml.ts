@@ -94,7 +94,7 @@ export function createYamlProvider(fetchFn: FetchLike = fetch): CharacterProvide
 		async listCharacters(): Promise<ListCharactersResult> {
 			const response = await fetchFn(MANIFEST_URL);
 			const parsed: unknown = parseYaml(await response.text());
-			const ids = (parsed as { characters: string[] }).characters;
+			const ids = listableIds((parsed as { characters: unknown[] }).characters);
 
 			const results = await Promise.all(ids.map((id) => provider.getCharacter(id)));
 			const characters = results.flatMap((result) =>
@@ -104,6 +104,14 @@ export function createYamlProvider(fetchFn: FetchLike = fetch): CharacterProvide
 		}
 	};
 	return provider;
+}
+
+/** Keep the first occurrence of each entry that could name a character, so none costs a fetch. */
+function listableIds(entries: unknown[]): string[] {
+	const ids = entries.filter(
+		(entry): entry is string => typeof entry === 'string' && ID_GRAMMAR.test(entry) && entry !== MANIFEST_ID
+	);
+	return [...new Set(ids)];
 }
 
 /** Copy identity fields one by one, so no provisional field reaches a summary. */
