@@ -100,11 +100,11 @@ The update bot SHALL run once a day on `main`.
 - **THEN** the update workflow has run once on `main`
 
 ### Requirement: Update pull requests run CI
-Update pull requests SHALL trigger the CI workflows, so the CodeQL and `lets sync --check` checks run on them.
+Update pull requests SHALL trigger the CI workflows, so the CodeQL, `lets sync --check` and `test and build` checks run on them.
 
 #### Scenario: A weekly npm pull request opens
 - **WHEN** the update bot opens the weekly npm pull request
-- **THEN** the CodeQL and `lets sync --check` checks run on it
+- **THEN** the CodeQL, `lets sync --check` and `test and build` checks run on it
 
 ### Requirement: Nothing merges automatically
 The update bot SHALL NOT merge any pull request. The maintainer merges every update.
