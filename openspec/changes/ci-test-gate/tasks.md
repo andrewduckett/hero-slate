@@ -8,7 +8,7 @@
 
 ## 2. Docs
 
-- [ ] 2.1 [easy] AGENTS.md's **Checks** paragraph says CI runs `test and build` on every pull request, alongside CodeQL and `lets sync --check`, and still asks agents to run `npm test` and `npm run build` before pushing (D4) (verify: grep -q 'test and build' AGENTS.md && ! grep -q 'lets sync --check` only' AGENTS.md)
+- [x] 2.1 [easy] AGENTS.md's **Checks** paragraph says CI runs `test and build` on every pull request, alongside CodeQL and `lets sync --check`, and still asks agents to run `npm test` and `npm run build` before pushing (D4) (verify: grep -q 'test and build' AGENTS.md && ! grep -q 'lets sync --check` only' AGENTS.md) (✓ verify passed)
 - [ ] 2.2 [easy] README.md's contributing section says the same (D4) (verify: grep -q 'test and build' README.md && ! grep -q 'lets sync --check` only' README.md)
 
 ## 3. Prove it on GitHub
