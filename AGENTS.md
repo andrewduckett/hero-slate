@@ -63,8 +63,9 @@ npm run deploy           # build + wrangler deploy
 ```
 
 **Checks:** before you push, run `npm test` and `npm run build` and confirm both
-are green. CI runs CodeQL and `lets sync --check` only, so local verification of
-the app is the gate.
+are green. CI runs the same two commands as the `test and build` check on every
+pull request, alongside CodeQL and `lets sync --check`; running them first saves
+a round trip.
 
 Known gap: `npm run check` reports `node:fs`/`process` type errors because the repo
 has no `@types/node` and tests read files with `node:fs`. Treat those specific

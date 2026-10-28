@@ -202,9 +202,9 @@ npm run test:watch # vitest in watch mode
 npm run check      # svelte-kit sync + svelte-check (type-check)
 ```
 
-Run `npm test` and `npm run build` before opening a PR — both must be green. CI runs
-CodeQL and `lets sync --check` only, so local verification is the gate. Practice TDD: write the
-failing test first.
+Run `npm test` and `npm run build` before opening a PR — both must be green. CI runs the
+same two commands as the `test and build` check on every pull request, alongside CodeQL and
+`lets sync --check`. Practice TDD: write the failing test first.
 
 ### Dependency updates
 
