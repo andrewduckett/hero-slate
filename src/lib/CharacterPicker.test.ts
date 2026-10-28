@@ -68,4 +68,22 @@ describe('CharacterPicker', () => {
 		expect(await screen.findByText('<b>x</b>')).toBeTruthy();
 		expect(container.querySelector('li b')).toBeNull();
 	});
+
+	it('links each card to its sheet, named after the character', async () => {
+		render(CharacterPicker, { props: { provider: found(sunny) } });
+
+		const link = await screen.findByRole('link', { name: /Sunny Thornwood/ });
+		expect(link.getAttribute('href')).toBe('/sunny');
+	});
+
+	it.each([
+		['a known color', 'forest', 'forest'],
+		['an unknown color', 'rainbow', 'neutral'],
+		['no color', undefined, 'neutral']
+	])('gives a card with %s the resolved palette', async (_label, color, palette) => {
+		render(CharacterPicker, { props: { provider: found({ id: 'test-hero', name: 'Test Hero', color }) } });
+
+		const card = await screen.findByRole('listitem');
+		expect(card.getAttribute('data-palette')).toBe(palette);
+	});
 });

@@ -17,7 +17,7 @@
 ## 3. Picker component [depends-on: 1]
 
 - [x] 3.1 [parallel] [medium] `CharacterPicker` takes a provider, shows the header "Hero Slate" / "Choose your hero" in the neutral palette and "Loading…" while pending, then one card per summary in order, each showing the name and the `formatIdentity` descriptor as text (verify: `npm test -- src/lib/CharacterPicker.test.ts`) (✓ `npm test -- src/lib/CharacterPicker.test.ts` passed)
-- [ ] 3.2 [easy] Each card is a link to `/<id>` whose accessible name includes the character's name, and its `<li>` carries `data-palette` from `resolvePalette`, so an unknown or missing color yields `neutral`; the card is styled as a mini header (accent fill, on-accent text, 44px minimum, `minmax(16rem, 1fr)` grid) (verify: `npm test -- src/lib/CharacterPicker.test.ts`)
+- [x] 3.2 [easy] Each card is a link to `/<id>` whose accessible name includes the character's name, and its `<li>` carries `data-palette` from `resolvePalette`, so an unknown or missing color yields `neutral`; the card is styled as a mini header (accent fill, on-accent text, 44px minimum, `minmax(16rem, 1fr)` grid) (verify: `npm test -- src/lib/CharacterPicker.test.ts`) (✓ `npm test -- src/lib/CharacterPicker.test.ts` passed)
 - [ ] 3.3 [easy] An `error` result shows "Could not load characters. Try again." and no cards; a `found` result with no summaries shows "No characters yet." and no cards; "Loading…" disappears once the listing resolves (verify: `npm test -- src/lib/CharacterPicker.test.ts`)
 
 ## 4. Integration [depends-on: 2, 3]
@@ -28,3 +28,5 @@
 ## Deviations Ledger
 
 <!-- Dated notes on small departures from the plan, written during apply. Stop and ask the user about a large one. -->
+
+- 2026-10-28 (3.2): the card grid uses `minmax(min(16rem, 100%), 1fr)` instead of `minmax(16rem, 1fr)`, so a single column cannot overflow a container narrower than 16rem. Same layout at 360 CSS pixels and wider.
