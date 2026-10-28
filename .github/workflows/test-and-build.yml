@@ -25,3 +25,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      # Tests run first: the build regenerates palette.css, and the tests must
+      # see the committed file so a stale one fails. The type-check is left out
+      # until @types/node lands; its node:fs errors are known noise.
+      - name: Run the tests
+        run: npm test
+
+      - name: Build the static site
+        run: npm run build
