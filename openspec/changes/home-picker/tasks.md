@@ -23,7 +23,7 @@
 ## 4. Integration [depends-on: 2, 3]
 
 - [x] 4.1 [easy] `src/routes/+page.svelte` renders `CharacterPicker` with the YAML provider in place of the placeholder header, and the built site ships `/characters/manifest.yaml` beside the character files (verify: `npm run build && test -f build/characters/manifest.yaml`) (✓ `npm run build && test -f build/characters/manifest.yaml` passed)
-- [ ] 4.2 [medium] The whole suite and the build pass, and a reviewer confirms in a browser that `/` at 360 CSS pixels does not scroll sideways, each card is at least 44 by 44 CSS pixels, and at 1280 pixels the content is no wider than 44rem (verify: `npm test && npm run build`)
+- [x] 4.2 [medium] The whole suite and the build pass, and a reviewer confirms in a browser that `/` at 360 CSS pixels does not scroll sideways, each card is at least 44 by 44 CSS pixels, and at 1280 pixels the content is no wider than 44rem (verify: `npm test && npm run build`) (✓ `npm test && npm run build` passed: 761 tests; browser: 360px has no sideways scroll and cards are 328×88, 1280px content is 704px = 44rem)
 
 ## Deviations Ledger
 
