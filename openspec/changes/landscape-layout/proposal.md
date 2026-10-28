@@ -4,7 +4,7 @@ The tablet is used in landscape about as often as in portrait. At 1280×800, tod
 
 ## What Changes
 
-- On a viewport at least 1024 CSS pixels wide, the sheet shows two columns under a full-width header (D1, D2). The left column holds Stats, Health and Pools. The right column holds the sections, then Links.
+- On a viewport at least 64rem wide (1024 CSS pixels at the default font size), the sheet shows two columns under a full-width header (D1, D2). The left column holds Stats, Health and Pools. The right column holds the sections, then Links.
 - If one column has nothing to show, the other spans the full width (D8). Sections never move into the left column, even when the right column runs longer (D7).
 - On wide screens, the sheet's content cap grows past 44rem (D9). The home picker (`/`) keeps its current width (D10).
 - Ability and combat tiles use a fixed number per row, never `auto-fit` (D5). In two columns, abilities sit 3 per row; at portrait tablet width, 6; at phone width, 3. Combat sits 3 per row everywhere. For the usual 6 abilities and 3 combat entries, no tile sits alone on a row (D6).
@@ -22,7 +22,7 @@ None.
 - `character-sheet`:
   - "Sheet block order" describes order across a multi-column layout, not "top to bottom".
   - A new requirement covers the two-column layout on wide screens, with reviewer scenarios at 1280×800 for `/sunny`, `/urven` and `/gimdak` (D11, D12).
-  - "Sheet fits a phone screen" describes fixed tile counts instead of wrapping.
+  - "Sheet fits a phone screen" drops its tile-wrapping clause. New requirements set fixed ability and combat tile counts per row.
 
 ## Impact
 

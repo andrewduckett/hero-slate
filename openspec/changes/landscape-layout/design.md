@@ -68,6 +68,7 @@ When exactly one wrapper renders, it gets `data-span="full"`, and CSS gives it `
 | Portrait tablet, 800 wide | 672px | 6 |
 | Two columns at 1024 | 480px | 3 |
 | Two columns at 1280 | 608px | 3 |
+| Lone left column spanning at 1280 (D8) | 1248px | 6 |
 
 - *Alternative: viewport media queries in `AbilitiesBlock`.* Rejected. They would duplicate the page's 64rem breakpoint in a second file and tie the block to the page layout.
 - The new wrapper keeps the `.ability` class on each tile, so the existing tests' queries still match.
@@ -85,7 +86,7 @@ When exactly one wrapper renders, it gets `data-span="full"`, and CSS gives it `
 
 ### 6. Breakpoint value
 
-The page uses `64rem` (1024px at the default font size) in two places: `CharacterView`'s column rule and `base.css`'s cap rule. CSS custom properties cannot appear in media queries, so a comment in each place names the other.
+The spec defines a wide viewport as at least `64rem`: 1024 CSS pixels at the browser's default 16px font size. The page uses `64rem` in two places: `CharacterView`'s column rule and `base.css`'s cap rule. CSS custom properties cannot appear in media queries, so a comment in each place names the other.
 
 ## Risks / Trade-offs
 

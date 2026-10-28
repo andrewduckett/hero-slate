@@ -10,8 +10,8 @@ this order. Custom sections SHALL keep their authored order among themselves. Th
 document order, and so the reading and keyboard focus order, SHALL be this fixed
 order at every viewport width. In a single-column layout the blocks SHALL appear
 from top to bottom in this order. In the two-column layout the header SHALL come
-first, then the left column from top to bottom, then the right column from top to
-bottom, and together these SHALL follow this order.
+first. The left column SHALL follow, from top to bottom, and then the right column,
+from top to bottom. Together they SHALL keep this order.
 
 #### Scenario: A full character renders in the fixed order
 
@@ -51,7 +51,6 @@ wide, because the test environment does not compute layout.
 
 - **WHEN** a reviewer opens `/sunny` in a browser 360 CSS pixels wide
 - **THEN** the page does not scroll sideways
-- **AND** the six ability tiles sit in two rows of three
 
 #### Scenario: Tracker controls are large enough to tap
 
@@ -74,12 +73,12 @@ wide, because the test environment does not compute layout.
 
 ### Requirement: Two-column sheet on wide screens
 
-On a viewport at least 1024 CSS pixels wide, the system SHALL lay out a loaded
+A wide viewport is one at least 64rem wide, which is 1024 CSS pixels at the
+browser's default font size. On a wide viewport, the system SHALL lay out a loaded
 sheet in two columns below the identity header. The header SHALL span both columns.
 The left column SHALL hold the Stats, Health, and Pools groups. The right column
-SHALL hold the custom sections and then the Links group. On a viewport narrower
-than 1024 CSS pixels, the system SHALL lay out the sheet in one column. A reviewer
-SHALL confirm layout in a browser, because the test environment computes none.
+SHALL hold the custom sections and then the Links group. On a narrower viewport,
+the system SHALL lay out the sheet in one column.
 
 #### Scenario: A landscape tablet shows two columns
 
@@ -115,13 +114,14 @@ balance them.
 
 ### Requirement: A sheet with one side empty uses the full width
 
-On a viewport at least 1024 CSS pixels wide, when no block renders in one column,
-the system SHALL let the other column's blocks span the full width of the sheet.
+On a wide viewport, one column may have no block to render. The system SHALL then
+let the other column's blocks span the full width of the sheet.
 
 #### Scenario: No sections and no links
 
 - **WHEN** a character with abilities, hit points, and pools but no valid sections and no valid links loads in a viewport 1280 CSS pixels wide
 - **THEN** the Stats, Health, and Pools groups span the full width of the sheet
+- **AND** the six ability tiles sit in one row
 
 #### Scenario: Only sections
 
@@ -130,9 +130,9 @@ the system SHALL let the other column's blocks span the full width of the sheet.
 
 ### Requirement: Wide sheet content width
 
-On a viewport at least 1024 CSS pixels wide, the system SHALL let the sheet grow
-wider than 44rem, so that at 1280 CSS pixels wide the sheet fills the viewport apart
-from its side gutters. The home page at `/` SHALL keep its current content width
+On a wide viewport, the system SHALL let the sheet grow wider than 44rem. At 1280
+CSS pixels wide, the sheet SHALL fill the viewport apart from its side gutters. The
+home page at `/` SHALL keep its current content width
 of at most 44rem at every viewport width.
 
 #### Scenario: The sheet fills a landscape tablet
@@ -145,31 +145,43 @@ of at most 44rem at every viewport width.
 - **WHEN** a reviewer opens `/` in a browser 1280 by 800 CSS pixels
 - **THEN** the page content is no wider than 44rem
 
-### Requirement: Stat tiles sit a fixed number per row
+### Requirement: Ability tiles sit 3 or 6 per row
 
-The system SHALL place ability tiles and combat tiles a fixed number per row for
-each layout, and SHALL NOT fit as many tiles per row as the width allows. In the
-two-column layout, ability tiles SHALL sit 3 per row. In the one-column layout,
-ability tiles SHALL sit either 6 or 3 per row, and never another count: 6 per row
-on a viewport 800 CSS pixels wide, and 3 per row on a viewport 600 CSS pixels wide
-or narrower. Combat tiles SHALL sit 3 per row at every width.
+The system SHALL place ability tiles either 3 or 6 per row, and never another count.
+It SHALL NOT fit as many tiles per row as the width allows. Ability tiles SHALL sit 3
+per row when the Stats group shares the width with the right column. They SHALL sit
+6 per row in one column on a viewport 800 CSS pixels wide. They SHALL sit 3 per row
+on a viewport 600 CSS pixels wide or narrower.
 
 #### Scenario: Two columns put abilities in two rows of three
 
 - **WHEN** a reviewer opens `/sunny` in a browser 1280 by 800 CSS pixels
 - **THEN** the six ability tiles sit in two rows of three
-- **AND** the three combat tiles sit in one row
 
 #### Scenario: A portrait tablet puts abilities in one row
 
 - **WHEN** a reviewer opens `/sunny` in a browser 800 by 1280 CSS pixels
 - **THEN** the six ability tiles sit in one row
-- **AND** the three combat tiles sit in one row
+
+#### Scenario: A phone puts abilities in two rows of three
+
+- **WHEN** a reviewer opens `/sunny` in a browser 360 CSS pixels wide
+- **THEN** the six ability tiles sit in two rows of three
 
 #### Scenario: A width between phone and tablet leaves no lone tile
 
 - **WHEN** a reviewer opens `/sunny` in a browser 600 CSS pixels wide
 - **THEN** the six ability tiles sit in two rows of three
+
+### Requirement: Combat tiles sit 3 per row
+
+The system SHALL place combat tiles 3 per row at every viewport width. It SHALL NOT
+fit as many tiles per row as the width allows.
+
+#### Scenario: Three combat tiles share one row at every width
+
+- **WHEN** a reviewer opens `/sunny` in a browser 360, 800, or 1280 CSS pixels wide
+- **THEN** the three combat tiles sit in one row
 
 #### Scenario: Four combat entries leave a short last row
 
