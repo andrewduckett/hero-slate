@@ -12,7 +12,7 @@
 
 ## 2. Shipped roster [depends-on: 1]
 
-- [ ] 2.1 [parallel] [easy] `static/characters/manifest.yaml` lists `sunny`, `gimdak` and `urven`; the smoke test skips it when collecting ids, serves it from `serveShipped`, and asserts the real provider's `listCharacters()` returns exactly the shipped ids in manifest order (verify: `npm test -- src/lib/data/characters.smoke.test.ts`)
+- [x] 2.1 [parallel] [easy] `static/characters/manifest.yaml` lists `sunny`, `gimdak` and `urven`; the smoke test skips it when collecting ids, serves it from `serveShipped`, and asserts the real provider's `listCharacters()` returns exactly the shipped ids in manifest order (verify: `npm test -- src/lib/data/characters.smoke.test.ts`) (✓ `npm test -- src/lib/data/characters.smoke.test.ts` passed)
 
 ## 3. Picker component [depends-on: 1]
 
