@@ -331,6 +331,35 @@ describe('listCharacters', () => {
 		expect(result).toEqual({ status: 'found', characters: [{ id: 'sunny', name: 'Sunny Thornwood' }] });
 	});
 
+	it.each([
+		['a 404', res({ status: 404 })],
+		['the text/html shell', res({ contentType: 'text/html', body: '<!doctype html><html></html>' })],
+		['a 5xx status', res({ status: 503 })],
+		['a failed body read', res({ throwOnText: true })],
+		['unparseable YAML', res({ body: 'characters: "unterminated' })],
+		['a list body', res({ body: '- sunny' })],
+		['a string body', res({ body: 'sunny' })],
+		['a mapping without a characters list', res({ body: 'characters: sunny' })]
+	])('returns error for a manifest that is %s', async (_label, response) => {
+		const { fn } = fetchReturning(response);
+
+		expect(await createYamlProvider(fn).listCharacters()).toEqual({ status: 'error' });
+	});
+
+	it('returns error when the manifest fetch rejects', async () => {
+		const fn: FetchLike = async () => {
+			throw new Error('network down');
+		};
+
+		expect(await createYamlProvider(fn).listCharacters()).toEqual({ status: 'error' });
+	});
+
+	it('returns found and empty for an empty manifest', async () => {
+		const { fn } = fetchServing({ '/characters/manifest.yaml': 'characters: []' });
+
+		expect(await createYamlProvider(fn).listCharacters()).toEqual({ status: 'found', characters: [] });
+	});
+
 	it('returns found and empty when every entry is skipped', async () => {
 		const { fn } = fetchServing({ '/characters/manifest.yaml': 'characters: [nobody]' });
 

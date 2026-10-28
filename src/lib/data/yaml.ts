@@ -92,9 +92,12 @@ export function createYamlProvider(fetchFn: FetchLike = fetch): CharacterProvide
 		},
 
 		async listCharacters(): Promise<ListCharactersResult> {
-			const response = await fetchFn(MANIFEST_URL);
-			const parsed: unknown = parseYaml(await response.text());
-			const ids = listableIds((parsed as { characters: unknown[] }).characters);
+			const entries = await readManifest(fetchFn);
+			// A roster that does not load is an author mistake; surface it rather than list nothing (D4).
+			if (entries === undefined) {
+				return { status: 'error' };
+			}
+			const ids = listableIds(entries);
 
 			const results = await Promise.all(ids.map((id) => provider.getCharacter(id)));
 			const characters = results.flatMap((result) =>
@@ -104,6 +107,27 @@ export function createYamlProvider(fetchFn: FetchLike = fetch): CharacterProvide
 		}
 	};
 	return provider;
+}
+
+/** Fetch and parse the manifest's `characters` list, or `undefined` on any failure. */
+async function readManifest(fetchFn: FetchLike): Promise<unknown[] | undefined> {
+	try {
+		const response = await fetchFn(MANIFEST_URL);
+		if (response.status < 200 || response.status >= 300) {
+			return undefined;
+		}
+		const raw = await response.text();
+		if ((response.headers.get('content-type') ?? '').toLowerCase().includes('text/html')) {
+			return undefined;
+		}
+		const parsed: unknown = parseYaml(raw);
+		if (!isMapping(parsed) || !Array.isArray(parsed.characters)) {
+			return undefined;
+		}
+		return parsed.characters;
+	} catch {
+		return undefined;
+	}
 }
 
 /** Keep the first occurrence of each entry that could name a character, so none costs a fetch. */
