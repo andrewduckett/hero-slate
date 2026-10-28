@@ -1,0 +1,6 @@
+# The roster on the home page, in the order its cards appear.
+# Adding a character takes its file in this folder plus one line here.
+characters:
+  - sunny
+  - gimdak
+  - urven

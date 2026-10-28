@@ -1,6 +1,11 @@
 import { parse as parseYaml } from 'yaml';
 import type { Character } from '#lib/types';
-import type { CharacterProvider, GetCharacterResult } from './provider';
+import type {
+	CharacterProvider,
+	CharacterSummary,
+	GetCharacterResult,
+	ListCharactersResult
+} from './provider';
 
 /** The minimal HTTP response surface the provider reads. `fetch`'s `Response` satisfies it. */
 export interface HttpResponse {
@@ -15,6 +20,9 @@ export type FetchLike = (url: string) => Promise<HttpResponse>;
 /** Logical ids are lowercase, start alphanumeric, then alphanumeric or hyphen. */
 export const ID_GRAMMAR = /^[a-z0-9][a-z0-9-]*$/;
 
+const MANIFEST_ID = 'manifest';
+const MANIFEST_URL = `/characters/${MANIFEST_ID}.yaml`;
+
 /**
  * A `CharacterProvider` backed by a YAML asset fetched at runtime.
  *
@@ -26,11 +34,15 @@ export const ID_GRAMMAR = /^[a-z0-9][a-z0-9-]*$/;
  * @param fetchFn injectable for testing; defaults to the global `fetch`.
  */
 export function createYamlProvider(fetchFn: FetchLike = fetch): CharacterProvider {
-	return {
+	const provider: CharacterProvider = {
 		async getCharacter(id: string): Promise<GetCharacterResult> {
 			// 1. Validate the id at the boundary — no fetch for a bad id.
 			if (!ID_GRAMMAR.test(id)) {
 				return { status: 'invalid', reason: 'id does not match the allowed grammar' };
+			}
+			// The manifest shares the characters folder, so its id is reserved (D2).
+			if (id === MANIFEST_ID) {
+				return { status: 'not-found' };
 			}
 
 			// 2. Fetch; a rejected fetch is a transient error.
@@ -77,8 +89,62 @@ export function createYamlProvider(fetchFn: FetchLike = fetch): CharacterProvide
 
 			// 6. Validate identity and stamp the id from the request.
 			return toFoundOrInvalid(id, parsed);
+		},
+
+		async listCharacters(): Promise<ListCharactersResult> {
+			const entries = await readManifest(fetchFn);
+			// A roster that does not load is an author mistake; surface it rather than list nothing (D4).
+			if (entries === undefined) {
+				return { status: 'error' };
+			}
+			const ids = listableIds(entries);
+
+			const results = await Promise.all(ids.map((id) => provider.getCharacter(id)));
+			const characters = results.flatMap((result) =>
+				result.status === 'found' ? [toSummary(result.character)] : []
+			);
+			return { status: 'found', characters };
 		}
 	};
+	return provider;
+}
+
+/** Fetch and parse the manifest's `characters` list, or `undefined` on any failure. */
+async function readManifest(fetchFn: FetchLike): Promise<unknown[] | undefined> {
+	try {
+		const response = await fetchFn(MANIFEST_URL);
+		if (response.status < 200 || response.status >= 300) {
+			return undefined;
+		}
+		const raw = await response.text();
+		if ((response.headers.get('content-type') ?? '').toLowerCase().includes('text/html')) {
+			return undefined;
+		}
+		const parsed: unknown = parseYaml(raw);
+		if (!isMapping(parsed) || !Array.isArray(parsed.characters)) {
+			return undefined;
+		}
+		return parsed.characters;
+	} catch {
+		return undefined;
+	}
+}
+
+/** Keep the first occurrence of each entry that could name a character, so none costs a fetch. */
+function listableIds(entries: unknown[]): string[] {
+	const ids = entries.filter(
+		(entry): entry is string => typeof entry === 'string' && ID_GRAMMAR.test(entry) && entry !== MANIFEST_ID
+	);
+	return [...new Set(ids)];
+}
+
+/** Copy identity fields one by one, so no provisional field reaches a summary. */
+function toSummary(character: Character): CharacterSummary {
+	const summary: CharacterSummary = { id: character.id, name: character.name };
+	if (character.level !== undefined) summary.level = character.level;
+	if (character.class !== undefined) summary.class = character.class;
+	if (character.color !== undefined) summary.color = character.color;
+	return summary;
 }
 
 /** A YAML mapping is a plain object — not null, not an array. */

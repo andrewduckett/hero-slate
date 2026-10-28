@@ -15,7 +15,10 @@ function deferred<T>() {
 
 /** A provider that returns the (possibly pending) result mapped to each id. */
 function provider(map: Record<string, Promise<GetCharacterResult> | GetCharacterResult>): CharacterProvider {
-	return { getCharacter: (id) => Promise.resolve(map[id]) };
+	return {
+		getCharacter: (id) => Promise.resolve(map[id]),
+		listCharacters: () => Promise.resolve({ status: 'found', characters: [] })
+	};
 }
 
 /** A store whose "hp" read for each id is the mapped value, and whose writes are spied. */
@@ -128,7 +131,8 @@ describe('CharacterSheet — combined-result guard (round-4)', () => {
 		const testHeroChar = deferred<GetCharacterResult>();
 		const chars: CharacterProvider = {
 			getCharacter: (id) =>
-				id === 'test-hero' ? testHeroChar.promise : Promise.resolve(found('other-hero', 'Other Hero', { hitPoints: { max: 30 } }))
+				id === 'test-hero' ? testHeroChar.promise : Promise.resolve(found('other-hero', 'Other Hero', { hitPoints: { max: 30 } })),
+			listCharacters: () => Promise.resolve({ status: 'found', characters: [] })
 		};
 		// Both ids' state reads resolve promptly; only Test Hero's character read is slow.
 		const store = readStore({ 'test-hero': undefined, 'other-hero': undefined });
