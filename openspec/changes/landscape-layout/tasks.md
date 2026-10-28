@@ -13,7 +13,7 @@
 ## 3. Verification [depends-on: 1, 2]
 
 - [x] 3.1 [easy] The full test suite and the static build pass (verify: npm test && npm run build) (✓ npm test passed, 731 tests in 51 files; npm run build passed)
-- [ ] 3.2 [medium] In a browser at the default font size, a reviewer runs every reviewer scenario in `specs/character-sheet/spec.md` and records the results in the pull request description. The checks cover `/sunny`, `/urven` and `/gimdak` at 1280×800, 1024×768, 800×1280, 600 and 360 wide; `/` at 1280×800; focus order on `/urven`; and a temporary character with no sections and no links (verify: npm run build)
+- [x] 3.2 [medium] In a browser at the default font size, a reviewer runs every reviewer scenario in `specs/character-sheet/spec.md` and records the results in the pull request description. The checks cover `/sunny`, `/urven` and `/gimdak` at 1280×800, 1024×768, 800×1280, 600 and 360 wide; `/` at 1280×800; focus order on `/urven`; and a temporary character with no sections and no links (verify: npm run build) (✓ every reviewer scenario passed in Chromium on 2026-10-27, results in the PR description; npm run build passed)
 
 ## Deviations Ledger
 
