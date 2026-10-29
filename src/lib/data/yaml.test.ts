@@ -324,6 +324,31 @@ describe('listCharacters', () => {
 		});
 	});
 
+	it('copies avatar into a summary', async () => {
+		const { fn } = fetchServing({
+			'/characters/manifest.yaml': 'characters: [test-hero]',
+			'/characters/test-hero.yaml': 'name: Test Hero\navatar: /characters/test-hero.png'
+		});
+
+		const result = await createYamlProvider(fn).listCharacters();
+
+		expect(result).toEqual({
+			status: 'found',
+			characters: [{ id: 'test-hero', name: 'Test Hero', avatar: '/characters/test-hero.png' }]
+		});
+	});
+
+	it('omits avatar from a summary whose definition has none', async () => {
+		const { fn } = fetchServing({
+			'/characters/manifest.yaml': 'characters: [test-hero]',
+			'/characters/test-hero.yaml': 'name: Test Hero'
+		});
+
+		const result = await createYamlProvider(fn).listCharacters();
+
+		expect(result.status === 'found' && 'avatar' in result.characters[0]).toBe(false);
+	});
+
 	it('skips malformed entries before any fetch', async () => {
 		const { fn, calls } = fetchServing({
 			'/characters/manifest.yaml': "characters: [sunny, '../secret', 7, manifest]",

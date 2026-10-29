@@ -21,7 +21,7 @@ export type GetCharacterResult =
  * The identity fields of a loaded definition, as a card shows them. Built from
  * a `found` definition, so it carries no field the definition did not.
  */
-export type CharacterSummary = Pick<Character, 'id' | 'name' | 'level' | 'class' | 'color'>;
+export type CharacterSummary = Pick<Character, 'id' | 'name' | 'level' | 'class' | 'color' | 'avatar'>;
 
 /**
  * The result of listing the roster: `found` with summaries in roster order,

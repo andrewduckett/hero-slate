@@ -144,6 +144,7 @@ function toSummary(character: Character): CharacterSummary {
 	if (character.level !== undefined) summary.level = character.level;
 	if (character.class !== undefined) summary.class = character.class;
 	if (character.color !== undefined) summary.color = character.color;
+	if (character.avatar !== undefined) summary.avatar = character.avatar;
 	return summary;
 }
 
