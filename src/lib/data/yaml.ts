@@ -153,7 +153,7 @@ function isMapping(value: unknown): value is Record<string, unknown> {
 }
 
 /**
- * Validate the identity fields (`name`, `level`, `class`, `color`) a character
+ * Validate the identity fields (`name`, `level`, `class`, `color`, `avatar`) a character
  * body must satisfy. Returns a reason string on the first violation found, or
  * `undefined` when every field is valid. Shared with the ingest tools so they
  * apply the same rules the provider does, instead of copying them.
@@ -178,6 +178,12 @@ export function checkIdentity(body: Record<string, unknown>): string | undefined
 	// against the palette, so an unknown palette name is valid data here.
 	if (body.color !== undefined && typeof body.color !== 'string') {
 		return 'color must be a string';
+	}
+
+	// avatar: optional; a string when present. Whether it names an image the
+	// page may show is the rendering layer's call, so any string is valid here.
+	if (body.avatar !== undefined && typeof body.avatar !== 'string') {
+		return 'avatar must be a string';
 	}
 
 	return undefined;

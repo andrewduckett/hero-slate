@@ -4,7 +4,7 @@
 
 ## 1. Identity contract
 
-- [ ] 1.1 [easy] The provider returns `invalid` with reason `avatar must be a string` for a non-string `avatar`, carries a string `avatar` through unchanged (a remote URL included), and reports an absent `avatar` as absent; `Character` gains `avatar?: string` (verify: `npx vitest run src/lib/data/yaml.test.ts`)
+- [x] 1.1 [easy] The provider returns `invalid` with reason `avatar must be a string` for a non-string `avatar`, carries a string `avatar` through unchanged (a remote URL included), and reports an absent `avatar` as absent; `Character` gains `avatar?: string` (verify: `npx vitest run src/lib/data/yaml.test.ts`) (✓ `npx vitest run src/lib/data/yaml.test.ts` passed, 43/43)
 - [ ] 1.2 [easy] `listCharacters` copies `avatar` into each summary when the definition has one and omits it otherwise; `CharacterSummary` gains `avatar` (verify: `npx vitest run src/lib/data/yaml.test.ts`)
 - [ ] 1.3 [medium] `resolveAvatar(value)` in `src/lib/avatar.ts` returns `/characters/sunny.png` for that value and `undefined` for `https://…`, `//example.test/…`, `/\example.test/…`, a value with an embedded newline, `javascript:…`, a relative path, the empty string, a non-string and `undefined`, without throwing (verify: `npx vitest run src/lib/avatar.test.ts`)
 
@@ -23,3 +23,5 @@
 ## Deviations Ledger
 
 <!-- Dated notes on small departures from the plan, written during apply. Stop and ask the user about a large one. -->
+
+- 2026-10-28: New tests use neutral ids and paths (`test-hero`, `/characters/test-hero.png`) rather than `sunny`, following the unmerged `decouple-character-tests` change (#90), which keeps shipped character names out of tests. The behaviour each task names is unchanged.

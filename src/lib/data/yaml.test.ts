@@ -170,6 +170,44 @@ describe('createYamlProvider', () => {
 		}
 	});
 
+	it('treats a non-string avatar as invalid', async () => {
+		const num = fetchReturning(res({ body: 'name: Test Hero\navatar: 42' }));
+		expect(await createYamlProvider(num.fn).getCharacter('test-hero')).toEqual({
+			status: 'invalid',
+			reason: 'avatar must be a string'
+		});
+
+		const mapping = fetchReturning(res({ body: 'name: Test Hero\navatar: { src: x.png }' }));
+		expect(await createYamlProvider(mapping.fn).getCharacter('test-hero')).toEqual({
+			status: 'invalid',
+			reason: 'avatar must be a string'
+		});
+	});
+
+	it('carries an avatar string through unresolved', async () => {
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero\navatar: /characters/test-hero.png' }));
+		const result = await createYamlProvider(fn).getCharacter('test-hero');
+
+		expect(result.status === 'found' && result.character.avatar).toBe('/characters/test-hero.png');
+	});
+
+	it('carries a remote avatar URL through as valid data', async () => {
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero\navatar: https://example.test/hero.png' }));
+		const result = await createYamlProvider(fn).getCharacter('test-hero');
+
+		expect(result.status === 'found' && result.character.avatar).toBe('https://example.test/hero.png');
+	});
+
+	it('reports an absent avatar as absent, not defaulted', async () => {
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero' }));
+		const result = await createYamlProvider(fn).getCharacter('test-hero');
+
+		expect(result.status).toBe('found');
+		if (result.status === 'found') {
+			expect('avatar' in result.character).toBe(false);
+		}
+	});
+
 	it('carries provisional fields through unchanged', async () => {
 		const body = [
 			'name: Test Hero',
