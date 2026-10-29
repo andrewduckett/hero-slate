@@ -101,9 +101,10 @@ describe('inline pre-paint script in app.html', () => {
 			return meta.content;
 		}
 
-		it('the head holds a theme-color meta tag', () => {
+		it('the head starts theme-color at the dark surface, the resting default', () => {
 			const head = new DOMParser().parseFromString(appHtml, 'text/html').head;
-			expect(head.querySelector('meta[name="theme-color"]')).not.toBeNull();
+			const meta = head.querySelector('meta[name="theme-color"]');
+			expect(meta?.getAttribute('content')).toBe(BASE.surface.dark);
 		});
 
 		it('uses the light surface when light is stored', () => {
