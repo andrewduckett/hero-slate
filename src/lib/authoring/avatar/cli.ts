@@ -79,12 +79,15 @@ function localDate(date: Date): string {
 }
 
 /** Puts `comment` on the first line, replacing an avatar comment already there; every other byte stays (design D6). */
-function withAvatarComment(yaml: string, comment: string): string {
+function withAvatarComment(file: string, comment: string): string {
+	// A byte-order mark must stay first, or it would hide the comment from the next run.
+	const bom = file.startsWith('\uFEFF') ? '\uFEFF' : '';
+	const yaml = file.slice(bom.length);
 	const match = /\r?\n/.exec(yaml);
 	const lineEnd = match?.[0] ?? '\n';
 	const firstLineEnd = match ? match.index + lineEnd.length : yaml.length;
 	const rest = yaml.startsWith(AVATAR_COMMENT_PREFIX) ? yaml.slice(firstLineEnd) : yaml;
-	return `${comment}${lineEnd}${rest}`;
+	return `${bom}${comment}${lineEnd}${rest}`;
 }
 
 function parseSaveArgs(args: string[]): SaveArgs {

@@ -249,6 +249,12 @@ describe('avatar save records provenance', () => {
 
 		expect(await saveWith(yaml, ['--replace'])).toBe(`${NEW_COMMENT}\r\n${rest}`);
 	});
+
+	it('replaces an avatar comment behind a byte-order mark', async () => {
+		const yaml = '\uFEFF# Avatar: Old Tool, 2025-01-01. Look: an old look.\nname: Hero\n';
+
+		expect(await saveWith(yaml, ['--replace'])).toBe(`\uFEFF${NEW_COMMENT}\nname: Hero\n`);
+	});
 });
 
 describe('avatar save refuses provenance that is not one line', () => {
