@@ -1,5 +1,5 @@
 /**
- * The avatar command-line entry: `save`.
+ * The avatar command-line entry: `prompt` and `save`.
  *
  * `run` is the pure part: it takes argv and an injected `AvatarDeps`, and
  * returns an outcome instead of touching the real file system, clock, or
@@ -18,6 +18,8 @@ export const EXIT_CODES = {
 
 const AVATAR_SIZE = 512;
 const ACCEPTED_FORMATS = ['png', 'jpeg', 'webp'];
+const AVATAR_COMMENT_PREFIX = '# Avatar: ';
+const STYLE_GUIDE_PATH = '.agents/skills/character-avatar/style-guide.md';
 
 export interface AvatarDeps {
 	exists: (path: string) => boolean;
@@ -50,14 +52,17 @@ function avatarPath(id: string): string {
 	return `static/characters/${id}.png`;
 }
 
-const AVATAR_COMMENT_PREFIX = '# Avatar: ';
-
 interface SaveArgs {
 	imagePath: string;
 	id: string;
 	tool: string;
 	lookFile: string;
 	replace: boolean;
+}
+
+/** The Author's words come from a file under `.workspace/`, so shell quoting cannot mangle them. */
+function readWords(path: string, deps: AvatarDeps): string {
+	return deps.readText(path).replace(/\r?\n$/, '');
 }
 
 function isOneLine(text: string): boolean {
@@ -112,7 +117,7 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 	if (!isOneLine(tool)) {
 		return fail(EXIT_CODES.unusableInput, 'the image tool name must be one non-empty line');
 	}
-	const look = deps.readText(lookFile).replace(/\r?\n$/, '');
+	const look = readWords(lookFile, deps);
 	if (!isOneLine(look)) {
 		return fail(EXIT_CODES.unusableInput, `the look summary in ${lookFile} must be one non-empty line`);
 	}
@@ -158,10 +163,19 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 	return ok(avatarPath(id));
 }
 
+/** The tool appends the style guide itself, so no prompt can leave it out (design D4). */
+function runPrompt(args: string[], deps: AvatarDeps): AvatarOutcome {
+	const [lookFile = ''] = args;
+	const look = readWords(lookFile, deps);
+	return ok(`${look}\n\n${deps.readText(STYLE_GUIDE_PATH)}`);
+}
+
 export async function run(argv: string[], deps: AvatarDeps): Promise<AvatarOutcome> {
 	const [command, ...args] = argv;
 
 	switch (command) {
+		case 'prompt':
+			return runPrompt(args, deps);
 		case 'save':
 			return runSave(args, deps);
 		default:

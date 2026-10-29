@@ -250,3 +250,17 @@ describe('avatar save refuses provenance that is not one line', () => {
 		expect(deps.files).toEqual(before);
 	});
 });
+
+describe('avatar prompt', () => {
+	it('prints the look description, then the whole style guide', async () => {
+		const guide = '# Style guide\n\nA soft painting.\n\n- No text.\n';
+		const deps = fakeDeps({
+			'.workspace/look.txt': 'Hero is a tall elf with silver hair.\n',
+			'.agents/skills/character-avatar/style-guide.md': guide
+		});
+
+		const result = await run(['prompt', '.workspace/look.txt'], deps);
+
+		expect(result).toMatchObject({ exitCode: 0, stdout: `Hero is a tall elf with silver hair.\n\n${guide}` });
+	});
+});
