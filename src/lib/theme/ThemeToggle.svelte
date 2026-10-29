@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getEffectiveMode, writePreference, readPreference } from './preference';
+	import { BASE } from './palette';
 
 	let mode = $state<'light' | 'dark'>('dark');
 
@@ -22,6 +23,7 @@
 		const next: 'light' | 'dark' = mode === 'dark' ? 'light' : 'dark';
 		writePreference(next);
 		document.documentElement.dataset.theme = next;
+		document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', BASE.surface[next]);
 		mode = next;
 	}
 </script>
