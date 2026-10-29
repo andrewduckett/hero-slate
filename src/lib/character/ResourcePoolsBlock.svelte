@@ -178,6 +178,8 @@
 		height: 100%;
 		border-radius: 999px;
 		background-color: var(--accent);
+		/* The fill mounts at its width, so it eases only after a tap. */
+		transition: width var(--motion-duration) var(--motion-easing);
 	}
 
 	/* Spend on the left, restore on the right, with a flexible gap between. */
@@ -214,6 +216,13 @@
 	.spend button {
 		background-color: transparent;
 		border: 4px solid var(--structural);
+	}
+
+	/* A dot fades between filled and empty, so a tap that lands is seen. */
+	button[data-pool-dot] {
+		transition:
+			background-color var(--motion-duration) var(--motion-easing),
+			border-color var(--motion-duration) var(--motion-easing);
 	}
 
 	[data-pool-adjust] {

@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/svelte';
 import HitPointsBlock from './HitPointsBlock.svelte';
 import type { StateStore } from '#lib/state/store';
 import { ROLE_PALETTE } from '#lib/theme/roles';
+import { eased, readStyles, transitionOf } from '#lib/theme/style-source';
 
 /** A store spy whose reads and writes resolve immediately. */
 function fakeStore(): StateStore & { write: ReturnType<typeof vi.fn> } {
@@ -150,5 +151,26 @@ describe('HitPointsBlock — health role', () => {
 		});
 		const tracker = container.querySelector('.hit-points');
 		expect(tracker?.getAttribute('data-palette')).toBe(ROLE_PALETTE.health);
+	});
+});
+
+describe('HitPointsBlock — motion', () => {
+	const styles = readStyles('src/lib/character/HitPointsBlock.svelte');
+
+	it('eases the bar fill to its new width with the shared motion timing', () => {
+		expect(transitionOf(styles, '.fill')).toContain(eased('width'));
+	});
+
+	it('eases the down-state opacity with the shared motion timing', () => {
+		expect(transitionOf(styles, '.hit-points')).toBe(eased('opacity'));
+	});
+
+	it('shows the new readout straight after a tap, with no count-up', async () => {
+		const { container } = render(HitPointsBlock, {
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'test-hero' }
+		});
+
+		await fireEvent.click(container.querySelector('[data-hp-adjust="-1"]') as HTMLElement);
+		expect(normalize(container.querySelector('.readout')?.textContent)).toBe('29 / 45');
 	});
 });
