@@ -197,4 +197,13 @@ describe('ResourcePoolsBlock — motion', () => {
 	it('eases a counter bar fill to its new width with the shared motion timing', () => {
 		expect(transitionOf(styles, '.fill')).toContain(eased('width'));
 	});
+
+	it('shows the new counter readout straight after a tap, with no count-up', async () => {
+		const { container } = render(ResourcePoolsBlock, {
+			props: { pools: [{ id: 'lay-on-hands', label: 'Lay On Hands', max: 35 }], storedPools: undefined, store: store(), id: 'test-hero' }
+		});
+
+		await fireEvent.click(screen.getByRole('button', { name: 'Lay On Hands: -1' }));
+		expect(container.querySelector('.readout')?.textContent?.replace(/\s+/g, ' ').trim()).toBe('34 / 35');
+	});
 });
