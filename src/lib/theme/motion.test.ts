@@ -21,3 +21,12 @@ describe('shared motion timing', () => {
 		expect(rootRule).toMatch(/--motion-easing:\s*ease-out;/);
 	});
 });
+
+describe('reduced motion', () => {
+	it('sets the shared motion duration to 0 when the device asks for reduced motion', () => {
+		const query = baseCss.match(
+			/@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)\s*\{\s*:root\s*\{([^}]*)\}/
+		);
+		expect(query?.[1]).toMatch(/--motion-duration:\s*0m?s;/);
+	});
+});

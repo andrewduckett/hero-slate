@@ -65,3 +65,11 @@ h3 {
 		max-width: 80rem;
 	}
 }
+
+/* A device that asks for reduced motion gets every eased change at once, with
+   the same end state. */
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--motion-duration: 0s;
+	}
+}

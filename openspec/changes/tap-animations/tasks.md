@@ -1,7 +1,7 @@
 ## 1. Shared motion timing
 
 - [x] 1.1 [easy] The app's stylesheets define a shared motion duration of 200 ms and a shared motion easing of `ease-out`, read by a test from `src/lib/theme/base.css` (verify: npx vitest run src/lib/theme/motion.test.ts) (✓ npx vitest run src/lib/theme/motion.test.ts passed)
-- [ ] 1.2 [easy] A `prefers-reduced-motion: reduce` media query in the stylesheets sets the shared motion duration to 0 (verify: npx vitest run src/lib/theme/motion.test.ts)
+- [x] 1.2 [easy] A `prefers-reduced-motion: reduce` media query in the stylesheets sets the shared motion duration to 0 (verify: npx vitest run src/lib/theme/motion.test.ts) (✓ npx vitest run src/lib/theme/motion.test.ts passed)
 
 ## 2. Hit points tracker
 
