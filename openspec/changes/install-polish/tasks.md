@@ -15,7 +15,7 @@
 
 ## 4. Integration [depends-on: 2, 3]
 
-- [ ] 4.1 [easy] The full suite passes, and the static build holds every startup image beside the icons, such as `build/startup/1488x2266.png` and `build/icon-512-maskable.png` (verify: npm test && npm run build && test -f build/startup/1488x2266.png && test -f build/startup/2752x2064.png)
+- [x] 4.1 [easy] The full suite passes, and the static build holds every startup image beside the icons, such as `build/startup/1488x2266.png` and `build/icon-512-maskable.png` (verify: npm test && npm run build && test -f build/startup/1488x2266.png && test -f build/startup/2752x2064.png) (✓ npm test: 888 passed; npm run build passed; both startup files in build/)
 - [ ] 4.2 [easy] The pull request description lists the after-deploy device check (D9): on a current iPad, remove the old icon and add it again, then open it in portrait and in landscape and see the slate splash; open a sheet from the installed home page and confirm it stays full-screen; on a Galaxy Tab, add the icon again and see the slate icon and splash (verify: gh pr view install-polish --json body --jq .body | grep -q 'stays full-screen')
 
 ## Deviations Ledger
