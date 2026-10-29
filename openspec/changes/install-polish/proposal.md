@@ -23,7 +23,7 @@ None.
 
 ## Impact
 
-- **Code:** `scripts/generate-icons.ts` (the logo SVG, the icons and the startup images), `src/lib/install/webmanifest.ts` (the list of startup images beside `ICONS` and `APPLE_TOUCH_ICON`), `src/app.html` (the startup-image links).
+- **Code:** `scripts/generate-icons.ts` (the logo SVG, the icons and the startup images), a new `src/lib/install/startup-images.ts` (the list of startup images), `src/app.html` (the startup-image links).
 - **Tests:** `src/lib/install/icons.test.ts` and `src/lib/install/head.test.ts`.
 - **Static assets:** the four icons in `static/` are redrawn, and 10 startup images are added there.- **Dependencies:** none new. `sharp` already draws the icons.
 - **Verification:** besides the tests, the user checks a real iPad and a Galaxy Tab after deploy (D9).
