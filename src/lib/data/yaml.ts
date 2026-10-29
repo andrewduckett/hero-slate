@@ -20,7 +20,7 @@ export type FetchLike = (url: string) => Promise<HttpResponse>;
 /** Logical ids are lowercase, start alphanumeric, then alphanumeric or hyphen. */
 export const ID_GRAMMAR = /^[a-z0-9][a-z0-9-]*$/;
 
-const MANIFEST_ID = 'manifest';
+export const MANIFEST_ID = 'manifest';
 const MANIFEST_URL = `/characters/${MANIFEST_ID}.yaml`;
 
 /**

@@ -7,6 +7,7 @@
  * repo root, like the D&D Beyond tool (see design.md, D3 and D4).
  */
 import sharp from 'sharp';
+import { ID_GRAMMAR, MANIFEST_ID } from '#lib/data/yaml';
 
 /** Codes reuse the D&D Beyond tool's numbers where the meaning is the same (design D3). */
 export const EXIT_CODES = {
@@ -38,12 +39,27 @@ function fail(exitCode: number, message: string): AvatarOutcome {
 	return { exitCode, stdout: '', stderr: message };
 }
 
+function characterPath(id: string): string {
+	return `static/characters/${id}.yaml`;
+}
+
 function avatarPath(id: string): string {
 	return `static/characters/${id}.png`;
 }
 
 async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome> {
 	const [imagePath, id] = args;
+
+	// The target path is built from the id alone, so this check is the path trust boundary.
+	if (!ID_GRAMMAR.test(id)) {
+		return fail(EXIT_CODES.unusableInput, `"${id}" does not match the id grammar ${ID_GRAMMAR}`);
+	}
+	if (id === MANIFEST_ID) {
+		return fail(EXIT_CODES.unusableInput, `"${MANIFEST_ID}" is not a character id; it is reserved for the roster file`);
+	}
+	if (!deps.exists(characterPath(id))) {
+		return fail(EXIT_CODES.unusableInput, `no character file has the id "${id}": ${characterPath(id)} does not exist`);
+	}
 
 	// Rotate first so a phone photo's orientation flag applies before the crop.
 	// Top gravity keeps a tall image's head and centres a wide one (design D2).

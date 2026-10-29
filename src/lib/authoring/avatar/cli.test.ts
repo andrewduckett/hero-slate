@@ -108,3 +108,38 @@ describe('avatar save', () => {
 		expect(await hasBluePixels(deps.files['static/characters/hero.png'] as Uint8Array)).toBe(false);
 	});
 });
+
+describe('avatar save refuses an id', () => {
+	async function saveFor(id: string, files: Record<string, string | Uint8Array> = {}) {
+		const deps = fakeDeps({
+			'.workspace/look.txt': 'a hero\n',
+			'.workspace/in.jpg': await solidJpeg(1024, 1024),
+			...files
+		});
+		const before = { ...deps.files };
+		const result = await run(['save', '.workspace/in.jpg', id, ...SAVE_FLAGS], deps);
+		return { result, before, after: deps.files };
+	}
+
+	it('outside the id grammar', async () => {
+		const { result, before, after } = await saveFor('../evil');
+
+		expect(result).toMatchObject({ exitCode: 1, stderr: expect.stringContaining('id grammar') });
+		expect(after).toEqual(before);
+	});
+
+	it('reserved for the manifest', async () => {
+		const manifest = 'characters:\n  - hero\n';
+		const { result, before, after } = await saveFor('manifest', { 'static/characters/manifest.yaml': manifest });
+
+		expect(result).toMatchObject({ exitCode: 1, stderr: expect.stringContaining('"manifest" is not a character id') });
+		expect(after).toEqual(before);
+	});
+
+	it('with no character file', async () => {
+		const { result, before, after } = await saveFor('nobody');
+
+		expect(result).toMatchObject({ exitCode: 1, stderr: expect.stringContaining('no character file') });
+		expect(after).toEqual(before);
+	});
+});
