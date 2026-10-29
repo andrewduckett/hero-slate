@@ -59,3 +59,8 @@ CHANGES_APPLIED: yes
 5. Fixed: specs/character-sheet/spec.md and specs/home-picker/spec.md, the non-site-path scenarios.
 6. Fixed: specs/home-picker/spec.md requirement sentence split; specs/character-sheet/spec.md "Avatar in the identity header" split; design.md ADR-candidate paragraph split.
 7. Reviewer's 360 px wrap note (inside finding 2's method section): accepted as a risk, not a defect; recorded in design.md Risks with `--avatar-width` as the tuning point and the browser check as the gate.
+
+## After the change request (PR #98)
+
+The user's change request replaced the authored `avatar` field and its site-path resolver with an image named after the character, located by the provider (brainstorm.md D14–D17). Findings 1, 5 and 6 above concerned the resolver, which no longer exists. The user chose not to run a second plan review round: the plan got simpler, and the new code commits get a fresh code review before archive.
+

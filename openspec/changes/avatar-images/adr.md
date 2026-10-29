@@ -5,7 +5,7 @@
 
 ## Review Summary
 
-ADR review completed for this change. Of design.md's eight decisions, one passes the test: the site-path rule for avatars. An engineer reading only the resolver could widen it to accept remote URLs, and once authors write such lines the page reports visits to other hosts and the rule is costly to restore. The other decisions — the shared component, the CSS mask, the reserved text width, the toggle backing, the field plumbing, the sample art and the prop path — live in code and cost little to change.
+ADR review completed for this change. Of design.md's eight decisions, one passes the test: where an avatar comes from. After the change request on PR #98, the avatar is the image named after the character's id, and the provider locates it. An engineer could reintroduce an authored image field or a remote URL, and once authors rely on either, the page reports visits to other hosts and the rule is costly to restore. The other decisions — the shared component, the CSS mask, the reserved text width, the toggle backing, the field plumbing, the sample art and the prop path — live in code and cost little to change.
 
 ## In-Force ADRs Reviewed
 
@@ -23,4 +23,4 @@ ADR review completed for this change. Of design.md's eight decisions, one passes
 
 ## New Durable ADRs Created
 
-- [0012. Avatar images are site assets, resolved in the view](../../../docs/decisions/0012-avatar-images-are-site-assets-resolved-in-the-view.md) — builds on 0005; extends the no-third-party-requests rule to images and fixes where the rule is enforced.
+- [0012. Avatar images are named after the character, located by the provider](../../../docs/decisions/0012-avatar-images-are-named-after-the-character.md) — builds on 0002 and 0005; extends the no-third-party-requests rule to images and gives the provider the job of locating them. Rewritten in place for the change request on PR #98; it was never merged.
