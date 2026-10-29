@@ -1,6 +1,6 @@
 ## 1. The startup-image list
 
-- [ ] 1.1 [easy] `STARTUP_SCREENS` in `src/lib/install/startup-images.ts` expands to 10 startup images, one per iPad screen in the spec's table and orientation. Each image has its file `startup/<width>x<height>.png` in pixels, its pixel width and height (swapped in landscape), its orientation, and a media query that uses the portrait points in both orientations, such as `(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)` for `startup/2266x1488.png`. No two media queries are equal (verify: npx vitest run src/lib/install/startup-images)
+- [x] 1.1 [easy] `STARTUP_SCREENS` in `src/lib/install/startup-images.ts` expands to 10 startup images, one per iPad screen in the spec's table and orientation. Each image has its file `startup/<width>x<height>.png` in pixels, its pixel width and height (swapped in landscape), its orientation, and a media query that uses the portrait points in both orientations, such as `(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)` for `startup/2266x1488.png`. No two media queries are equal (verify: npx vitest run src/lib/install/startup-images) (✓ npx vitest run src/lib/install/startup-images passed)
 
 ## 2. The art [depends-on: 1]
 
