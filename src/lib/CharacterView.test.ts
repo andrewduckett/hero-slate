@@ -134,6 +134,15 @@ describe('CharacterView', () => {
 		expect(screen.queryByText(/bad id/)).toBeNull();
 	});
 
+	it.each([
+		{ status: 'not-found' as const },
+		{ status: 'invalid' as const, reason: 'bad id' }
+	])('links the $status result back to the home page', (result) => {
+		render(CharacterView, { props: { result } });
+
+		expect(screen.getByRole('link', { name: 'Choose your hero' }).getAttribute('href')).toBe('/');
+	});
+
 	it('shows a retry message for a transient error', () => {
 		render(CharacterView, { props: { result: { status: 'error' } } });
 

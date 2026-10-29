@@ -115,6 +115,7 @@
 {:else}
 	<!-- not-found and invalid share a fixed, id-free message. -->
 	<p>Character not found</p>
+	<a href="/">Choose your hero</a>
 {/if}
 
 <style>
