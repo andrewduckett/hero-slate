@@ -170,3 +170,34 @@ describe('avatar save refuses an image', () => {
 		expect(after).toEqual(before);
 	});
 });
+
+describe('avatar save over an existing avatar', () => {
+	async function depsWithAvatar() {
+		return fakeDeps({
+			'static/characters/hero.yaml': 'name: Hero\n',
+			'static/characters/hero.png': new Uint8Array([1, 2, 3]),
+			'.workspace/look.txt': 'a hero\n',
+			'.workspace/in.jpg': await solidJpeg(1024, 1024)
+		});
+	}
+
+	it('keeps every file without the replace flag', async () => {
+		const deps = await depsWithAvatar();
+		const before = { ...deps.files };
+
+		const result = await run(['save', '.workspace/in.jpg', 'hero', ...SAVE_FLAGS], deps);
+
+		expect(result).toMatchObject({ exitCode: 3, stderr: expect.stringContaining('--replace') });
+		expect(deps.files).toEqual(before);
+	});
+
+	it('replaces the avatar with the replace flag', async () => {
+		const deps = await depsWithAvatar();
+
+		const result = await run(['save', '.workspace/in.jpg', 'hero', ...SAVE_FLAGS, '--replace'], deps);
+
+		expect(result.exitCode).toBe(0);
+		const meta = await sharp(deps.files['static/characters/hero.png'] as Uint8Array).metadata();
+		expect(meta).toMatchObject({ format: 'png', width: 512, height: 512 });
+	});
+});

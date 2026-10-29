@@ -12,7 +12,8 @@ import { ID_GRAMMAR, MANIFEST_ID } from '#lib/data/yaml';
 /** Codes reuse the D&D Beyond tool's numbers where the meaning is the same (design D3). */
 export const EXIT_CODES = {
 	success: 0,
-	unusableInput: 1
+	unusableInput: 1,
+	targetExists: 3
 } as const;
 
 const AVATAR_SIZE = 512;
@@ -22,7 +23,8 @@ export interface AvatarDeps {
 	exists: (path: string) => boolean;
 	readText: (path: string) => string;
 	readBytes: (path: string) => Uint8Array;
-	writeFile: (path: string, content: string | Uint8Array) => void;
+	/** Without `replace`, the write must fail if the file exists, so a race cannot overwrite it. */
+	writeFile: (path: string, content: string | Uint8Array, options?: { replace: boolean }) => void;
 	now: () => Date;
 }
 
@@ -48,8 +50,27 @@ function avatarPath(id: string): string {
 	return `static/characters/${id}.png`;
 }
 
+interface SaveArgs {
+	imagePath: string;
+	id: string;
+	replace: boolean;
+}
+
+function parseSaveArgs(args: string[]): SaveArgs {
+	const positional: string[] = [];
+	let replace = false;
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i];
+		if (arg === '--replace') replace = true;
+		else if (arg === '--tool' || arg === '--look-file') i++;
+		else positional.push(arg);
+	}
+	const [imagePath = '', id = ''] = positional;
+	return { imagePath, id, replace };
+}
+
 async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome> {
-	const [imagePath, id] = args;
+	const { imagePath, id, replace } = parseSaveArgs(args);
 
 	// The target path is built from the id alone, so this check is the path trust boundary.
 	if (!ID_GRAMMAR.test(id)) {
@@ -60,6 +81,10 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 	}
 	if (!deps.exists(characterPath(id))) {
 		return fail(EXIT_CODES.unusableInput, `no character file has the id "${id}": ${characterPath(id)} does not exist`);
+	}
+
+	if (!replace && deps.exists(avatarPath(id))) {
+		return fail(EXIT_CODES.targetExists, `${avatarPath(id)} already exists; pass --replace to replace it`);
 	}
 
 	const image = deps.readBytes(imagePath);
@@ -89,7 +114,11 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 		.png()
 		.toBuffer();
 
-	deps.writeFile(avatarPath(id), png);
+	try {
+		deps.writeFile(avatarPath(id), png, { replace });
+	} catch {
+		return fail(EXIT_CODES.targetExists, `${avatarPath(id)} appeared before the write; refusing to replace it`);
+	}
 	return ok(avatarPath(id));
 }
 
@@ -110,7 +139,7 @@ async function main(): Promise<void> {
 		exists: (path) => fs.existsSync(path),
 		readText: (path) => fs.readFileSync(path, 'utf8'),
 		readBytes: (path) => fs.readFileSync(path),
-		writeFile: (path, content) => fs.writeFileSync(path, content),
+		writeFile: (path, content, options) => fs.writeFileSync(path, content, { flag: options?.replace ? 'w' : 'wx' }),
 		now: () => new Date()
 	};
 
