@@ -1,8 +1,8 @@
 /**
  * A loaded character definition.
  *
- * The identity fields (`id`, `name`, `level`, `class`, `color`, `avatar`) are the
- * stable contract this release relies on and validates. Everything else is carried through
+ * The identity fields (`id`, `name`, `level`, `class`, `color`) are the stable
+ * contract this release relies on and validates. Everything else is carried through
  * unresolved: each field's own resolver module owns its semantics — abilities,
  * combat metrics, hit points, pools, and sections — so those stay typed loosely
  * here and are validated in the layer that gives them meaning.
@@ -22,8 +22,8 @@ export interface Character {
 	/** Optional; a string naming a palette. The theming layer resolves it — an
 	 * unknown name is valid data here and falls back to neutral when rendered. */
 	color?: string;
-	/** Optional; meant to be a site path to the character's image. The rendering
-	 * layer resolves it — a value that is not a site path shows no image. */
+	/** The site path of the character's avatar image, supplied by the provider and
+	 * never by the definition. The image may not exist; the view drops it then. */
 	avatar?: string;
 
 	// --- Fields resolved by their own modules, not by the provider ---

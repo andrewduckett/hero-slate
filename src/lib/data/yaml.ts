@@ -154,7 +154,7 @@ function isMapping(value: unknown): value is Record<string, unknown> {
 }
 
 /**
- * Validate the identity fields (`name`, `level`, `class`, `color`, `avatar`) a character
+ * Validate the identity fields (`name`, `level`, `class`, `color`) a character
  * body must satisfy. Returns a reason string on the first violation found, or
  * `undefined` when every field is valid. Shared with the ingest tools so they
  * apply the same rules the provider does, instead of copying them.
@@ -181,12 +181,6 @@ export function checkIdentity(body: Record<string, unknown>): string | undefined
 		return 'color must be a string';
 	}
 
-	// avatar: optional; a string when present. Whether it names an image the
-	// page may show is the rendering layer's call, so any string is valid here.
-	if (body.avatar !== undefined && typeof body.avatar !== 'string') {
-		return 'avatar must be a string';
-	}
-
 	return undefined;
 }
 
@@ -203,6 +197,8 @@ function toFoundOrInvalid(id: string, body: Record<string, unknown>): GetCharact
 	}
 
 	// Provisional fields pass through unchanged; the request id is authoritative.
-	const character = { ...body, id } as Character;
+	// The avatar is named after the id, so an authored one is overwritten: the
+	// grammar-checked id keeps the image on this site (decision 0012).
+	const character = { ...body, id, avatar: `/characters/${id}.png` } as Character;
 	return { status: 'found', character };
 }

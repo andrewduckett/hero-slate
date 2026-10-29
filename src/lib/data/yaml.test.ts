@@ -170,42 +170,22 @@ describe('createYamlProvider', () => {
 		}
 	});
 
-	it('treats a non-string avatar as invalid', async () => {
-		const num = fetchReturning(res({ body: 'name: Test Hero\navatar: 42' }));
-		expect(await createYamlProvider(num.fn).getCharacter('test-hero')).toEqual({
-			status: 'invalid',
-			reason: 'avatar must be a string'
-		});
-
-		const mapping = fetchReturning(res({ body: 'name: Test Hero\navatar: { src: x.png }' }));
-		expect(await createYamlProvider(mapping.fn).getCharacter('test-hero')).toEqual({
-			status: 'invalid',
-			reason: 'avatar must be a string'
-		});
-	});
-
-	it('carries an avatar string through unresolved', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Test Hero\navatar: /characters/test-hero.png' }));
+	it("names a found character's avatar after its id", async () => {
+		const { fn } = fetchReturning(res({ body: 'name: Test Hero' }));
 		const result = await createYamlProvider(fn).getCharacter('test-hero');
 
 		expect(result.status === 'found' && result.character.avatar).toBe('/characters/test-hero.png');
 	});
 
-	it('carries a remote avatar URL through as valid data', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Test Hero\navatar: https://example.test/hero.png' }));
+	it.each([
+		['a remote URL', 'https://example.test/hero.png'],
+		['a site path', '/characters/other.png'],
+		['a number', '42']
+	])('ignores an authored avatar that is %s', async (_label, value) => {
+		const { fn } = fetchReturning(res({ body: `name: Test Hero\navatar: ${value}` }));
 		const result = await createYamlProvider(fn).getCharacter('test-hero');
 
-		expect(result.status === 'found' && result.character.avatar).toBe('https://example.test/hero.png');
-	});
-
-	it('reports an absent avatar as absent, not defaulted', async () => {
-		const { fn } = fetchReturning(res({ body: 'name: Test Hero' }));
-		const result = await createYamlProvider(fn).getCharacter('test-hero');
-
-		expect(result.status).toBe('found');
-		if (result.status === 'found') {
-			expect('avatar' in result.character).toBe(false);
-		}
+		expect(result.status === 'found' && result.character.avatar).toBe('/characters/test-hero.png');
 	});
 
 	it('carries provisional fields through unchanged', async () => {
@@ -318,16 +298,23 @@ describe('listCharacters', () => {
 		expect(result).toEqual({
 			status: 'found',
 			characters: [
-				{ id: 'sunny', name: 'Sunny Thornwood', level: 7, class: 'Druid', color: 'forest' },
-				{ id: 'gimdak', name: 'Gimdak Steelward' }
+				{
+					id: 'sunny',
+					name: 'Sunny Thornwood',
+					level: 7,
+					class: 'Druid',
+					color: 'forest',
+					avatar: '/characters/sunny.png'
+				},
+				{ id: 'gimdak', name: 'Gimdak Steelward', avatar: '/characters/gimdak.png' }
 			]
 		});
 	});
 
-	it('copies avatar into a summary', async () => {
+	it("carries each character's avatar into its summary", async () => {
 		const { fn } = fetchServing({
 			'/characters/manifest.yaml': 'characters: [test-hero]',
-			'/characters/test-hero.yaml': 'name: Test Hero\navatar: /characters/test-hero.png'
+			'/characters/test-hero.yaml': 'name: Test Hero'
 		});
 
 		const result = await createYamlProvider(fn).listCharacters();
@@ -338,17 +325,6 @@ describe('listCharacters', () => {
 		});
 	});
 
-	it('omits avatar from a summary whose definition has none', async () => {
-		const { fn } = fetchServing({
-			'/characters/manifest.yaml': 'characters: [test-hero]',
-			'/characters/test-hero.yaml': 'name: Test Hero'
-		});
-
-		const result = await createYamlProvider(fn).listCharacters();
-
-		expect(result.status === 'found' && 'avatar' in result.characters[0]).toBe(false);
-	});
-
 	it('skips malformed entries before any fetch', async () => {
 		const { fn, calls } = fetchServing({
 			'/characters/manifest.yaml': "characters: [sunny, '../secret', 7, manifest]",
@@ -357,7 +333,7 @@ describe('listCharacters', () => {
 
 		const result = await createYamlProvider(fn).listCharacters();
 
-		expect(result).toEqual({ status: 'found', characters: [{ id: 'sunny', name: 'Sunny Thornwood' }] });
+		expect(result).toEqual({ status: 'found', characters: [{ id: 'sunny', name: 'Sunny Thornwood', avatar: '/characters/sunny.png' }] });
 		expect(calls).toEqual(['/characters/manifest.yaml', '/characters/sunny.yaml']);
 	});
 
@@ -391,7 +367,7 @@ describe('listCharacters', () => {
 
 		const result = await createYamlProvider(fn).listCharacters();
 
-		expect(result).toEqual({ status: 'found', characters: [{ id: 'sunny', name: 'Sunny Thornwood' }] });
+		expect(result).toEqual({ status: 'found', characters: [{ id: 'sunny', name: 'Sunny Thornwood', avatar: '/characters/sunny.png' }] });
 	});
 
 	it.each([
