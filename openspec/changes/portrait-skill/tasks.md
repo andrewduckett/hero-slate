@@ -16,7 +16,7 @@
 
 ## 3. Integration [depends-on: 2]
 
-- [ ] 3.1 [easy] The full suite and the static build pass, and the built client bundle does not contain `sharp` (verify: npm test && npm run build && ! grep -rl sharp build)
+- [x] 3.1 [easy] The full suite and the static build pass, and the built client bundle does not contain `sharp` (verify: npm test && npm run build && ! grep -rl sharp build) (✓ npm test 814 passed, npm run build passed, grep found no sharp in build)
 
 ## Deviations Ledger
 
