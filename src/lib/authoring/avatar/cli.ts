@@ -45,8 +45,11 @@ function avatarPath(id: string): string {
 async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome> {
 	const [imagePath, id] = args;
 
+	// Rotate first so a phone photo's orientation flag applies before the crop.
+	// Top gravity keeps a tall image's head and centres a wide one (design D2).
 	const png = await sharp(deps.readBytes(imagePath))
-		.resize(AVATAR_SIZE, AVATAR_SIZE, { fit: 'cover' })
+		.rotate()
+		.resize(AVATAR_SIZE, AVATAR_SIZE, { fit: 'cover', position: 'top' })
 		.png()
 		.toBuffer();
 
