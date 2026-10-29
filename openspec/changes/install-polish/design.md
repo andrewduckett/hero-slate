@@ -34,7 +34,7 @@
 
 ### The logo is one SVG fragment in palette colours
 
-A new `logoSvg()` returns the slate as SVG elements in a 100 × 100 box: a rounded frame in `BASE.structural.dark`, the slate inside it in `BASE.raised.dark`, and a five-point star in `PALETTE.sun.accent.dark`. The background is `BASE.surface.dark`. Each image wraps the fragment in its own `<svg>` with a `transform` that places and scales it. The mark keeps one shape and one colour set at every size. These are the colours of the concept the user picked (D4).
+A new `logoSvg()` returns the slate as SVG elements in a 100 × 100 box: a rounded frame in `BASE.structural.dark`, the slate inside it in `BASE.raised.dark`, and a five-point star in `PALETTE.sun.deep.dark`. The star is a mark drawn on a surface, so it takes `deep`, not `accent`, as ADR 0006 says. The background is `BASE.surface.dark`. Each image wraps the fragment in its own `<svg>` with a `transform` that places and scales it. The mark keeps one shape and one colour set at every size. These are the colours of the concept the user picked (D4).
 
 *Alternatives:* a hand-drawn SVG file in the repository. It would need a second source for its colours, and `palette.ts` is the only place colour values live.
 
