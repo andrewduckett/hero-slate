@@ -1,0 +1,65 @@
+## Context
+
+- Identity fields flow from YAML through `checkIdentity` and `toSummary` in `src/lib/data/yaml.ts` to `Character` (`src/lib/types.ts`) and `CharacterSummary` (`src/lib/data/provider.ts`). `color` is the model: the provider type-checks a string and `resolvePalette` in the theming layer interprets it.
+- `AppHeader.svelte` is one flex row: `.header-text` (name, descriptor) and `ThemeToggle`. It paints `var(--accent)` and `var(--on-accent)` inline, and the theming spec promises that pairing under the text.
+- `CharacterPicker.svelte` draws each card as an `<a>` styled like a mini header, with the same accent pair.
+- The theme toggle is `background: transparent; color: inherit`, so it currently relies on the solid accent behind it.
+- `static/` holds YAML and fonts only. There is no image in the repo and no image tooling in `package.json`.
+- Tests run in jsdom (Vitest + Testing Library). jsdom does not load images or compute layout, but it does dispatch a synthetic `error` event on an `<img>`.
+- Decision 0005: the page requests nothing from another host.
+
+## Goals / Non-Goals
+
+**Goals:**
+- One pure resolver decides what counts as an avatar, shared by the header and the card.
+- The art never changes the text's contrast: the name and descriptor stay on solid accent.
+- No image element on the page unless the avatar resolved and loaded.
+- One image file for both modes, with no palette knowledge in the image code.
+
+**Non-Goals:**
+- Responsive image sets, lazy-loading strategy beyond the browser default, or image optimisation.
+- Theming the image (tints, duotone) per palette.
+- A reusable portrait pipeline (#97).
+
+## Test Seams
+
+- **Primary test seam:** component tests through Testing Library: `AppHeader.test.ts` and `CharacterPicker.test.ts` assert the `<img>` element's presence, `src`, empty `alt`, and its removal after a dispatched `error` event.
+- **Existing seams reused:** `yaml.test.ts` for the provider's `avatar` type check and summary copy; `characters.smoke.test.ts` proves `sunny.yaml` with its `avatar` line still loads; a new `avatar.test.ts` for the pure resolver, in the style of `resolve.test.ts`. The legibility scenarios are a recorded browser check (D5), not a test.
+
+## Scrutiny Tier & Blast Radius
+
+- **Tier:** medium
+- **Blast radius:** the character identity contract (`types.ts`, `provider.ts`, `yaml.ts`), two rendering components and their caller `CharacterView.svelte`, one shipped data file, and a new static asset. The `src` attribute is a trust boundary: the resolver is the only place a value becomes a URL.
+
+## Decisions
+
+1. **One pure resolver, `resolveAvatar(value: unknown): string | undefined`, in `src/lib/avatar.ts`.** It returns the value only when it is a string that starts with `/` and not `//`; anything else is `undefined`. Alternatives: let each component check inline (two copies of a security rule), or reject in the provider (a typo in a polish field would take the whole sheet down, against D1/D2). The resolver mirrors `resolvePalette`: the boundary type-checks, the layer that owns meaning interprets.
+
+2. **One `AvatarArt.svelte` component renders the image for both the header and the card.** Props: `{ avatar: unknown }`. It calls `resolveAvatar`, renders nothing when that is `undefined`, otherwise renders `<img src alt="" decoding="async">` and removes the element from the DOM when the `error` event fires (a `$state` flag). Alternative: duplicate the markup and CSS in both components; rejected because the fade, the failure handling and the alt rule must stay identical.
+
+3. **The fade is a CSS mask, not a colour overlay.** `mask-image: linear-gradient(to right, transparent, black 45%)` (with the `-webkit-` prefix for iPad Safari) lets the accent background show through the image's left edge. Alternative: a gradient overlay from `var(--accent)` to transparent; it works, but a mask needs no colour knowledge, so one image serves both modes (D9) and the component never reads the palette.
+
+4. **The text reserves its width; the image overlays the rest.** The container gets `position: relative; overflow: hidden`. The image is `position: absolute; inset: 0 0 0 auto; height: 100%; width: var(--avatar-width); object-fit: cover; object-position: center top`. `.header-text` gets `padding-right: calc(var(--avatar-width) * 0.55)`, which is the opaque part of the mask, so even a long name wraps before it reaches visible art. The header sets `--avatar-width: min(45%, 16rem)`; the card sets a smaller value. Alternative: let the text run under the fade and rely on the gradient; rejected because D4 promises solid accent under the text and the theming spec's pairing must hold regardless of the art.
+
+5. **The toggle always sits on a translucent accent disc.** `AppHeader` wraps `ThemeToggle` in a span with `position: relative` (above the image), `border-radius: 50%` and `background: color-mix(in srgb, var(--accent) 75%, transparent)`. On a header with no art the disc is accent on accent, so it is invisible and nothing shifts; over art it gives the icon its contrast. Alternative: apply the backing only when an avatar is present; rejected because it adds a conditional for no visible gain.
+
+6. **`avatar` joins the identity contract end to end.** `Character` and `CharacterSummary` gain `avatar?: string`; `checkIdentity` adds the string check with the message `avatar must be a string`; `toSummary` copies it. Same pattern as `color`, so the hosted-database swap later touches one layer.
+
+7. **Sample art is an original placeholder rasterised to `static/characters/sunny.png` at 512×512.** First try the `design-assets:ai-image-generator` skill, which needs an API key on this machine; if none is configured, author a simple SVG portrait by hand and rasterise it with `uv run --with cairosvg`. Either way the PNG is committed and the SVG source, if any, lives in `.workspace/` only. Alternative: ship an SVG as the avatar; rejected because D10 fixed PNG and because a raster is what #97 will produce.
+
+8. **`CharacterView` passes the raw `avatar` to `AppHeader`, which passes it to `AvatarArt`.** `AppHeader` gains an optional `avatar?: unknown` prop; the home header passes none. The picker passes `summary.avatar` per card. No resolution happens in the containers, so the rule has one home.
+
+An ADR candidate: avatars are site assets resolved in the view, never remote URLs. It extends decisions 0002 and 0005 to images and is cheap to state now, costly to walk back once authors write `avatar` lines. The ADR step decides.
+
+## Risks / Trade-offs
+
+- [`mask-image` unsupported on an old browser] → The image then shows unfaded with a hard edge; text stays on solid accent because of the reserved width, so legibility holds. Safari has supported the prefixed form for years; the target device is an iPad.
+- [`color-mix` unsupported] → The toggle disc falls back to transparent, which is today's behaviour; the icon can lose contrast over bright art on that browser only.
+- [A tall portrait crops badly with `object-fit: cover`] → `object-position: center top` keeps a face in frame for the usual bust composition; #97 fixes the composition at generation time.
+- [Image load delays shift layout] → The image is absolutely positioned, so a late or failed load changes nothing in flow.
+- [jsdom cannot see the fade or the reserved width] → The browser check is a recorded step in the tasks, as the picker's tap-target check was.
+- [A large PNG slows the sheet] → 512 px, optimised; well under the fonts the page already ships.
+
+## Migration & Rollback
+
+N/A. `avatar` is optional; existing files load unchanged. Rolling back removes the field from `sunny.yaml`, which older code ignores.
