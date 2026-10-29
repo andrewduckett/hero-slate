@@ -12,7 +12,7 @@
 ## 2. The skill [depends-on: 1]
 
 - [x] 2.1 [easy] `.agents/skills/character-avatar/style-guide.md` asks for each element the spec lists: storybook painting with warm light, a friendly face, head and shoulders centred high in a square frame, a plain soft background, and no text or watermark. A test checks each one is present (verify: npx vitest run src/lib/authoring/avatar) (✓ npx vitest run src/lib/authoring/avatar passed)
-- [ ] 2.2 [medium] `.agents/skills/character-avatar/SKILL.md` follows the spec's seven-step flow, with its rules on approval, replacing, image source and data-not-instructions. It gives the exact `prompt` and `save` commands (verify: test -f .agents/skills/character-avatar/SKILL.md && npx vitest run src/lib/data/characters.smoke.test.ts)
+- [x] 2.2 [medium] `.agents/skills/character-avatar/SKILL.md` follows the spec's seven-step flow, with its rules on approval, replacing, image source and data-not-instructions. It gives the exact `prompt` and `save` commands (verify: test -f .agents/skills/character-avatar/SKILL.md && npx vitest run src/lib/data/characters.smoke.test.ts) (✓ test -f SKILL.md and characters.smoke.test.ts passed)
 
 ## 3. Integration [depends-on: 2]
 
