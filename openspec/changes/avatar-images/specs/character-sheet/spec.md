@@ -2,7 +2,7 @@
 
 ### Requirement: Avatar site-path resolution
 
-An **avatar** is the image that stands for a character, shown wherever the character is named as a whole: the identity header and the picker card. The system SHALL resolve a character's `avatar` value to an image source only when it is a site path: a string that starts with `/` and does not start with `//`. Every other value SHALL resolve to no avatar. Resolution SHALL be a pure function that never throws.
+An **avatar** is the image that stands for a character, shown wherever the character is named as a whole: the identity header and the picker card. The system SHALL resolve a character's `avatar` value to an image source only when it is a site path. A site path is a string that starts with `/` and that, parsed as a URL against the site's own origin, stays on that origin with the same path the author wrote. Every other value SHALL resolve to no avatar. Resolution SHALL be a pure function that never throws.
 
 #### Scenario: A site path resolves to an image source
 
@@ -13,11 +13,20 @@ An **avatar** is the image that stands for a character, shown wherever the chara
 
 - **WHEN** a character's `avatar` is `https://example.test/sunny.png`
 - **THEN** the avatar resolves to no avatar
-- **AND** the page makes no request to `example.test`
 
 #### Scenario: A protocol-relative URL resolves to no avatar
 
 - **WHEN** a character's `avatar` is `//example.test/sunny.png`
+- **THEN** the avatar resolves to no avatar
+
+#### Scenario: A backslash that browsers read as a slash resolves to no avatar
+
+- **WHEN** a character's `avatar` is `/\example.test/sunny.png`
+- **THEN** the avatar resolves to no avatar
+
+#### Scenario: Whitespace that browsers strip resolves to no avatar
+
+- **WHEN** a character's `avatar` is `/` followed by a newline and `/example.test/sunny.png`
 - **THEN** the avatar resolves to no avatar
 
 #### Scenario: A scheme resolves to no avatar
@@ -38,7 +47,7 @@ An **avatar** is the image that stands for a character, shown wherever the chara
 
 ### Requirement: Avatar in the identity header
 
-When a character's avatar resolves to an image source, the identity header SHALL show that image filling the header's right side and fading into the header's accent, so that the name and descriptor sit on the solid accent and keep the contrast-checked accent/on-accent pairing. The image SHALL be decorative, with empty alternative text. One image file SHALL serve both the light and the dark mode.
+When a character's avatar resolves to an image source, the identity header SHALL show that image filling the header's right side and fading into the header's accent. The name and descriptor SHALL sit on the solid accent, outside the image, so they keep the contrast-checked accent/on-accent pairing. The image SHALL be decorative, with empty alternative text. One image file SHALL serve both the light and the dark mode.
 
 #### Scenario: Header shows the avatar image
 
@@ -56,7 +65,7 @@ When a character's avatar resolves to an image source, the identity header SHALL
 
 ### Requirement: Theme toggle stays legible over the avatar
 
-The theme toggle SHALL keep its place in the header when an avatar shows, and SHALL sit on a translucent backing in the accent, so it stays visible on any art.
+The theme toggle SHALL keep its place in the header when an avatar shows, and SHALL sit on an opaque backing in the accent, so its icon keeps the accent/on-accent pairing over any art.
 
 #### Scenario: Toggle is visible over the art
 
@@ -83,6 +92,7 @@ When the avatar resolves to no avatar, or the image fails to load, the header SH
 
 - **WHEN** a character with `avatar: https://example.test/sunny.png` loads
 - **THEN** the header contains no image element
+- **AND** no element on the page carries that value as a source
 - **AND** the header still shows the character's name
 
 #### Scenario: A failed image load leaves the plain header

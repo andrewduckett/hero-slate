@@ -25,11 +25,13 @@ sense, so a bad value never breaks a sheet.
 
 ## Decision
 
-An avatar is a site path: a string that starts with `/` and not `//`, naming a
-file the site itself serves. The provider checks only that `avatar` is a string
-and carries it through. The view resolves it with one pure function, and shows
-an image only when the value is a site path. Anything else renders as if the
-character had no avatar: no image element, no request, no error.
+An avatar is a site path: a string that starts with `/` and that a browser, parsing
+it against the site's origin, keeps on that origin with the path as written. That
+rules out `//host`, and also `/\host` and values with embedded whitespace, which
+browsers rewrite into another host. The provider checks only that `avatar` is a
+string and carries it through. The view resolves it with one pure function, and
+shows an image only when the value is a site path. Anything else renders as if
+the character had no avatar: no image element, no request, no error.
 
 We rejected accepting remote URLs. They make the page report visits to another
 host, and they do not work offline. We rejected rejecting non-site paths in the

@@ -2,14 +2,14 @@
 
 ### Requirement: A card shows the character's avatar
 
-When a summary's `avatar` resolves to an image source by the same site-path rule the sheet header uses, the card SHALL show that image filling the card's right side and fading into the card's accent, so that the name and descriptor sit on the solid accent and keep the contrast-checked pairing. The image SHALL be decorative, with empty alternative text, so the card link's accessible name stays the character's name.
+When a summary's `avatar` resolves to an image source by the same site-path rule the sheet header uses, the card SHALL show that image filling the card's right side and fading into the card's accent. The name and descriptor SHALL sit on the solid accent, outside the image, so they keep the contrast-checked pairing. The image SHALL be decorative, with empty alternative text, so it adds nothing to the card link's accessible name.
 
 #### Scenario: A card shows the avatar image
 
 - **WHEN** a listed character has name "Sunny Thornwood" and `avatar` "/characters/sunny.png"
 - **THEN** its card contains an image whose source is `/characters/sunny.png`
 - **AND** the image's alternative text is empty
-- **AND** the card's link is still named "Sunny Thornwood"
+- **AND** the card's link has an accessible name that includes "Sunny Thornwood" and nothing from the image
 
 #### Scenario: Card text stays on solid accent over the art
 
@@ -31,7 +31,7 @@ When a summary's avatar resolves to no avatar, or the image fails to load, the c
 
 - **WHEN** a listed character's `avatar` is `https://example.test/sunny.png`
 - **THEN** its card contains no image element
-- **AND** the page makes no request to `example.test`
+- **AND** no element on the page carries that value as a source
 
 #### Scenario: A failed image load leaves the plain card
 
