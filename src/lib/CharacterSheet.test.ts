@@ -149,3 +149,48 @@ describe('CharacterSheet — combined-result guard (round-4)', () => {
 		expect(screen.getByText('Other Hero')).toBeTruthy();
 	});
 });
+
+describe('CharacterSheet — page title', () => {
+	const sunny = found('sunny', 'Sunny Thornwood');
+
+	function homeScreenLabels(): (string | null)[] {
+		return [...document.head.querySelectorAll('meta[name="apple-mobile-web-app-title"]')].map((meta) =>
+			meta.getAttribute('content')
+		);
+	}
+
+	function renderSheet(id: string, result: Promise<GetCharacterResult> | GetCharacterResult) {
+		render(CharacterSheet, { props: { id, provider: provider({ [id]: result }), store: readStore({}) } });
+	}
+
+	it('titles a loaded sheet with the name, then Hero Slate', async () => {
+		renderSheet('sunny', sunny);
+
+		await waitFor(() => expect(document.title).toBe('Sunny Thornwood — Hero Slate'));
+	});
+
+	it('labels the home-screen icon with the full name', async () => {
+		renderSheet('sunny', sunny);
+
+		await waitFor(() => expect(homeScreenLabels()).toEqual(['Sunny Thornwood']));
+	});
+
+	it('keeps Hero Slate while the sheet is loading', () => {
+		renderSheet('sunny', new Promise(() => {}));
+
+		expect(document.title).toBe('Hero Slate');
+		expect(homeScreenLabels()).toEqual(['Hero Slate']);
+	});
+
+	it.each<[string, GetCharacterResult]>([
+		['not-found', { status: 'not-found' }],
+		['invalid', { status: 'invalid', reason: 'name is required' }],
+		['error', { status: 'error' }]
+	])('keeps Hero Slate, never the id, on a %s sheet', async (_status, result) => {
+		renderSheet('nobody', result);
+		await waitFor(() => expect(screen.queryByText('Loading…')).toBeNull());
+
+		expect(document.title).toBe('Hero Slate');
+		expect(homeScreenLabels()).toEqual(['Hero Slate']);
+	});
+});
