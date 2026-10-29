@@ -1,6 +1,6 @@
 /**
- * Draws the placeholder home-screen icons into `static/`: bold "HS" in the
- * neutral palette's light on-accent, on its light accent.
+ * Draws the home-screen icons into `static/` from the slate logo: a chalk
+ * slate in a wooden frame with a gold star, on the dark base surface.
  *
  * Run by hand with `npm run generate:icons` when the art or the palette
  * changes, and commit the PNGs. The build does not run it, because `sharp`
@@ -9,33 +9,52 @@
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import sharp from 'sharp';
-import { PALETTE } from '../src/lib/theme/palette.ts';
+import { BASE, PALETTE } from '../src/lib/theme/palette.ts';
 import { APPLE_TOUCH_ICON, ICONS } from '../src/lib/install/webmanifest.ts';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const { accent, onAccent } = PALETTE.neutral;
+const background = BASE.surface.dark;
+
+/** Points of a five-point star centred on (cx, cy), its first point straight up. */
+function starPoints(cx: number, cy: number, outer: number, inner: number): string {
+	return Array.from({ length: 10 }, (_, i) => {
+		const radius = i % 2 === 0 ? outer : inner;
+		const angle = -Math.PI / 2 + (i * Math.PI) / 5;
+		return `${(cx + radius * Math.cos(angle)).toFixed(2)},${(cy + radius * Math.sin(angle)).toFixed(2)}`;
+	}).join(' ');
+}
 
 /**
- * A maskable icon may be cropped to any shape that holds the centre circle of
- * 80% diameter, so its letters are drawn smaller to stay inside that circle.
+ * The logo in a 100 × 100 box. The frame is 72 × 60, so when the box is
+ * scaled to 80% its farthest corner stays inside a maskable icon's safe zone.
+ * Shapes only, no text, so it renders the same on any machine.
  */
-function iconSvg(size: number, maskable: boolean): string {
-	const fontSize = size * (maskable ? 0.3 : 0.42);
-	return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-	<rect width="${size}" height="${size}" fill="${accent.light}"/>
-	<text x="50%" y="50%" dominant-baseline="central" text-anchor="middle"
-		font-family="sans-serif" font-weight="700" font-size="${fontSize}"
-		fill="${onAccent.light}">HS</text>
+function logoSvg(): string {
+	return `<rect x="14" y="20" width="72" height="60" rx="6" fill="${BASE.structural.dark}"/>
+	<rect x="21" y="27" width="58" height="46" rx="2" fill="${BASE.raised.dark}"/>
+	<polygon points="${starPoints(50, 50, 16, 6.5)}" fill="${PALETTE.sun.deep.dark}"/>`;
+}
+
+/** An image of the given size with the logo's box `box` pixels wide, centred. */
+function imageSvg(width: number, height: number, box: number): string {
+	const x = (width - box) / 2;
+	const y = (height - box) / 2;
+	return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+	<rect width="${width}" height="${height}" fill="${background}"/>
+	<g transform="translate(${x} ${y}) scale(${box / 100})">
+	${logoSvg()}
+	</g>
 </svg>`;
 }
 
-const targets = [
-	...ICONS.map(({ file, size, purpose }) => ({ file, size, maskable: purpose === 'maskable' })),
-	{ ...APPLE_TOUCH_ICON, maskable: false }
+/** A maskable icon may be cropped to the centre circle of 80% diameter, so its logo is drawn at 80%. */
+const icons = [
+	...ICONS.map(({ file, size, purpose }) => ({ file, size, scale: purpose === 'maskable' ? 0.8 : 1 })),
+	{ ...APPLE_TOUCH_ICON, scale: 1 }
 ];
 
-for (const { file, size, maskable } of targets) {
+for (const { file, size, scale } of icons) {
 	const outPath = resolve(here, '../static', file);
-	await sharp(Buffer.from(iconSvg(size, maskable))).png().toFile(outPath);
+	await sharp(Buffer.from(imageSvg(size, size, size * scale))).png().toFile(outPath);
 	console.log(`Wrote ${outPath}`);
 }
