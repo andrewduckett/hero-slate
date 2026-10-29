@@ -1,16 +1,19 @@
 /**
- * Draws the home-screen icons into `static/` from the slate logo: a chalk
- * slate in a wooden frame with a gold star, on the dark base surface.
+ * Draws the home-screen icons into `static/`, and the iPad startup images into
+ * `static/startup/`, from the slate logo: a chalk slate in a wooden frame with
+ * a gold star, on the dark base surface.
  *
  * Run by hand with `npm run generate:icons` when the art or the palette
  * changes, and commit the PNGs. The build does not run it, because `sharp`
  * versions can render different PNG bytes from the same SVG.
  */
 import { fileURLToPath } from 'node:url';
+import { mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import sharp from 'sharp';
 import { BASE, PALETTE } from '../src/lib/theme/palette.ts';
 import { APPLE_TOUCH_ICON, ICONS } from '../src/lib/install/webmanifest.ts';
+import { STARTUP_IMAGES } from '../src/lib/install/startup-images.ts';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const background = BASE.surface.dark;
@@ -53,8 +56,15 @@ const icons = [
 	{ ...APPLE_TOUCH_ICON, scale: 1 }
 ];
 
-for (const { file, size, scale } of icons) {
+/** On a startup image the logo is about the size of an app icon on the iPad's screen. */
+const images = [
+	...icons.map(({ file, size, scale }) => ({ file, width: size, height: size, box: size * scale })),
+	...STARTUP_IMAGES.map(({ file, width, height }) => ({ file, width, height, box: Math.min(width, height) * 0.4 }))
+];
+
+await mkdir(resolve(here, '../static/startup'), { recursive: true });
+for (const { file, width, height, box } of images) {
 	const outPath = resolve(here, '../static', file);
-	await sharp(Buffer.from(imageSvg(size, size, size * scale))).png().toFile(outPath);
+	await sharp(Buffer.from(imageSvg(width, height, box))).png().toFile(outPath);
 	console.log(`Wrote ${outPath}`);
 }

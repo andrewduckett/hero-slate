@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 import { APPLE_TOUCH_ICON, ICONS } from './webmanifest';
+import { STARTUP_IMAGES } from './startup-images';
 import { BASE } from '../theme/palette';
 
 const ALL_ICONS = [...ICONS, APPLE_TOUCH_ICON];
@@ -53,5 +54,18 @@ describe('home-screen icons', () => {
 			}
 		}
 		expect(outside).toEqual([]);
+	});
+});
+
+describe('iPad startup images', () => {
+	it.each(STARTUP_IMAGES)('$file is a PNG of its listed size', async ({ file, width, height }) => {
+		const meta = await sharp(resolve(process.cwd(), 'static', file)).metadata();
+		expect(meta.format).toBe('png');
+		expect([meta.width, meta.height]).toEqual([width, height]);
+	});
+
+	it.each(STARTUP_IMAGES)('$file shows the logo on the dark base surface', async ({ file, width, height }) => {
+		expect(await pixel(file, 0, 0)).toBe(BACKGROUND);
+		expect(await pixel(file, Math.floor(width / 2), Math.floor(height / 2))).not.toBe(BACKGROUND);
 	});
 });

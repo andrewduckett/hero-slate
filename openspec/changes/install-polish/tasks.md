@@ -6,7 +6,7 @@
 
 - [x] 2.1 [medium] `npm run generate:icons` redraws the four home-screen icons with the slate logo (frame `BASE.structural.dark`, slate `BASE.raised.dark`, star `PALETTE.sun.deep.dark`) on `BASE.surface.dark`, at the sizes in design.md, and the redrawn PNGs are committed. In each icon, the top-left pixel is the dark base surface and the centre pixel is not (verify: npx vitest run src/lib/install/icons) (✓ npx vitest run src/lib/install/icons passed)
 - [x] 2.2 [medium] On the maskable icon, every pixel outside the centre circle whose diameter is 80% of the width is the dark base surface (verify: npx vitest run src/lib/install/icons) (✓ npx vitest run src/lib/install/icons passed; fails when the maskable logo is drawn unscaled)
-- [ ] 2.3 [medium] `npm run generate:icons` also draws the 10 startup images into `static/startup/`: the slate alone, centred, its box 40% of the shorter side, on the dark base surface. They are committed. Each is a PNG at its listed pixel size, its top-left pixel is the dark base surface, and its centre pixel is not (verify: npx vitest run src/lib/install/icons)
+- [x] 2.3 [medium] `npm run generate:icons` also draws the 10 startup images into `static/startup/`: the slate alone, centred, its box 40% of the shorter side, on the dark base surface. They are committed. Each is a PNG at its listed pixel size, its top-left pixel is the dark base surface, and its centre pixel is not (verify: npx vitest run src/lib/install/icons) (✓ npx vitest run src/lib/install/icons passed)
 
 ## 3. The app shell head [depends-on: 1]
 
