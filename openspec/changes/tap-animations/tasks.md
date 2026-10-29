@@ -12,7 +12,7 @@
 ## 3. Resource pools
 
 - [x] 3.1 [easy] A pool dot transitions its background colour and border colour with the shared motion duration and easing (verify: npx vitest run src/lib/character/ResourcePoolsBlock.test.ts) (✓ npx vitest run src/lib/character/ResourcePoolsBlock.test.ts passed)
-- [ ] 3.2 [easy] A counter pool's bar fill transitions its width with the shared motion duration and easing (verify: npx vitest run src/lib/character/ResourcePoolsBlock.test.ts)
+- [x] 3.2 [easy] A counter pool's bar fill transitions its width with the shared motion duration and easing (verify: npx vitest run src/lib/character/ResourcePoolsBlock.test.ts) (✓ npx vitest run src/lib/character/ResourcePoolsBlock.test.ts passed)
 - [ ] 3.3 [easy] After a -1 tap on a counter pool at 35 of 35, the readout shows `34 / 35` straight away, with no count-up (verify: npx vitest run src/lib/character/ResourcePoolsBlock.test.ts)
 
 ## 4. Integration

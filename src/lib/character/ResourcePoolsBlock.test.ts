@@ -193,4 +193,8 @@ describe('ResourcePoolsBlock — motion', () => {
 		expect(transition).toContain(eased('background-color'));
 		expect(transition).toContain(eased('border-color'));
 	});
+
+	it('eases a counter bar fill to its new width with the shared motion timing', () => {
+		expect(transitionOf(styles, '.fill')).toContain(eased('width'));
+	});
 });

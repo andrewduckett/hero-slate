@@ -178,6 +178,8 @@
 		height: 100%;
 		border-radius: 999px;
 		background-color: var(--accent);
+		/* The fill mounts at its width, so it eases only after a tap. */
+		transition: width var(--motion-duration) var(--motion-easing);
 	}
 
 	/* Spend on the left, restore on the right, with a flexible gap between. */
