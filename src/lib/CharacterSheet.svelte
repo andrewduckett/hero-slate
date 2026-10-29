@@ -29,7 +29,7 @@
 
 	// Only a loaded name reaches the title: the id comes from the address bar,
 	// so echoing it would show whatever a player typed.
-	const name = $derived(result.status === 'found' ? result.character.name : null);
+	const name = $derived(result.status === 'found' && result.character.name ? result.character.name : null);
 
 	$effect(() => {
 		const requestedId = id;

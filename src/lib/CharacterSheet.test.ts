@@ -175,6 +175,13 @@ describe('CharacterSheet — page title', () => {
 		await waitFor(() => expect(homeScreenLabels()).toEqual(['Sunny Thornwood']));
 	});
 
+	it('labels the home-screen icon Hero Slate when the loaded name is empty', async () => {
+		renderSheet('sunny', found('sunny', ''));
+		await waitFor(() => expect(screen.queryByText('Loading…')).toBeNull());
+
+		expect(homeScreenLabels()).toEqual(['Hero Slate']);
+	});
+
 	it('keeps Hero Slate while the sheet is loading', () => {
 		renderSheet('sunny', new Promise(() => {}));
 
