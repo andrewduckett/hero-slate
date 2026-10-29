@@ -2,7 +2,7 @@
 
 ### Requirement: Avatar site-path resolution
 
-An **avatar** is the image that stands for a character, shown wherever the character is named as a whole: the identity header and the picker card. The system SHALL resolve a character's `avatar` value to an image source only when it is a site path. A site path is a string that starts with `/` and that, parsed as a URL against the site's own origin, stays on that origin with the same path the author wrote. Every other value SHALL resolve to no avatar. Resolution SHALL be a pure function that never throws.
+An **avatar** is the image that stands for a character wherever the character is named as a whole: the identity header and the picker card. The system SHALL resolve an `avatar` value to an image source only when it is a site path: a string that starts with `/` and that a browser, parsing it against the site's origin, keeps on that origin with the path as written. Every other value SHALL resolve to no avatar. Resolution SHALL never throw.
 
 #### Scenario: A site path resolves to an image source
 
