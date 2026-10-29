@@ -19,3 +19,19 @@
 	<img {src} alt="" decoding="async" onerror={() => (failedSrc = src)} />
 {/if}
 
+<style>
+	/* The containing card or header sets --avatar-width, is position: relative,
+	   and clips to its own corners. The mask needs no colour, so one image fades
+	   into either mode's accent. */
+	img {
+		position: absolute;
+		inset: 0 0 0 auto;
+		width: var(--avatar-width);
+		height: 100%;
+		object-fit: cover;
+		object-position: center top;
+		-webkit-mask-image: linear-gradient(to right, transparent, black 45%);
+		mask-image: linear-gradient(to right, transparent, black 45%);
+		pointer-events: none;
+	}
+</style>

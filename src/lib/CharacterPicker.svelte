@@ -40,10 +40,12 @@
 				<!-- The anchor wraps the card's text, so that text is its accessible name. -->
 				<li data-palette={resolvePalette(summary.color)}>
 					<a href="/{summary.id}" data-avatar={avatarShowing[summary.id] || undefined}>
-						<span class="name" data-card-name>{summary.name}</span>
-						{#if descriptor}
-							<span class="descriptor" data-card-descriptor>{descriptor}</span>
-						{/if}
+						<span class="text">
+							<span class="name" data-card-name>{summary.name}</span>
+							{#if descriptor}
+								<span class="descriptor" data-card-descriptor>{descriptor}</span>
+							{/if}
+						</span>
 						<AvatarArt avatar={summary.avatar} bind:showing={avatarShowing[summary.id]} />
 					</a>
 				</li>
@@ -70,6 +72,9 @@
 
 	/* A card is a mini sheet header: it stands for the sheet it opens. */
 	a {
+		--avatar-width: min(40%, 8rem);
+		position: relative;
+		overflow: hidden;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -86,6 +91,15 @@
 	a:focus-visible {
 		outline: 3px solid var(--foreground);
 		outline-offset: 2px;
+	}
+
+	.text {
+		display: flex;
+		flex-direction: column;
+	}
+
+	a[data-avatar] .text {
+		padding-right: var(--avatar-width);
 	}
 
 	.name {

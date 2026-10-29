@@ -19,7 +19,7 @@
 	data-avatar={avatarShowing || undefined}
 	style="background-color: var(--accent); color: var(--on-accent);"
 >
-	<div class="header-text">
+	<div class="text">
 		<h1>{title}</h1>
 		{#if subtitle}
 			<p>{subtitle}</p>
@@ -34,6 +34,9 @@
 
 <style>
 	header {
+		--avatar-width: min(40%, 14rem);
+		position: relative;
+		overflow: hidden;
 		display: flex;
 		align-items: flex-start;
 		gap: var(--space-4);
@@ -42,9 +45,15 @@
 		box-shadow: var(--shadow);
 	}
 
-	.header-text {
+	.text {
 		flex: 1;
 		min-width: 0;
+	}
+
+	/* Only while art shows, so a header without it lays out as before. The whole
+	   width, fade zone included, keeps the text on solid accent. */
+	header[data-avatar] .text {
+		padding-right: var(--avatar-width);
 	}
 
 	/* Above the art, with the toggle's own corners, so it never shows as a box. */
