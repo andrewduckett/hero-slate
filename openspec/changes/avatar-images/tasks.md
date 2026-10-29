@@ -17,7 +17,7 @@
 
 ## 3. Sample art and acceptance [depends-on: 2]
 
-- [ ] 3.1 [medium] `static/characters/sunny.png` is an original 512×512 placeholder portrait (the `design-assets:ai-image-generator` skill if a key is configured, otherwise a hand-authored SVG rasterised with `uv run --with cairosvg`), `sunny.yaml` gains `avatar: /characters/sunny.png`, and every shipped character still loads and lists (verify: `npx vitest run src/lib/data/characters.smoke.test.ts`)
+- [x] 3.1 [medium] `static/characters/sunny.png` is an original 512×512 placeholder portrait (the `design-assets:ai-image-generator` skill if a key is configured, otherwise a hand-authored SVG rasterised with `uv run --with cairosvg`), `sunny.yaml` gains `avatar: /characters/sunny.png`, and every shipped character still loads and lists (verify: `npx vitest run src/lib/data/characters.smoke.test.ts`) (✓ `npx vitest run src/lib/data/characters.smoke.test.ts` passed, 8/8)
 - [ ] 3.2 [medium] The whole suite and the build pass, and a reviewer runs every reviewer scenario in `specs/character-sheet/spec.md` and `specs/home-picker/spec.md` in a browser — `/sunny` and `/` in light and dark mode at 1024×768 and 360 wide, plus `/urven` (no avatar) to confirm the plain layout — and records the results in the pull request description (verify: `npm test && npm run build`)
 
 ## Deviations Ledger
@@ -25,3 +25,5 @@
 <!-- Dated notes on small departures from the plan, written during apply. Stop and ask the user about a large one. -->
 
 - 2026-10-28: New tests use neutral ids and paths (`test-hero`, `/characters/test-hero.png`) rather than `sunny`, following the unmerged `decouple-character-tests` change (#90), which keeps shipped character names out of tests. The behaviour each task names is unchanged.
+- 2026-10-28: No image-generation API key is configured on this machine, so `sunny.png` is the fallback the plan names: a hand-authored SVG rasterised with `uv run --with cairosvg`. The SVG stays in `.workspace/`.
+- 2026-10-28: Task 3.1 adds a smoke test that each shipped character's `avatar`, when set, resolves and names a file under `static/`, so a typo in an avatar line fails the suite instead of silently showing nothing.
