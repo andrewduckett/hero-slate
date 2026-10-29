@@ -143,3 +143,30 @@ describe('avatar save refuses an id', () => {
 		expect(after).toEqual(before);
 	});
 });
+
+describe('avatar save refuses an image', () => {
+	async function saveImage(image: string | Uint8Array) {
+		const deps = fakeDeps({
+			'static/characters/hero.yaml': 'name: Hero\n',
+			'.workspace/look.txt': 'a hero\n',
+			'.workspace/in': image
+		});
+		const before = { ...deps.files };
+		const result = await run(['save', '.workspace/in', 'hero', ...SAVE_FLAGS], deps);
+		return { result, before, after: deps.files };
+	}
+
+	it('that is not a PNG, JPEG or WebP file', async () => {
+		const { result, before, after } = await saveImage('just some text\n');
+
+		expect(result).toMatchObject({ exitCode: 1, stderr: expect.stringContaining('not a PNG, JPEG or WebP image') });
+		expect(after).toEqual(before);
+	});
+
+	it('under 512 px on its shorter side', async () => {
+		const { result, before, after } = await saveImage(await solidJpeg(400, 600));
+
+		expect(result).toMatchObject({ exitCode: 1, stderr: expect.stringContaining('smaller than 512 px on its shorter side') });
+		expect(after).toEqual(before);
+	});
+});

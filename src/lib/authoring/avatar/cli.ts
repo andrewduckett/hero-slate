@@ -16,6 +16,7 @@ export const EXIT_CODES = {
 } as const;
 
 const AVATAR_SIZE = 512;
+const ACCEPTED_FORMATS = ['png', 'jpeg', 'webp'];
 
 export interface AvatarDeps {
 	exists: (path: string) => boolean;
@@ -61,9 +62,28 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 		return fail(EXIT_CODES.unusableInput, `no character file has the id "${id}": ${characterPath(id)} does not exist`);
 	}
 
+	const image = deps.readBytes(imagePath);
+	let format: string | undefined;
+	let width = 0;
+	let height = 0;
+	try {
+		({ format, width, height } = await sharp(image).metadata());
+	} catch {
+		format = undefined;
+	}
+	if (format === undefined || !ACCEPTED_FORMATS.includes(format)) {
+		return fail(EXIT_CODES.unusableInput, `${imagePath} is not a PNG, JPEG or WebP image`);
+	}
+	if (Math.min(width, height) < AVATAR_SIZE) {
+		return fail(
+			EXIT_CODES.unusableInput,
+			`${imagePath} is ${width} × ${height}, smaller than ${AVATAR_SIZE} px on its shorter side`
+		);
+	}
+
 	// Rotate first so a phone photo's orientation flag applies before the crop.
 	// Top gravity keeps a tall image's head and centres a wide one (design D2).
-	const png = await sharp(deps.readBytes(imagePath))
+	const png = await sharp(image)
 		.rotate()
 		.resize(AVATAR_SIZE, AVATAR_SIZE, { fit: 'cover', position: 'top' })
 		.png()
