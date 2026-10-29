@@ -60,6 +60,10 @@ interface SaveArgs {
 	replace: boolean;
 }
 
+function isOneLine(text: string): boolean {
+	return text.trim() !== '' && !/[\r\n]/.test(text);
+}
+
 function localDate(date: Date): string {
 	const pad = (n: number) => String(n).padStart(2, '0');
 	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
@@ -104,7 +108,14 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 		return fail(EXIT_CODES.unusableInput, `no character file has the id "${id}": ${characterPath(id)} does not exist`);
 	}
 
+	// The provenance must stay a single comment line, or it would spill into the YAML.
+	if (!isOneLine(tool)) {
+		return fail(EXIT_CODES.unusableInput, 'the image tool name must be one non-empty line');
+	}
 	const look = deps.readText(lookFile).replace(/\r?\n$/, '');
+	if (!isOneLine(look)) {
+		return fail(EXIT_CODES.unusableInput, `the look summary in ${lookFile} must be one non-empty line`);
+	}
 
 	if (!replace && deps.exists(avatarPath(id))) {
 		return fail(EXIT_CODES.targetExists, `${avatarPath(id)} already exists; pass --replace to replace it`);

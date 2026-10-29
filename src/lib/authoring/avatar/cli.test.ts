@@ -229,3 +229,24 @@ describe('avatar save records provenance', () => {
 		expect(await saveWith(yaml, ['--replace'])).toBe(`${NEW_COMMENT}\r\n${rest}`);
 	});
 });
+
+describe('avatar save refuses provenance that is not one line', () => {
+	it.each([
+		{ name: 'an empty tool name', tool: '', look: 'a hero\n', message: 'tool name' },
+		{ name: 'a tool name with a line break', tool: 'Tool\nTwo', look: 'a hero\n', message: 'tool name' },
+		{ name: 'an empty look summary', tool: 'Test Tool', look: '\n', message: 'look summary' },
+		{ name: 'a look summary with a line break', tool: 'Test Tool', look: 'a hero\nwith a cape\n', message: 'look summary' }
+	])('$name', async ({ tool, look, message }) => {
+		const deps = fakeDeps({
+			'static/characters/hero.yaml': 'name: Hero\n',
+			'.workspace/look.txt': look,
+			'.workspace/in.jpg': await solidJpeg(1024, 1024)
+		});
+		const before = { ...deps.files };
+
+		const result = await run(['save', '.workspace/in.jpg', 'hero', '--tool', tool, '--look-file', '.workspace/look.txt'], deps);
+
+		expect(result).toMatchObject({ exitCode: 1, stderr: expect.stringContaining(message) });
+		expect(deps.files).toEqual(before);
+	});
+});
