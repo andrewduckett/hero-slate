@@ -5,7 +5,7 @@
 - [x] 1.3 [easy] `save` exits 1 and writes nothing for an id outside `ID_GRAMMAR` (such as `../evil`), for the reserved `manifest`, and for an id with no `static/characters/<id>.yaml`. Each message names the check that failed (verify: npx vitest run src/lib/authoring/avatar) (✓ npx vitest run src/lib/authoring/avatar passed)
 - [x] 1.4 [easy] `save` exits 1 and writes nothing for a file that is not a PNG, JPEG or WebP image, and for an image under 512 px on its shorter side (verify: npx vitest run src/lib/authoring/avatar) (✓ npx vitest run src/lib/authoring/avatar passed)
 - [x] 1.5 [medium] `save` exits 3 and changes no file when `<id>.png` exists without `--replace`, and replaces it with `--replace` (verify: npx vitest run src/lib/authoring/avatar) (✓ npx vitest run src/lib/authoring/avatar passed)
-- [ ] 1.6 [medium] `save --tool <name> --look-file <file>` makes the character file's first line `# Avatar: <name>, <YYYY-MM-DD>. Look: <summary>.`, from the injected clock. It replaces an existing avatar comment and keeps every other byte (verify: npx vitest run src/lib/authoring/avatar)
+- [x] 1.6 [medium] `save --tool <name> --look-file <file>` makes the character file's first line `# Avatar: <name>, <YYYY-MM-DD>. Look: <summary>.`, from the injected clock. It replaces an existing avatar comment and keeps every other byte (verify: npx vitest run src/lib/authoring/avatar) (✓ npx vitest run src/lib/authoring/avatar passed)
 - [ ] 1.7 [easy] `save` exits 1 and writes nothing when the tool name or the look summary is empty or has a line break (verify: npx vitest run src/lib/authoring/avatar)
 - [ ] 1.8 [easy] `prompt <look-file>` prints the look description, then the style guide unchanged (verify: npx vitest run src/lib/authoring/avatar)
 

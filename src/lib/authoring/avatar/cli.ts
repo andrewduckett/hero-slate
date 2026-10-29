@@ -50,27 +50,48 @@ function avatarPath(id: string): string {
 	return `static/characters/${id}.png`;
 }
 
+const AVATAR_COMMENT_PREFIX = '# Avatar: ';
+
 interface SaveArgs {
 	imagePath: string;
 	id: string;
+	tool: string;
+	lookFile: string;
 	replace: boolean;
+}
+
+function localDate(date: Date): string {
+	const pad = (n: number) => String(n).padStart(2, '0');
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+/** Puts `comment` on the first line, replacing an avatar comment already there; every other byte stays (design D6). */
+function withAvatarComment(yaml: string, comment: string): string {
+	const match = /\r?\n/.exec(yaml);
+	const lineEnd = match?.[0] ?? '\n';
+	const firstLineEnd = match ? match.index + lineEnd.length : yaml.length;
+	const rest = yaml.startsWith(AVATAR_COMMENT_PREFIX) ? yaml.slice(firstLineEnd) : yaml;
+	return `${comment}${lineEnd}${rest}`;
 }
 
 function parseSaveArgs(args: string[]): SaveArgs {
 	const positional: string[] = [];
 	let replace = false;
+	let tool = '';
+	let lookFile = '';
 	for (let i = 0; i < args.length; i++) {
 		const arg = args[i];
 		if (arg === '--replace') replace = true;
-		else if (arg === '--tool' || arg === '--look-file') i++;
+		else if (arg === '--tool') tool = args[++i] ?? '';
+		else if (arg === '--look-file') lookFile = args[++i] ?? '';
 		else positional.push(arg);
 	}
 	const [imagePath = '', id = ''] = positional;
-	return { imagePath, id, replace };
+	return { imagePath, id, tool, lookFile, replace };
 }
 
 async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome> {
-	const { imagePath, id, replace } = parseSaveArgs(args);
+	const { imagePath, id, tool, lookFile, replace } = parseSaveArgs(args);
 
 	// The target path is built from the id alone, so this check is the path trust boundary.
 	if (!ID_GRAMMAR.test(id)) {
@@ -82,6 +103,8 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 	if (!deps.exists(characterPath(id))) {
 		return fail(EXIT_CODES.unusableInput, `no character file has the id "${id}": ${characterPath(id)} does not exist`);
 	}
+
+	const look = deps.readText(lookFile).replace(/\r?\n$/, '');
 
 	if (!replace && deps.exists(avatarPath(id))) {
 		return fail(EXIT_CODES.targetExists, `${avatarPath(id)} already exists; pass --replace to replace it`);
@@ -119,6 +142,8 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 	} catch {
 		return fail(EXIT_CODES.targetExists, `${avatarPath(id)} appeared before the write; refusing to replace it`);
 	}
+	const comment = `${AVATAR_COMMENT_PREFIX}${tool}, ${localDate(deps.now())}. Look: ${look}.`;
+	deps.writeFile(characterPath(id), withAvatarComment(deps.readText(characterPath(id)), comment), { replace: true });
 	return ok(avatarPath(id));
 }
 

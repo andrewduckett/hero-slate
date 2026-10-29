@@ -201,3 +201,31 @@ describe('avatar save over an existing avatar', () => {
 		expect(meta).toMatchObject({ format: 'png', width: 512, height: 512 });
 	});
 });
+
+describe('avatar save records provenance', () => {
+	const PROVENANCE_FLAGS = ['--tool', 'Gemini 3 Pro Image', '--look-file', '.workspace/look.txt'];
+	const NEW_COMMENT = '# Avatar: Gemini 3 Pro Image, 2026-11-02. Look: dwarf, red braided beard, sun shield.';
+
+	async function saveWith(yaml: string, extraFlags: string[] = []) {
+		const deps = fakeDeps({
+			'static/characters/hero.yaml': yaml,
+			'.workspace/look.txt': 'dwarf, red braided beard, sun shield\n',
+			'.workspace/in.jpg': await solidJpeg(1024, 1024)
+		});
+		await run(['save', '.workspace/in.jpg', 'hero', ...PROVENANCE_FLAGS, ...extraFlags], deps);
+		return deps.files['static/characters/hero.yaml'] as string;
+	}
+
+	it('adds the avatar comment above the first line of the character file', async () => {
+		const yaml = '# A note the Author wrote.\nname: Hero\nlevel: 3\n';
+
+		expect(await saveWith(yaml)).toBe(`${NEW_COMMENT}\n${yaml}`);
+	});
+
+	it('replaces an avatar comment already on the first line', async () => {
+		const rest = '# A note the Author wrote.\r\nname: Hero\r\n';
+		const yaml = `# Avatar: Old Tool, 2025-01-01. Look: an old look.\r\n${rest}`;
+
+		expect(await saveWith(yaml, ['--replace'])).toBe(`${NEW_COMMENT}\r\n${rest}`);
+	});
+});
