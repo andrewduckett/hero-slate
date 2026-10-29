@@ -1,6 +1,6 @@
 ## 1. The avatar tool
 
-- [ ] 1.1 [medium] `save <image> <id>` turns a 1024 × 1024 JPEG for a character with a YAML file into a 512 × 512 PNG at `static/characters/<id>.png`, and exits 0. Adds `sharp` as a dev dependency, and the test runs in the Node environment (design D1, D7) (verify: npx vitest run src/lib/authoring/avatar)
+- [x] 1.1 [medium] `save <image> <id>` turns a 1024 × 1024 JPEG for a character with a YAML file into a 512 × 512 PNG at `static/characters/<id>.png`, and exits 0. Adds `sharp` as a dev dependency, and the test runs in the Node environment (design D1, D7) (verify: npx vitest run src/lib/authoring/avatar) (✓ npx vitest run src/lib/authoring/avatar passed)
 - [ ] 1.2 [medium] A tall image keeps its top and a wide image keeps its horizontal centre: the red/blue band images from the spec give an avatar with no blue pixels (verify: npx vitest run src/lib/authoring/avatar)
 - [ ] 1.3 [easy] `save` exits 1 and writes nothing for an id outside `ID_GRAMMAR` (such as `../evil`), for the reserved `manifest`, and for an id with no `static/characters/<id>.yaml`. Each message names the check that failed (verify: npx vitest run src/lib/authoring/avatar)
 - [ ] 1.4 [easy] `save` exits 1 and writes nothing for a file that is not a PNG, JPEG or WebP image, and for an image under 512 px on its shorter side (verify: npx vitest run src/lib/authoring/avatar)

@@ -1,0 +1,88 @@
+/**
+ * The avatar command-line entry: `save`.
+ *
+ * `run` is the pure part: it takes argv and an injected `AvatarDeps`, and
+ * returns an outcome instead of touching the real file system, clock, or
+ * process. `main` is the only impure part. Run with `vite-node`, from the
+ * repo root, like the D&D Beyond tool (see design.md, D3 and D4).
+ */
+import sharp from 'sharp';
+
+/** Codes reuse the D&D Beyond tool's numbers where the meaning is the same (design D3). */
+export const EXIT_CODES = {
+	success: 0,
+	unusableInput: 1
+} as const;
+
+const AVATAR_SIZE = 512;
+
+export interface AvatarDeps {
+	exists: (path: string) => boolean;
+	readText: (path: string) => string;
+	readBytes: (path: string) => Uint8Array;
+	writeFile: (path: string, content: string | Uint8Array) => void;
+	now: () => Date;
+}
+
+export interface AvatarOutcome {
+	exitCode: number;
+	stdout: string;
+	stderr: string;
+}
+
+function ok(stdout: string): AvatarOutcome {
+	return { exitCode: EXIT_CODES.success, stdout, stderr: '' };
+}
+
+function fail(exitCode: number, message: string): AvatarOutcome {
+	return { exitCode, stdout: '', stderr: message };
+}
+
+function avatarPath(id: string): string {
+	return `static/characters/${id}.png`;
+}
+
+async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome> {
+	const [imagePath, id] = args;
+
+	const png = await sharp(deps.readBytes(imagePath))
+		.resize(AVATAR_SIZE, AVATAR_SIZE, { fit: 'cover' })
+		.png()
+		.toBuffer();
+
+	deps.writeFile(avatarPath(id), png);
+	return ok(avatarPath(id));
+}
+
+export async function run(argv: string[], deps: AvatarDeps): Promise<AvatarOutcome> {
+	const [command, ...args] = argv;
+
+	switch (command) {
+		case 'save':
+			return runSave(args, deps);
+		default:
+			return fail(EXIT_CODES.unusableInput, `unknown command "${String(command)}"`);
+	}
+}
+
+async function main(): Promise<void> {
+	const fs = await import('node:fs');
+	const deps: AvatarDeps = {
+		exists: (path) => fs.existsSync(path),
+		readText: (path) => fs.readFileSync(path, 'utf8'),
+		readBytes: (path) => fs.readFileSync(path),
+		writeFile: (path, content) => fs.writeFileSync(path, content),
+		now: () => new Date()
+	};
+
+	const result = await run(process.argv.slice(2), deps);
+	if (result.stdout) console.log(result.stdout);
+	if (result.stderr) console.error(result.stderr);
+	process.exit(result.exitCode);
+}
+
+// Under vite-node, process.argv[1] is vite-node's own path, so skip only
+// when Vitest imports this module for its tests.
+if (!process.env.VITEST) {
+	main();
+}
