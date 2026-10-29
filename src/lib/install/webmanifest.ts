@@ -52,3 +52,8 @@ export function buildWebManifest(): WebManifest {
 		}))
 	};
 }
+
+/** The exact text of `static/manifest.webmanifest`. */
+export function renderWebManifest(): string {
+	return `${JSON.stringify(buildWebManifest(), null, '\t')}\n`;
+}
