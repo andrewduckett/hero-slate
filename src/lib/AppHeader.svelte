@@ -1,17 +1,22 @@
 <script lang="ts">
 	import type { PaletteName } from '#lib/theme/palette';
 	import ThemeToggle from '#lib/theme/ThemeToggle.svelte';
+	import AvatarArt from '#lib/AvatarArt.svelte';
 
 	let {
 		title,
 		subtitle,
-		palette = 'neutral' as PaletteName
-	}: { title: string; subtitle?: string; palette?: PaletteName } = $props();
+		palette = 'neutral' as PaletteName,
+		avatar
+	}: { title: string; subtitle?: string; palette?: PaletteName; avatar?: unknown } = $props();
+
+	let avatarShowing = $state(false);
 </script>
 
 <header
 	data-block="header"
 	data-palette={palette}
+	data-avatar={avatarShowing || undefined}
 	style="background-color: var(--accent); color: var(--on-accent);"
 >
 	<div class="header-text">
@@ -20,7 +25,11 @@
 			<p>{subtitle}</p>
 		{/if}
 	</div>
-	<ThemeToggle />
+	<AvatarArt {avatar} bind:showing={avatarShowing} />
+	<!-- Opaque so the icon keeps the contrast-checked accent pairing over any art. -->
+	<span data-toggle-backing style="background-color: var(--accent);">
+		<ThemeToggle />
+	</span>
 </header>
 
 <style>
@@ -36,6 +45,14 @@
 	.header-text {
 		flex: 1;
 		min-width: 0;
+	}
+
+	/* Above the art, with the toggle's own corners, so it never shows as a box. */
+	[data-toggle-backing] {
+		position: relative;
+		display: flex;
+		flex-shrink: 0;
+		border-radius: var(--radius-s);
 	}
 
 	h1 {

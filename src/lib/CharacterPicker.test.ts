@@ -29,6 +29,14 @@ describe('CharacterPicker', () => {
 		expect(screen.getByText('Choose your hero')).toBeTruthy();
 	});
 
+	it('shows no avatar in the home header', async () => {
+		const withAvatar: CharacterSummary = { id: 'test-hero', name: 'Test Hero', avatar: '/characters/test-hero.png' };
+		const { container } = render(CharacterPicker, { props: { provider: found(withAvatar) } });
+
+		await screen.findByText('Test Hero');
+		expect(container.querySelector('[data-block="header"] img')).toBeNull();
+	});
+
 	it('shows Loading… and no cards while the listing is pending', () => {
 		render(CharacterPicker, { props: { provider: listing(new Promise(() => {})) } });
 

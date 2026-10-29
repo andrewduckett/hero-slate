@@ -63,6 +63,7 @@
 			title={result.character.name}
 			subtitle={formatIdentity(result.character) || undefined}
 			palette={resolvePalette(result.character.color)}
+			avatar={result.character.avatar}
 		/>
 		<!-- Blocks render in one fixed order: stats, hit points, pools, the
 		     authored sections, then the links. Each group heading sits directly

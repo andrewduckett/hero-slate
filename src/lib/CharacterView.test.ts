@@ -24,6 +24,14 @@ describe('CharacterView', () => {
 		expect(screen.getByRole('button', { name: 'Magic: 1 remaining' })).toBeTruthy();
 	});
 
+	it("passes the character's avatar to the header", () => {
+		const { container } = render(CharacterView, {
+			props: { result: { status: 'found', character: { ...testHero, avatar: '/characters/test-hero.png' } } }
+		});
+
+		expect(container.querySelector('header img')?.getAttribute('src')).toBe('/characters/test-hero.png');
+	});
+
 	it('themes the header with the resolved palette accent and on-accent', () => {
 		const { container } = render(CharacterView, {
 			props: { result: { status: 'found', character: { ...testHero, color: 'forest' } } }

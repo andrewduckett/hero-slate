@@ -72,4 +72,47 @@ describe('AppHeader', () => {
 		expect(header?.getAttribute('style')).toContain('var(--accent)');
 		expect(header?.getAttribute('style')).toContain('var(--on-accent)');
 	});
+
+	it('shows the avatar image', () => {
+		const { container } = render(AppHeader, {
+			props: { title: 'Test Hero', avatar: '/characters/test-hero.png' }
+		});
+		expect(container.querySelector('header img')?.getAttribute('src')).toBe('/characters/test-hero.png');
+	});
+
+	it('marks the header with data-avatar while the avatar shows', () => {
+		const { container } = render(AppHeader, {
+			props: { title: 'Test Hero', avatar: '/characters/test-hero.png' }
+		});
+		expect(container.querySelector('header')?.hasAttribute('data-avatar')).toBe(true);
+	});
+
+	it('leaves data-avatar off a header with no avatar', () => {
+		const { container } = render(AppHeader, { props: { title: 'Test Hero' } });
+		expect(container.querySelector('header')?.hasAttribute('data-avatar')).toBe(false);
+	});
+
+	it('clears data-avatar after the image fails to load', async () => {
+		const { container } = render(AppHeader, {
+			props: { title: 'Test Hero', avatar: '/characters/missing.png' }
+		});
+		await fireEvent.error(container.querySelector('header img')!);
+		expect(container.querySelector('header')?.hasAttribute('data-avatar')).toBe(false);
+	});
+
+	it('keeps the title, subtitle and toggle beside an avatar', () => {
+		render(AppHeader, {
+			props: { title: 'Test Hero', subtitle: 'Level 6 Druid', avatar: '/characters/test-hero.png' }
+		});
+		expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('Test Hero');
+		expect(screen.getByText('Level 6 Druid')).toBeTruthy();
+		expect(screen.getByRole('button')).toBeTruthy();
+	});
+
+	it('sets the toggle on an opaque accent backing', () => {
+		render(AppHeader, { props: { title: 'Test Hero', avatar: '/characters/test-hero.png' } });
+		const backing = screen.getByRole('button').parentElement as HTMLElement;
+		expect(backing.hasAttribute('data-toggle-backing')).toBe(true);
+		expect(backing.style.backgroundColor).toBe('var(--accent)');
+	});
 });
