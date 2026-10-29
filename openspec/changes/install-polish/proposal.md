@@ -19,11 +19,12 @@ None.
 
 ### Modified Capabilities
 
-- `home-screen-install`: the "Home-screen icons" requirement drops the "HS until real art ships" placeholder rule. Instead, each icon shows the logo on the dark base surface. A new requirement covers the iPad startup images: their sizes, and the links every page carries.
+- `home-screen-install`: the "Home-screen icons" requirement, with its "HS until real art ships" rule, is replaced by two: one keeps the icon files and sizes, and one says each icon shows the logo on the dark base surface. New requirements cover the iPad startup images: their sizes, what they show, and the links every page carries.
 
 ## Impact
 
 - **Code:** `scripts/generate-icons.ts` (the logo SVG, the icons and the startup images), a new `src/lib/install/startup-images.ts` (the list of startup images), `src/app.html` (the startup-image links).
 - **Tests:** `src/lib/install/icons.test.ts` and `src/lib/install/head.test.ts`.
-- **Static assets:** the four icons in `static/` are redrawn, and 10 startup images are added there.- **Dependencies:** none new. `sharp` already draws the icons.
+- **Static assets:** the four icons in `static/` are redrawn, and 10 startup images are added there, in `static/splash/`.
+- **Dependencies:** none new. `sharp` already draws the icons.
 - **Verification:** besides the tests, the user checks a real iPad and a Galaxy Tab after deploy (D9).
