@@ -18,7 +18,7 @@
 ## 3. Sample art and acceptance [depends-on: 2]
 
 - [x] 3.1 [medium] `static/characters/sunny.png` is an original 512×512 placeholder portrait (the `design-assets:ai-image-generator` skill if a key is configured, otherwise a hand-authored SVG rasterised with `uv run --with cairosvg`), `sunny.yaml` gains `avatar: /characters/sunny.png`, and every shipped character still loads and lists (verify: `npx vitest run src/lib/data/characters.smoke.test.ts`) (✓ `npx vitest run src/lib/data/characters.smoke.test.ts` passed, 8/8)
-- [ ] 3.2 [medium] The whole suite and the build pass, and a reviewer runs every reviewer scenario in `specs/character-sheet/spec.md` and `specs/home-picker/spec.md` in a browser — `/sunny` and `/` in light and dark mode at 1024×768 and 360 wide, plus `/urven` (no avatar) to confirm the plain layout — and records the results in the pull request description (verify: `npm test && npm run build`)
+- [x] 3.2 [medium] The whole suite and the build pass, and a reviewer runs every reviewer scenario in `specs/character-sheet/spec.md` and `specs/home-picker/spec.md` in a browser — `/sunny` and `/` in light and dark mode at 1024×768 and 360 wide, plus `/urven` (no avatar) to confirm the plain layout — and records the results in the pull request description (verify: `npm test && npm run build`) (✓ `npm test` passed 804/804 and `npm run build` succeeded; browser results recorded in PR #98)
 
 ## Deviations Ledger
 
