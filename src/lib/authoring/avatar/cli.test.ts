@@ -285,3 +285,26 @@ describe('avatar prompt', () => {
 		expect(result).toMatchObject({ exitCode: 0, stdout: `Hero is a tall elf with silver hair.\n\n${guide}` });
 	});
 });
+
+describe('a look file that does not exist', () => {
+	it('stops save with nothing written', async () => {
+		const deps = fakeDeps({
+			'static/characters/hero.yaml': 'name: Hero\n',
+			'.workspace/in.jpg': await solidJpeg(1024, 1024)
+		});
+		const before = { ...deps.files };
+
+		const result = await run(['save', '.workspace/in.jpg', 'hero', ...SAVE_FLAGS], deps);
+
+		expect(result).toMatchObject({ exitCode: 1, stderr: expect.stringContaining('.workspace/look.txt cannot be read') });
+		expect(deps.files).toEqual(before);
+	});
+
+	it('stops prompt', async () => {
+		const deps = fakeDeps({ '.agents/skills/character-avatar/style-guide.md': 'A soft painting.\n' });
+
+		const result = await run(['prompt', '.workspace/look.txt'], deps);
+
+		expect(result).toMatchObject({ exitCode: 1, stderr: expect.stringContaining('.workspace/look.txt cannot be read') });
+	});
+});

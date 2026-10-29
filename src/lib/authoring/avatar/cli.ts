@@ -61,8 +61,12 @@ interface SaveArgs {
 }
 
 /** The Author's words come from a file under `.workspace/`, so shell quoting cannot mangle them. */
-function readWords(path: string, deps: AvatarDeps): string {
-	return deps.readText(path).replace(/\r?\n$/, '');
+function readWords(path: string, deps: AvatarDeps): string | undefined {
+	try {
+		return deps.readText(path).replace(/\r?\n$/, '');
+	} catch {
+		return undefined;
+	}
 }
 
 function isOneLine(text: string): boolean {
@@ -118,6 +122,9 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 		return fail(EXIT_CODES.unusableInput, 'the image tool name must be one non-empty line');
 	}
 	const look = readWords(lookFile, deps);
+	if (look === undefined) {
+		return fail(EXIT_CODES.unusableInput, `the look summary file ${lookFile} cannot be read`);
+	}
 	if (!isOneLine(look)) {
 		return fail(EXIT_CODES.unusableInput, `the look summary in ${lookFile} must be one non-empty line`);
 	}
@@ -174,6 +181,9 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 function runPrompt(args: string[], deps: AvatarDeps): AvatarOutcome {
 	const [lookFile = ''] = args;
 	const look = readWords(lookFile, deps);
+	if (look === undefined) {
+		return fail(EXIT_CODES.unusableInput, `the look file ${lookFile} cannot be read`);
+	}
 	return ok(`${look}\n\n${deps.readText(STYLE_GUIDE_PATH)}`);
 }
 
