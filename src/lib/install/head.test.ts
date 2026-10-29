@@ -30,4 +30,9 @@ describe('app shell head', () => {
 		expect(links).toHaveLength(10);
 		expect(new Set(linked)).toEqual(new Set(listed));
 	});
+
+	it('marks the site as a home-screen web app for iPad', () => {
+		const meta = head.querySelector('meta[name="apple-mobile-web-app-capable"]');
+		expect(meta?.getAttribute('content')).toBe('yes');
+	});
 });
