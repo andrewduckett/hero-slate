@@ -17,5 +17,5 @@
 
 ## 4. Integration
 
-- [ ] 4.1 [easy] No transition in any component or stylesheet under `src/` names a literal duration; each takes the shared motion timing (verify: npx vitest run src/lib/theme/motion.test.ts)
+- [x] 4.1 [easy] No transition in any component or stylesheet under `src/` names a literal duration; each takes the shared motion timing (verify: npx vitest run src/lib/theme/motion.test.ts) (✓ npx vitest run src/lib/theme/motion.test.ts passed; guard test, fails on a literal 300ms)
 - [ ] 4.2 [medium] The full suite and the static build pass, and a visual review in the running app confirms each tracker eases calmly, nothing eases on first load, and changes are instant with reduced motion emulated (verify: npm test && npm run build)

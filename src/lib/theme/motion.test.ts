@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { readStyles } from './style-source';
 
 /**
  * These tests read the shipped stylesheet, because jsdom runs no transitions:
@@ -28,5 +29,21 @@ describe('reduced motion', () => {
 			/@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)\s*\{\s*:root\s*\{([^}]*)\}/
 		);
 		expect(query?.[1]).toMatch(/--motion-duration:\s*0m?s;/);
+	});
+});
+
+describe('motion timing across the app', () => {
+	/** Every `.svelte` and `.css` file under `src/`, relative to the repo root. */
+	const styledFiles = readdirSync(resolve(process.cwd(), 'src'), { recursive: true, encoding: 'utf8' })
+		.filter((file) => file.endsWith('.svelte') || file.endsWith('.css'))
+		.map((file) => `src/${file}`);
+
+	it('names no literal duration in any transition', () => {
+		const literal = styledFiles.flatMap((file) =>
+			[...readStyles(file).matchAll(/transition(?:-duration)?:\s*([^;]+)/g)]
+				.filter(([, value]) => /(^|[\s,])[\d.]+m?s\b/.test(value))
+				.map(([declaration]) => `${file}: ${declaration.trim()}`)
+		);
+		expect(literal).toEqual([]);
 	});
 });
