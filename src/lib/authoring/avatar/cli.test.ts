@@ -156,6 +156,16 @@ describe('avatar save refuses an image', () => {
 		return { result, before, after: deps.files };
 	}
 
+	it('file that does not exist', async () => {
+		const deps = fakeDeps({ 'static/characters/hero.yaml': 'name: Hero\n', '.workspace/look.txt': 'a hero\n' });
+		const before = { ...deps.files };
+
+		const result = await run(['save', '.workspace/missing.png', 'hero', ...SAVE_FLAGS], deps);
+
+		expect(result).toMatchObject({ exitCode: 1, stderr: expect.stringContaining('.workspace/missing.png cannot be read') });
+		expect(deps.files).toEqual(before);
+	});
+
 	it('that is not a PNG, JPEG or WebP file', async () => {
 		const { result, before, after } = await saveImage('just some text\n');
 

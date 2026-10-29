@@ -126,7 +126,12 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 		return fail(EXIT_CODES.targetExists, `${avatarPath(id)} already exists; pass --replace to replace it`);
 	}
 
-	const image = deps.readBytes(imagePath);
+	let image: Uint8Array;
+	try {
+		image = deps.readBytes(imagePath);
+	} catch {
+		return fail(EXIT_CODES.unusableInput, `${imagePath} cannot be read`);
+	}
 	let format: string | undefined;
 	let width = 0;
 	let height = 0;
