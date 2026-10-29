@@ -6,7 +6,7 @@
 ## 2. Hit points tracker
 
 - [x] 2.1 [easy] The hit points bar's fill transitions its width with the shared motion duration and easing (verify: npx vitest run src/lib/character/HitPointsBlock.test.ts) (✓ npx vitest run src/lib/character/HitPointsBlock.test.ts passed)
-- [ ] 2.2 [easy] The hit points tracker's down-state opacity transitions with the shared motion duration and easing, replacing the literal 300 ms (verify: npx vitest run src/lib/character/HitPointsBlock.test.ts)
+- [x] 2.2 [easy] The hit points tracker's down-state opacity transitions with the shared motion duration and easing, replacing the literal 300 ms (verify: npx vitest run src/lib/character/HitPointsBlock.test.ts) (✓ npx vitest run src/lib/character/HitPointsBlock.test.ts passed)
 - [ ] 2.3 [easy] After a -1 tap on 30 of 45 hit points, the readout shows "29 / 45" straight away, with no count-up (verify: npx vitest run src/lib/character/HitPointsBlock.test.ts)
 
 ## 3. Resource pools

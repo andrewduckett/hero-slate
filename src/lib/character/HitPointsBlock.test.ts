@@ -160,4 +160,8 @@ describe('HitPointsBlock — motion', () => {
 	it('eases the bar fill to its new width with the shared motion timing', () => {
 		expect(transitionOf(styles, '.fill')).toContain(eased('width'));
 	});
+
+	it('eases the down-state opacity with the shared motion timing', () => {
+		expect(transitionOf(styles, '.hit-points')).toBe(eased('opacity'));
+	});
 });

@@ -123,7 +123,7 @@
 		border-radius: var(--radius-l);
 		box-shadow: var(--shadow);
 		/* A calm dim on the down state, eased so it never flashes. */
-		transition: opacity 300ms ease;
+		transition: opacity var(--motion-duration) var(--motion-easing);
 	}
 
 	/* The max reads smaller than the current value. */
