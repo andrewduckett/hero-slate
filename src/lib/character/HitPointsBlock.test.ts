@@ -164,4 +164,13 @@ describe('HitPointsBlock — motion', () => {
 	it('eases the down-state opacity with the shared motion timing', () => {
 		expect(transitionOf(styles, '.hit-points')).toBe(eased('opacity'));
 	});
+
+	it('shows the new readout straight after a tap, with no count-up', async () => {
+		const { container } = render(HitPointsBlock, {
+			props: { hitPoints: { max: 45 }, storedCurrent: 30, store: fakeStore(), id: 'test-hero' }
+		});
+
+		await fireEvent.click(container.querySelector('[data-hp-adjust="-1"]') as HTMLElement);
+		expect(normalize(container.querySelector('.readout')?.textContent)).toBe('29 / 45');
+	});
 });
