@@ -112,13 +112,23 @@
 	</article>
 {:else if result.status === 'error'}
 	<p>Could not load this character. Try again.</p>
+	<a class="way-back" href="/">Choose your hero</a>
 {:else}
 	<!-- not-found and invalid share a fixed, id-free message. -->
 	<p>Character not found</p>
-	<a href="/">Choose your hero</a>
+	<a class="way-back" href="/">Choose your hero</a>
 {/if}
 
 <style>
+	/* A child taps this, so it gets a full 44px target, not just its text. */
+	.way-back {
+		display: inline-flex;
+		align-items: center;
+		min-width: 2.75rem;
+		min-height: 2.75rem;
+		font-weight: 700;
+	}
+
 	article {
 		display: grid;
 		gap: var(--space-5);

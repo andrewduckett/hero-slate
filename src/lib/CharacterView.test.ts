@@ -148,6 +148,12 @@ describe('CharacterView', () => {
 
 		expect(screen.getByText('Could not load this character. Try again.')).toBeTruthy();
 	});
+
+	it('links the error result back to the home page', () => {
+		render(CharacterView, { props: { result: { status: 'error' } } });
+
+		expect(screen.getByRole('link', { name: 'Choose your hero' }).getAttribute('href')).toBe('/');
+	});
 });
 
 /** A character with every block, for the order and heading tests. */
