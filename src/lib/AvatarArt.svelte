@@ -3,7 +3,7 @@
 	// picker card so the site-path rule, the failure handling and the fade agree.
 	import { resolveAvatar } from '#lib/avatar';
 
-	let { avatar, showing = $bindable(false) }: { avatar: unknown; showing?: boolean } = $props();
+	let { avatar, showing = $bindable() }: { avatar: unknown; showing?: boolean } = $props();
 
 	const src = $derived(resolveAvatar(avatar));
 	// Keyed to the source, so a new avatar gets its own chance to load.

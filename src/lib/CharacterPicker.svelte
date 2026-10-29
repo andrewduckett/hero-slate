@@ -5,10 +5,13 @@
 	import { formatIdentity } from '#lib/format';
 	import { resolvePalette } from '#lib/theme/resolve';
 	import AppHeader from '#lib/AppHeader.svelte';
+	import AvatarArt from '#lib/AvatarArt.svelte';
 
 	let { provider }: { provider: CharacterProvider } = $props();
 
 	let result = $state<ListCharactersResult | { status: 'loading' }>({ status: 'loading' });
+	// Each card reserves room for its art only while that art shows.
+	let avatarShowing = $state<Record<string, boolean>>({});
 
 	$effect(() => {
 		let cancelled = false;
@@ -36,11 +39,12 @@
 				{@const descriptor = formatIdentity(summary)}
 				<!-- The anchor wraps the card's text, so that text is its accessible name. -->
 				<li data-palette={resolvePalette(summary.color)}>
-					<a href="/{summary.id}">
+					<a href="/{summary.id}" data-avatar={avatarShowing[summary.id] || undefined}>
 						<span class="name" data-card-name>{summary.name}</span>
 						{#if descriptor}
 							<span class="descriptor" data-card-descriptor>{descriptor}</span>
 						{/if}
+						<AvatarArt avatar={summary.avatar} bind:showing={avatarShowing[summary.id]} />
 					</a>
 				</li>
 			{/each}
