@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
+import { render, screen, fireEvent } from '@testing-library/svelte';
 import CharacterPicker from './CharacterPicker.svelte';
 import type { CharacterProvider, CharacterSummary, ListCharactersResult } from '#lib/data/provider';
 
@@ -27,6 +27,14 @@ describe('CharacterPicker', () => {
 		expect(header?.getAttribute('data-palette')).toBe('neutral');
 		expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Hero Slate');
 		expect(screen.getByText('Choose your hero')).toBeTruthy();
+	});
+
+	it('shows no avatar in the home header', async () => {
+		const withAvatar: CharacterSummary = { id: 'test-hero', name: 'Test Hero', avatar: '/characters/test-hero.png' };
+		const { container } = render(CharacterPicker, { props: { provider: found(withAvatar) } });
+
+		await screen.findByText('Test Hero');
+		expect(container.querySelector('[data-block="header"] img')).toBeNull();
 	});
 
 	it('shows Loading… and no cards while the listing is pending', () => {
@@ -106,5 +114,47 @@ describe('CharacterPicker', () => {
 
 		await screen.findByRole('listitem');
 		expect(screen.queryByText('Loading…')).toBeNull();
+	});
+
+	describe('card avatar', () => {
+		const hero: CharacterSummary = { id: 'test-hero', name: 'Test Hero', avatar: '/characters/test-hero.png' };
+
+		it('shows the image for a summary with an avatar', async () => {
+			render(CharacterPicker, { props: { provider: found(hero) } });
+
+			const card = await screen.findByRole('listitem');
+			const img = card.querySelector('img');
+			expect(img?.getAttribute('src')).toBe('/characters/test-hero.png');
+			expect(img?.getAttribute('alt')).toBe('');
+		});
+
+		it('shows no image for a summary without an avatar', async () => {
+			render(CharacterPicker, { props: { provider: found({ id: 'test-hero', name: 'Test Hero' }) } });
+
+			const card = await screen.findByRole('listitem');
+			expect(card.querySelector('img')).toBeNull();
+		});
+
+		it('drops the image after it fails to load', async () => {
+			render(CharacterPicker, { props: { provider: found({ ...hero, avatar: '/characters/missing.png' }) } });
+
+			const card = await screen.findByRole('listitem');
+			await fireEvent.error(card.querySelector('img')!);
+			expect(card.querySelector('img')).toBeNull();
+			expect(card.querySelector('a')?.hasAttribute('data-avatar')).toBe(false);
+		});
+
+		it('marks the card with data-avatar while the image shows', async () => {
+			render(CharacterPicker, { props: { provider: found(hero) } });
+
+			const card = await screen.findByRole('listitem');
+			expect(card.querySelector('a')?.hasAttribute('data-avatar')).toBe(true);
+		});
+
+		it("keeps the link's accessible name to the character's own text", async () => {
+			render(CharacterPicker, { props: { provider: found({ ...hero, level: 3, class: 'Bard' }) } });
+
+			expect(await screen.findByRole('link', { name: 'Test Hero Level 3 Bard' })).toBeTruthy();
+		});
 	});
 });

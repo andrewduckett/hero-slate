@@ -144,6 +144,7 @@ function toSummary(character: Character): CharacterSummary {
 	if (character.level !== undefined) summary.level = character.level;
 	if (character.class !== undefined) summary.class = character.class;
 	if (character.color !== undefined) summary.color = character.color;
+	if (character.avatar !== undefined) summary.avatar = character.avatar;
 	return summary;
 }
 
@@ -196,6 +197,8 @@ function toFoundOrInvalid(id: string, body: Record<string, unknown>): GetCharact
 	}
 
 	// Provisional fields pass through unchanged; the request id is authoritative.
-	const character = { ...body, id } as Character;
+	// The avatar is named after the id, so an authored one is overwritten: the
+	// grammar-checked id keeps the image on this site (decision 0012).
+	const character = { ...body, id, avatar: `/characters/${id}.png` } as Character;
 	return { status: 'found', character };
 }

@@ -22,6 +22,9 @@ export interface Character {
 	/** Optional; a string naming a palette. The theming layer resolves it — an
 	 * unknown name is valid data here and falls back to neutral when rendered. */
 	color?: string;
+	/** The site path of the character's avatar image, supplied by the provider and
+	 * never by the definition. The image may not exist; the view drops it then. */
+	avatar?: string;
 
 	// --- Fields resolved by their own modules, not by the provider ---
 	abilities?: unknown;

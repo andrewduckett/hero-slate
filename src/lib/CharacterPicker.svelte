@@ -5,10 +5,13 @@
 	import { formatIdentity } from '#lib/format';
 	import { resolvePalette } from '#lib/theme/resolve';
 	import AppHeader from '#lib/AppHeader.svelte';
+	import AvatarArt from '#lib/AvatarArt.svelte';
 
 	let { provider }: { provider: CharacterProvider } = $props();
 
 	let result = $state<ListCharactersResult | { status: 'loading' }>({ status: 'loading' });
+	// Each card reserves room for its art only while that art shows.
+	let avatarShowing = $state<Record<string, boolean>>({});
 
 	$effect(() => {
 		let cancelled = false;
@@ -36,11 +39,14 @@
 				{@const descriptor = formatIdentity(summary)}
 				<!-- The anchor wraps the card's text, so that text is its accessible name. -->
 				<li data-palette={resolvePalette(summary.color)}>
-					<a href="/{summary.id}">
-						<span class="name" data-card-name>{summary.name}</span>
-						{#if descriptor}
-							<span class="descriptor" data-card-descriptor>{descriptor}</span>
-						{/if}
+					<a href="/{summary.id}" data-avatar={avatarShowing[summary.id] || undefined}>
+						<span class="text">
+							<span class="name" data-card-name>{summary.name}</span>
+							{#if descriptor}
+								<span class="descriptor" data-card-descriptor>{descriptor}</span>
+							{/if}
+						</span>
+						<AvatarArt src={summary.avatar} bind:showing={avatarShowing[summary.id]} />
 					</a>
 				</li>
 			{/each}
@@ -66,6 +72,9 @@
 
 	/* A card is a mini sheet header: it stands for the sheet it opens. */
 	a {
+		--avatar-width: min(40%, 8rem);
+		position: relative;
+		overflow: hidden;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -82,6 +91,15 @@
 	a:focus-visible {
 		outline: 3px solid var(--foreground);
 		outline-offset: 2px;
+	}
+
+	.text {
+		display: flex;
+		flex-direction: column;
+	}
+
+	a[data-avatar] .text {
+		padding-right: var(--avatar-width);
 	}
 
 	.name {

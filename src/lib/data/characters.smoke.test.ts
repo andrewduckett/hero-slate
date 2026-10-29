@@ -33,6 +33,14 @@ describe('shipped characters', () => {
 		expect(result).toMatchObject({ status: 'found' });
 	});
 
+	// An avatar is named after its character, so a misnamed image never shows.
+	it('names every shipped image after a shipped character', () => {
+		const images = readdirSync(charactersDir).filter((file) => file.endsWith('.png'));
+
+		const orphans = images.filter((file) => !ids.includes(file.slice(0, -'.png'.length)));
+		expect(orphans).toEqual([]);
+	});
+
 	// Fails on drift either way: a file the manifest omits, or a line with no file.
 	it('lists exactly the shipped characters through the manifest', async () => {
 		const result = await createYamlProvider(serveShipped).listCharacters();
