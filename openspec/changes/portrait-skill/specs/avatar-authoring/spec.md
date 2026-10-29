@@ -1,6 +1,6 @@
 ## Purpose
 
-Lets the Author make a character's avatar in one shared look: a skill turns a character file into an approved image prompt, and a tool saves the image as the avatar file the sheet shows.
+Lets the Author make a character's avatar in one shared look. A skill turns a character file into an approved image prompt, and a tool saves the image as the avatar file. A scripted manual walkthrough validates the skill's scenarios; automated tests validate the tool's.
 
 ## ADDED Requirements
 
@@ -66,12 +66,12 @@ When a Gemini or OpenAI API key is set, the skill SHALL generate the image throu
 
 ### Requirement: Nothing is saved without approval
 
-The skill SHALL NOT generate an image before the Author approves the prompt. It SHALL NOT run the avatar tool before the Author approves the image. It SHALL save an avatar only through the avatar tool.
+The skill SHALL NOT generate an image before the Author approves the prompt. It SHALL NOT save an avatar before the Author approves the image. It SHALL save an avatar only through the avatar tool.
 
 #### Scenario: The Author rejects the image
 
 - **WHEN** the Author says the image is wrong
-- **THEN** the skill does not run the avatar tool
+- **THEN** the skill does not save an avatar
 - **AND** it asks what to change, and returns to the prompt
 
 ### Requirement: Replacing an existing avatar
@@ -122,17 +122,18 @@ It SHALL exit with code 0 on success.
 
 The avatar tool SHALL exit with code 1 and write nothing when:
 - the id does not match the provider's id grammar
+- the id is `manifest`, which the provider reserves for the roster file
 - `static/characters/<id>.yaml` does not exist
 - the input cannot be read as a PNG, JPEG or WebP image
 - the input's shorter side is under 512 pixels
 
-Its message SHALL name which check failed. The tool SHALL ignore the input's directory when it builds the target path, so it only ever writes a `.png` file directly inside `static/characters/`.
+Its message SHALL name which check failed.
 
-#### Scenario: An id outside the grammar
+#### Scenario: The reserved manifest id
 
-- **WHEN** the tool receives the id `../evil`
-- **THEN** it reports that the id does not match the id grammar
-- **AND** it exits with code 1 and writes no file
+- **WHEN** the tool receives the id `manifest`
+- **THEN** it reports that `manifest` is not a character id
+- **AND** it exits with code 1, writes no file, and leaves `manifest.yaml` unchanged
 
 #### Scenario: An id with no character file
 
@@ -150,6 +151,16 @@ Its message SHALL name which check failed. The tool SHALL ignore the input's dir
 
 - **WHEN** the tool receives a text file
 - **THEN** it reports that the file is not a PNG, JPEG or WebP image
+- **AND** it exits with code 1 and writes no file
+
+### Requirement: The avatar tool writes only inside the characters folder
+
+The avatar tool SHALL build the target path from the id alone, ignoring the input's directory. It SHALL only ever write a `.png` file directly inside `static/characters/`.
+
+#### Scenario: An id outside the grammar
+
+- **WHEN** the tool receives the id `../evil`
+- **THEN** it reports that the id does not match the id grammar
 - **AND** it exits with code 1 and writes no file
 
 ### Requirement: No overwrite without the replace flag

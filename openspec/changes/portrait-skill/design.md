@@ -23,7 +23,7 @@
 - **Primary test seam:** the avatar tool's `run(argv, deps)`, the same shape as the D&D Beyond CLI. Tests pass in images built in memory with the image library (solid colours, red and blue bands), plus an in-memory file map and a fixed clock. Then they assert the exit code, the PNG's size and pixels, and the character file's bytes.
 - **Existing seams reused:** `src/lib/data/characters.smoke.test.ts`, which the skill runs after saving. Its orphan-PNG check already covers the avatar's name.
 
-The skill's prose is checked by reading it during verify, as the D&D Beyond skill's is. A unit test also checks that the style guide file contains every element the spec lists.
+A scripted manual walkthrough validates the skill's scenarios, as it does for the D&D Beyond skill. A unit test also checks that the style guide file contains every element the spec lists.
 
 ## Scrutiny Tier & Blast Radius
 
@@ -45,13 +45,21 @@ Avatar work is not ingest, so it gets its own folder rather than a place under `
 
 ```
 npx --silent vite-node src/lib/authoring/avatar/cli.ts prompt <look-file>
-npx --silent vite-node src/lib/authoring/avatar/cli.ts save <image> <id> --tool "<image tool>" --look "<summary>" [--replace]
+npx --silent vite-node src/lib/authoring/avatar/cli.ts save <image> <id> --tool "<image tool>" --look-file <summary-file> [--replace]
 ```
 
-`prompt` prints the look description from the file, then the style guide from `.agents/skills/character-avatar/style-guide.md`, unchanged. That makes "every prompt carries the whole style guide" something the tool does, not something the agent must remember. The style guide still lives in the skill, as the story asks. Keeping the look in a file under `.workspace/` stops shell quoting from mangling the Author's words.
+`prompt` prints the look description from the file, then the style guide from `.agents/skills/character-avatar/style-guide.md`, unchanged. That makes "every prompt carries the whole style guide" something the tool does, not something the agent must remember. The style guide still lives in the skill, as the story asks. Both commands read the Author's words from files under `.workspace/`, so shell quoting cannot mangle them. `save` reads the one-line look summary from its file, without the trailing newline.
 
 **D5. `save` checks everything before it writes anything.**
-In order: the id matches `ID_GRAMMAR` → `static/characters/<id>.yaml` exists → `--tool` and `--look` are non-empty and single-line → the target PNG is absent, or `--replace` is set → the image decodes → its shorter side is at least 512 px. The tool builds the PNG in memory, writes it (with the `wx` flag unless `--replace` is set), then rewrites the character file. The target path comes only from the id, never from the input's path.
+It checks, in this order:
+
+1. The id matches `ID_GRAMMAR`, and is not the reserved `manifest`.
+2. `static/characters/<id>.yaml` exists.
+3. The tool name and the look summary are non-empty and single-line.
+4. The target PNG is absent, or `--replace` is set.
+5. The image decodes, and its shorter side is at least 512 px.
+
+The tool builds the PNG in memory, writes it (with the `wx` flag unless `--replace` is set), then rewrites the character file. The target path comes only from the id, never from the input's path.
 
 **D6. The provenance comment is the first line, matched by its prefix.**
 A first line that starts with `# Avatar: ` is replaced. Otherwise the new line is inserted above the file's first line. The tool splits off only that first line, so every other byte stays the same, including line endings and any comment that was there before, such as Sunny's. The date is the local calendar date from the injected clock.
