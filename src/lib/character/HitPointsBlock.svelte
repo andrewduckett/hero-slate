@@ -154,6 +154,9 @@
 		height: 100%;
 		border-radius: 999px;
 		background-color: var(--accent);
+		/* A tap slides the fill so the change is seen, not just the number. The
+		   fill mounts at its width, so nothing eases on first load. */
+		transition: width var(--motion-duration) var(--motion-easing);
 	}
 
 	/* Damage on the left, healing on the right, with a flexible gap between. */

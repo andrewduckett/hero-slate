@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/svelte';
 import HitPointsBlock from './HitPointsBlock.svelte';
 import type { StateStore } from '#lib/state/store';
 import { ROLE_PALETTE } from '#lib/theme/roles';
+import { eased, readStyles, transitionOf } from '#lib/theme/style-source';
 
 /** A store spy whose reads and writes resolve immediately. */
 function fakeStore(): StateStore & { write: ReturnType<typeof vi.fn> } {
@@ -150,5 +151,13 @@ describe('HitPointsBlock — health role', () => {
 		});
 		const tracker = container.querySelector('.hit-points');
 		expect(tracker?.getAttribute('data-palette')).toBe(ROLE_PALETTE.health);
+	});
+});
+
+describe('HitPointsBlock — motion', () => {
+	const styles = readStyles('src/lib/character/HitPointsBlock.svelte');
+
+	it('eases the bar fill to its new width with the shared motion timing', () => {
+		expect(transitionOf(styles, '.fill')).toContain(eased('width'));
 	});
 });
