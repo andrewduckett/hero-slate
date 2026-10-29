@@ -191,6 +191,17 @@ describe('avatar save over an existing avatar', () => {
 		expect(deps.files).toEqual(before);
 	});
 
+	it('passes on a write failure that is not an existing file', async () => {
+		const deps = await depsWithAvatar();
+		deps.writeFile = () => {
+			throw Object.assign(new Error('permission denied'), { code: 'EACCES' });
+		};
+
+		await expect(run(['save', '.workspace/in.jpg', 'hero', ...SAVE_FLAGS, '--replace'], deps)).rejects.toThrow(
+			'permission denied'
+		);
+	});
+
 	it('replaces the avatar with the replace flag', async () => {
 		const deps = await depsWithAvatar();
 

@@ -155,7 +155,9 @@ async function runSave(args: string[], deps: AvatarDeps): Promise<AvatarOutcome>
 
 	try {
 		deps.writeFile(avatarPath(id), png, { replace });
-	} catch {
+	} catch (error) {
+		// Only a file that appeared since the check means "exists"; any other failure is not the Author's to fix by replacing.
+		if ((error as { code?: string }).code !== 'EEXIST') throw error;
 		return fail(EXIT_CODES.targetExists, `${avatarPath(id)} appeared before the write; refusing to replace it`);
 	}
 	const comment = `${AVATAR_COMMENT_PREFIX}${tool}, ${localDate(deps.now())}. Look: ${look}.`;
