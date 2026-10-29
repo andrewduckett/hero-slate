@@ -116,3 +116,17 @@ describe('AppHeader', () => {
 		expect(backing.style.backgroundColor).toBe('var(--accent)');
 	});
 });
+
+describe('AppHeader: the way back to the picker', () => {
+	it('links to the home page when its caller asks', () => {
+		render(AppHeader, { props: { title: 'Test Hero', homeLink: true } });
+		const link = screen.getByRole('link', { name: 'All heroes' });
+		expect(link.getAttribute('href')).toBe('/');
+		expect(link.textContent?.trim()).toBe('⌂');
+	});
+
+	it('shows no link to the home page by default', () => {
+		render(AppHeader, { props: { title: 'Hero Slate' } });
+		expect(screen.queryByRole('link', { name: 'All heroes' })).toBeNull();
+	});
+});

@@ -7,8 +7,10 @@
 		title,
 		subtitle,
 		palette = 'neutral' as PaletteName,
-		avatar
-	}: { title: string; subtitle?: string; palette?: PaletteName; avatar?: string } = $props();
+		avatar,
+		homeLink = false
+	}: { title: string; subtitle?: string; palette?: PaletteName; avatar?: string; homeLink?: boolean } =
+		$props();
 
 	let avatarShowing = $state(false);
 </script>
@@ -30,6 +32,9 @@
 	<span data-toggle-backing style="background-color: var(--accent);">
 		<ThemeToggle />
 	</span>
+	{#if homeLink}
+		<a href="/" aria-label="All heroes">⌂</a>
+	{/if}
 </header>
 
 <style>
