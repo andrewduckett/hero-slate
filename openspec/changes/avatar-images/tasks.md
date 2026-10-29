@@ -10,7 +10,7 @@
 
 ## 2. Rendering [depends-on: 1]
 
-- [ ] 2.1 [medium] `AvatarArt` renders `<img src alt="">` for a resolving `avatar`, renders no element for any other value, removes the element after the image's `error` event, and its bindable `showing` is true exactly while the element is in the DOM (verify: `npx vitest run src/lib/AvatarArt.test.ts`)
+- [x] 2.1 [medium] `AvatarArt` renders `<img src alt="">` for a resolving `avatar`, renders no element for any other value, removes the element after the image's `error` event, and its bindable `showing` is true exactly while the element is in the DOM (verify: `npx vitest run src/lib/AvatarArt.test.ts`) (✓ `npx vitest run src/lib/AvatarArt.test.ts` passed, 8/8)
 - [ ] 2.2 [parallel] [medium] `AppHeader` with an `avatar` prop shows the image, sets `data-avatar` while it shows and clears it after a load error, keeps the title, subtitle and toggle, and wraps the toggle in an opaque accent backing; `CharacterView` passes the character's `avatar` to the header and the home header passes none (verify: `npx vitest run src/lib/AppHeader.test.ts src/lib/CharacterView.test.ts src/lib/CharacterPicker.test.ts`)
 - [ ] 2.3 [parallel] [medium] A picker card shows the image for a summary with a resolving `avatar`, shows none for a summary without one or with a remote URL, drops it after a load error, and its link's accessible name still includes the character's name and nothing from the image (verify: `npx vitest run src/lib/CharacterPicker.test.ts`)
 - [ ] 2.4 [medium] The header and the card reserve the image's width for their text only while `data-avatar` is set, clip the image to their rounded corners, and fade it with a CSS mask (`-webkit-` prefixed too); the full suite stays green (verify: `npm test`)
