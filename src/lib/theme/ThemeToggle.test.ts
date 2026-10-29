@@ -133,5 +133,19 @@ describe('ThemeToggle', () => {
 			await fireEvent.click(screen.getByRole('button'));
 			expect(meta.content).toBe(BASE.surface.dark);
 		});
+
+		it('follows the device to the light surface when no choice is stored', () => {
+			const deviceQuery = { matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() };
+			vi.mocked(matchMedia).mockReturnValue(deviceQuery as unknown as MediaQueryList);
+			mockEffectiveMode('dark');
+			meta.content = BASE.surface.dark;
+			render(ThemeToggle);
+
+			deviceQuery.matches = false;
+			const onDeviceChange = deviceQuery.addEventListener.mock.calls[0][1];
+			onDeviceChange();
+
+			expect(meta.content).toBe(BASE.surface.light);
+		});
 	});
 });
