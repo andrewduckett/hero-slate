@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { APPLE_TOUCH_ICON } from './webmanifest';
+import { STARTUP_IMAGES } from './startup-images';
 
 /**
  * Every page, `/` and each `/:id` sheet, is rendered from the one app shell,
@@ -20,5 +21,18 @@ describe('app shell head', () => {
 		const link = head.querySelector('link[rel="apple-touch-icon"]');
 		expect(link?.getAttribute('href')).toBe(`/${APPLE_TOUCH_ICON.file}`);
 		expect(link?.getAttribute('sizes')).toBe('180x180');
+	});
+
+	it('links every iPad startup image with its media query', () => {
+		const links = [...head.querySelectorAll('link[rel="apple-touch-startup-image"]')];
+		const linked = links.map((link) => `${link.getAttribute('href')} ${link.getAttribute('media')}`);
+		const listed = STARTUP_IMAGES.map(({ file, media }) => `/${file} ${media}`);
+		expect(links).toHaveLength(10);
+		expect(new Set(linked)).toEqual(new Set(listed));
+	});
+
+	it('marks the site as a home-screen web app for iPad', () => {
+		const meta = head.querySelector('meta[name="apple-mobile-web-app-capable"]');
+		expect(meta?.getAttribute('content')).toBe('yes');
 	});
 });
