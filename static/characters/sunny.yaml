@@ -1,11 +1,10 @@
 # Sunny Thornwood — the walking-skeleton sample character.
-# Identity fields (name, level, class, color, avatar) are validated this release.
+# Identity fields (name, level, class, color) are validated this release.
+# Her portrait is sunny.png beside this file: an avatar is named after its character.
 name: Sunny Thornwood
 level: 7
 class: Druid
 color: forest
-# A site path to her portrait; it fades across the sheet header and her picker card.
-avatar: /characters/sunny.png
 
 # Abilities and combat are authored as ordered lists of { label, value } entries.
 # Labels are author-driven: the app assumes no fixed abilities and no defaults.
