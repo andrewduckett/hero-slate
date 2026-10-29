@@ -12,6 +12,7 @@
 	import type { CharacterProvider, GetCharacterResult } from '#lib/data/provider';
 	import type { JsonValue, StateStore } from '#lib/state/store';
 	import CharacterView from './CharacterView.svelte';
+	import { APP_NAME } from '#lib/install/webmanifest';
 
 	let {
 		id,
@@ -25,6 +26,10 @@
 	let storedHp = $state<JsonValue | undefined>(undefined);
 	let storedPools = $state<JsonValue | undefined>(undefined);
 	let boundId = $state('');
+
+	// Only a loaded name reaches the title: the id comes from the address bar,
+	// so echoing it would show whatever a player typed.
+	const name = $derived(result.status === 'found' && result.character.name ? result.character.name : null);
 
 	$effect(() => {
 		const requestedId = id;
@@ -48,5 +53,10 @@
 		};
 	});
 </script>
+
+<svelte:head>
+	<title>{name ? `${name} — ${APP_NAME}` : APP_NAME}</title>
+	<meta name="apple-mobile-web-app-title" content={name ?? APP_NAME} />
+</svelte:head>
 
 <CharacterView {result} {storedHp} {storedPools} {store} id={boundId} />

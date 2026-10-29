@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite dev",
     "generate:palette": "node scripts/generate-palette-css.ts",
-    "build": "npm run generate:palette && vite build",
+    "generate:webmanifest": "node scripts/generate-webmanifest.ts",
+    "generate:icons": "node scripts/generate-icons.ts",
+    "build": "npm run generate:palette && npm run generate:webmanifest && vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run",

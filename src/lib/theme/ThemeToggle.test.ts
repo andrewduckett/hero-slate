@@ -12,6 +12,7 @@ vi.mock('./preference', () => ({
 
 import { getEffectiveMode, writePreference } from './preference';
 import ThemeToggle from './ThemeToggle.svelte';
+import { BASE } from './palette';
 
 function mockEffectiveMode(mode: 'light' | 'dark') {
 	vi.mocked(getEffectiveMode).mockReturnValue(mode);
@@ -105,5 +106,46 @@ describe('ThemeToggle', () => {
 		await fireEvent.click(button);
 		const pressedAfter = button.getAttribute('aria-pressed');
 		expect(pressedAfter).not.toBe(pressedBefore);
+	});
+
+	describe('theme-color', () => {
+		let meta: HTMLMetaElement;
+
+		beforeEach(() => {
+			meta = document.createElement('meta');
+			meta.name = 'theme-color';
+			document.head.append(meta);
+			return () => meta.remove();
+		});
+
+		it('switches theme-color to the light surface when switching to light', async () => {
+			mockEffectiveMode('dark');
+			meta.content = BASE.surface.dark;
+			render(ThemeToggle);
+			await fireEvent.click(screen.getByRole('button'));
+			expect(meta.content).toBe(BASE.surface.light);
+		});
+
+		it('switches theme-color to the dark surface when switching to dark', async () => {
+			mockEffectiveMode('light');
+			meta.content = BASE.surface.light;
+			render(ThemeToggle);
+			await fireEvent.click(screen.getByRole('button'));
+			expect(meta.content).toBe(BASE.surface.dark);
+		});
+
+		it('follows the device to the light surface when no choice is stored', () => {
+			const deviceQuery = { matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() };
+			vi.mocked(matchMedia).mockReturnValue(deviceQuery as unknown as MediaQueryList);
+			mockEffectiveMode('dark');
+			meta.content = BASE.surface.dark;
+			render(ThemeToggle);
+
+			deviceQuery.matches = false;
+			const onDeviceChange = deviceQuery.addEventListener.mock.calls[0][1];
+			onDeviceChange();
+
+			expect(meta.content).toBe(BASE.surface.light);
+		});
 	});
 });

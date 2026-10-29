@@ -3,12 +3,23 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="manifest" href="/manifest.webmanifest" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<meta name="theme-color" content="#14171a" />
 		<script>
+			var mode = null;
 			try {
 				var v = localStorage.getItem('hero-slate:theme');
 				if (v === 'light' || v === 'dark') {
+					mode = v;
 					document.documentElement.dataset.theme = v;
 				}
+			} catch (e) {}
+			// The base surface of each mode, copied from palette.ts; inline-script.test.ts keeps them equal.
+			try {
+				if (!mode) mode = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+				document.querySelector('meta[name="theme-color"]').content =
+					mode === 'light' ? '#f7f2e8' : '#14171a';
 			} catch (e) {}
 		</script>
 		%sveltekit.head%

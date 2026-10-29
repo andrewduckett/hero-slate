@@ -1,8 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getEffectiveMode, writePreference, readPreference } from './preference';
+	import { BASE } from './palette';
 
 	let mode = $state<'light' | 'dark'>('dark');
+
+	function setThemeColor(next: 'light' | 'dark') {
+		document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', BASE.surface[next]);
+	}
 
 	onMount(() => {
 		mode = getEffectiveMode();
@@ -12,6 +17,7 @@
 			// Only update displayed state if no choice is stored.
 			if (readPreference() === null) {
 				mode = mq.matches ? 'dark' : 'light';
+				setThemeColor(mode);
 			}
 		}
 		mq.addEventListener('change', onDeviceChange);
@@ -22,6 +28,7 @@
 		const next: 'light' | 'dark' = mode === 'dark' ? 'light' : 'dark';
 		writePreference(next);
 		document.documentElement.dataset.theme = next;
+		setThemeColor(next);
 		mode = next;
 	}
 </script>

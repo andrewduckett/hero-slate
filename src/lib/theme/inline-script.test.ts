@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { THEME_STORAGE_KEY } from './preference';
+import { BASE } from './palette';
 
 const appHtml = readFileSync(resolve(process.cwd(), 'src/app.html'), 'utf8');
 
@@ -78,5 +79,48 @@ describe('inline pre-paint script in app.html', () => {
 		const fn = new Function('document', 'localStorage', script!);
 		expect(() => fn(document, localStorage)).not.toThrow();
 		expect(document.documentElement.dataset['theme']).toBeUndefined();
+	});
+
+	describe('theme-color', () => {
+		/** Run the script against a page whose head holds one theme-color meta tag. */
+		function runWith(stored: string | null, deviceMode: 'light' | 'dark') {
+			const meta = { content: '' };
+			const document = {
+				documentElement: { dataset: {} as Record<string, string> },
+				querySelector: (selector: string) => (selector === 'meta[name="theme-color"]' ? meta : null)
+			};
+			const localStorage = { getItem: (_k: string) => stored };
+			const matchMedia = (query: string) => ({
+				matches: query === `(prefers-color-scheme: ${deviceMode})`
+			});
+			new Function('document', 'localStorage', 'matchMedia', extractHeadScript(appHtml)!)(
+				document,
+				localStorage,
+				matchMedia
+			);
+			return meta.content;
+		}
+
+		it('the head starts theme-color at the dark surface, the resting default', () => {
+			const head = new DOMParser().parseFromString(appHtml, 'text/html').head;
+			const meta = head.querySelector('meta[name="theme-color"]');
+			expect(meta?.getAttribute('content')).toBe(BASE.surface.dark);
+		});
+
+		it('uses the light surface when light is stored', () => {
+			expect(runWith('light', 'dark')).toBe(BASE.surface.light);
+		});
+
+		it('uses the dark surface when dark is stored', () => {
+			expect(runWith('dark', 'light')).toBe(BASE.surface.dark);
+		});
+
+		it('uses the light surface when nothing is stored and the device prefers light', () => {
+			expect(runWith(null, 'light')).toBe(BASE.surface.light);
+		});
+
+		it('uses the dark surface when nothing is stored and the device prefers dark', () => {
+			expect(runWith(null, 'dark')).toBe(BASE.surface.dark);
+		});
 	});
 });
