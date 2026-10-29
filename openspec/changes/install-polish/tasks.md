@@ -10,7 +10,7 @@
 
 ## 3. The app shell head [depends-on: 1]
 
-- [ ] 3.1 [parallel] [easy] `src/app.html` links all 10 startup images with `rel="apple-touch-startup-image"`. The set of `href` and `media` pairs in its head equals the set `STARTUP_SCREENS` expands to, with each `href` starting with `/` (verify: npx vitest run src/lib/install/head)
+- [x] 3.1 [parallel] [easy] `src/app.html` links all 10 startup images with `rel="apple-touch-startup-image"`. The set of `href` and `media` pairs in its head equals the set `STARTUP_SCREENS` expands to, with each `href` starting with `/` (verify: npx vitest run src/lib/install/head) (✓ npx vitest run src/lib/install/head passed)
 - [ ] 3.2 [parallel] [easy] `src/app.html` carries `<meta name="apple-mobile-web-app-capable" content="yes">` (verify: npx vitest run src/lib/install/head)
 
 ## 4. Integration [depends-on: 2, 3]
