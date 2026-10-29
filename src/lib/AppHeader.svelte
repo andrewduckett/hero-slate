@@ -8,7 +8,7 @@
 		subtitle,
 		palette = 'neutral' as PaletteName,
 		avatar
-	}: { title: string; subtitle?: string; palette?: PaletteName; avatar?: unknown } = $props();
+	}: { title: string; subtitle?: string; palette?: PaletteName; avatar?: string } = $props();
 
 	let avatarShowing = $state(false);
 </script>
@@ -25,7 +25,7 @@
 			<p>{subtitle}</p>
 		{/if}
 	</div>
-	<AvatarArt {avatar} bind:showing={avatarShowing} />
+	<AvatarArt src={avatar} bind:showing={avatarShowing} />
 	<!-- Opaque so the icon keeps the contrast-checked accent pairing over any art. -->
 	<span data-toggle-backing style="background-color: var(--accent);">
 		<ThemeToggle />

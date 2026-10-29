@@ -4,11 +4,11 @@ import { flushSync } from 'svelte';
 import AvatarArt from './AvatarArt.svelte';
 
 /** Render with `showing` bound to a plain variable, as `bind:showing` would. */
-function renderBound(avatar: unknown) {
+function renderBound(src: string | undefined) {
 	const bound = { showing: false };
 	const view = render(AvatarArt, {
 		props: {
-			avatar,
+			src,
 			get showing() {
 				return bound.showing;
 			},
@@ -22,24 +22,20 @@ function renderBound(avatar: unknown) {
 }
 
 describe('AvatarArt', () => {
-	it('renders a decorative image for a site-path avatar', () => {
-		const { container } = render(AvatarArt, { props: { avatar: '/characters/test-hero.png' } });
+	it('renders a decorative image for a source', () => {
+		const { container } = render(AvatarArt, { props: { src: '/characters/test-hero.png' } });
 		const img = container.querySelector('img');
 		expect(img?.getAttribute('src')).toBe('/characters/test-hero.png');
 		expect(img?.getAttribute('alt')).toBe('');
 	});
 
-	it.each<[string, unknown]>([
-		['a remote URL', 'https://example.test/hero.png'],
-		['the empty string', ''],
-		['undefined', undefined]
-	])('renders no element for %s', (_label, avatar) => {
-		const { container } = render(AvatarArt, { props: { avatar } });
+	it('renders no element without a source', () => {
+		const { container } = render(AvatarArt, { props: { src: undefined } });
 		expect(container.innerHTML.replace(/<!---->/g, '').trim()).toBe('');
 	});
 
 	it('removes the image after it fails to load', async () => {
-		const { container } = render(AvatarArt, { props: { avatar: '/characters/missing.png' } });
+		const { container } = render(AvatarArt, { props: { src: '/characters/missing.png' } });
 		await fireEvent.error(container.querySelector('img')!);
 		expect(container.querySelector('img')).toBeNull();
 	});
@@ -49,8 +45,8 @@ describe('AvatarArt', () => {
 		expect(bound.showing).toBe(true);
 	});
 
-	it('reports not showing for an avatar that does not resolve', () => {
-		const { bound } = renderBound('https://example.test/hero.png');
+	it('reports not showing without a source', () => {
+		const { bound } = renderBound(undefined);
 		expect(bound.showing).toBe(false);
 	});
 

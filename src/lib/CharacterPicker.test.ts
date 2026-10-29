@@ -119,7 +119,7 @@ describe('CharacterPicker', () => {
 	describe('card avatar', () => {
 		const hero: CharacterSummary = { id: 'test-hero', name: 'Test Hero', avatar: '/characters/test-hero.png' };
 
-		it('shows the image for a summary with a site-path avatar', async () => {
+		it('shows the image for a summary with an avatar', async () => {
 			render(CharacterPicker, { props: { provider: found(hero) } });
 
 			const card = await screen.findByRole('listitem');
@@ -133,15 +133,6 @@ describe('CharacterPicker', () => {
 
 			const card = await screen.findByRole('listitem');
 			expect(card.querySelector('img')).toBeNull();
-		});
-
-		it('shows no image for a remote avatar URL', async () => {
-			const remote = { ...hero, avatar: 'https://example.test/hero.png' };
-			const { container } = render(CharacterPicker, { props: { provider: found(remote) } });
-
-			await screen.findByRole('listitem');
-			expect(container.querySelector('img')).toBeNull();
-			expect(container.innerHTML).not.toContain('example.test');
 		});
 
 		it('drops the image after it fails to load', async () => {

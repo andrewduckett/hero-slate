@@ -46,7 +46,7 @@
 								<span class="descriptor" data-card-descriptor>{descriptor}</span>
 							{/if}
 						</span>
-						<AvatarArt avatar={summary.avatar} bind:showing={avatarShowing[summary.id]} />
+						<AvatarArt src={summary.avatar} bind:showing={avatarShowing[summary.id]} />
 					</a>
 				</li>
 			{/each}

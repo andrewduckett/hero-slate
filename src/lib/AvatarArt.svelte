@@ -1,11 +1,9 @@
 <script lang="ts">
 	// The one place an avatar becomes an image, shared by the sheet header and the
-	// picker card so the site-path rule, the failure handling and the fade agree.
-	import { resolveAvatar } from '#lib/avatar';
+	// picker card so the failure handling and the fade agree. The provider owns
+	// the URL; a character with no art is just an image that fails to load.
+	let { src, showing = $bindable() }: { src?: string; showing?: boolean } = $props();
 
-	let { avatar, showing = $bindable() }: { avatar: unknown; showing?: boolean } = $props();
-
-	const src = $derived(resolveAvatar(avatar));
 	// Keyed to the source, so a new avatar gets its own chance to load.
 	let failedSrc = $state<string | undefined>();
 	const visible = $derived(src !== undefined && src !== failedSrc);
