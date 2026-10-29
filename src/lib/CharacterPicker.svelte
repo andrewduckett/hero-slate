@@ -6,6 +6,7 @@
 	import { resolvePalette } from '#lib/theme/resolve';
 	import AppHeader from '#lib/AppHeader.svelte';
 	import AvatarArt from '#lib/AvatarArt.svelte';
+	import { APP_NAME } from '#lib/install/webmanifest';
 
 	let { provider }: { provider: CharacterProvider } = $props();
 
@@ -24,8 +25,13 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{APP_NAME}</title>
+	<meta name="apple-mobile-web-app-title" content={APP_NAME} />
+</svelte:head>
+
 <div class="picker">
-	<AppHeader title="Hero Slate" subtitle="Choose your hero" />
+	<AppHeader title={APP_NAME} subtitle="Choose your hero" />
 
 	{#if result.status === 'loading'}
 		<p>Loading…</p>

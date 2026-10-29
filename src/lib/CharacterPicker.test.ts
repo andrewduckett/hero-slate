@@ -158,3 +158,31 @@ describe('CharacterPicker', () => {
 		});
 	});
 });
+
+describe('CharacterPicker — page title', () => {
+	function homeScreenLabels(): (string | null)[] {
+		return [...document.head.querySelectorAll('meta[name="apple-mobile-web-app-title"]')].map((meta) =>
+			meta.getAttribute('content')
+		);
+	}
+
+	it('titles the page Hero Slate', () => {
+		render(CharacterPicker, { props: { provider: found(sunny) } });
+
+		expect(document.title).toBe('Hero Slate');
+	});
+
+	it('labels the home-screen icon Hero Slate', () => {
+		render(CharacterPicker, { props: { provider: found(sunny) } });
+
+		expect(homeScreenLabels()).toEqual(['Hero Slate']);
+	});
+
+	it('titles the page Hero Slate again after a player leaves a sheet', () => {
+		document.title = 'Sunny Thornwood — Hero Slate';
+
+		render(CharacterPicker, { props: { provider: found(sunny) } });
+
+		expect(document.title).toBe('Hero Slate');
+	});
+});
