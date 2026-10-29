@@ -6,7 +6,7 @@ The install story (#32) shipped placeholder "HS" icons, and left the launch scre
 
 - Add a logo mark: the slate (D4). It is drawn as plain SVG shapes in palette colours, with no text.
 - Redraw the four home-screen icons (192, 512, 512 maskable and the 180 `apple-touch-icon`) with the slate on the dark base surface. This replaces "HS" on the neutral accent (D5). The maskable icon keeps the whole mark inside its safe zone (D6).
-- Add iPad startup images: the slate alone, centred on the dark base surface (D7). There is one for each iPad on sale now, in portrait and in landscape: 10 images (D2). The images are drawn by a script and committed.
+- Add iPad startup images: the slate alone, centred on the dark base surface (D7). There is one for each iPad on sale now, in portrait and in landscape: 10 images (D2). A script draws the images, and the author commits them.
 - Every page links each startup image with `apple-touch-startup-image` and a media query that matches its screen size and orientation.
 - Galaxy Tabs need no new files: Android draws its splash from the redrawn icons and the web app manifest's background colour (D3).
 - There is no light-mode splash (D8).
@@ -19,12 +19,12 @@ None.
 
 ### Modified Capabilities
 
-- `home-screen-install`: the "Home-screen icons" requirement, with its "HS until real art ships" rule, is replaced by two: one keeps the icon files and sizes, and one says each icon shows the logo on the dark base surface. New requirements cover the iPad startup images: their sizes, what they show, and the links every page carries.
+- `home-screen-install`: two requirements replace "Home-screen icons" and its "HS until real art ships" rule. One keeps the icon files and sizes. The other says each icon shows the logo on the dark base surface. New requirements cover the iPad startup images: their sizes, what they show, and the links every page carries.
 
 ## Impact
 
 - **Code:** `scripts/generate-icons.ts` (the logo SVG, the icons and the startup images), a new `src/lib/install/startup-images.ts` (the list of startup images), `src/app.html` (the startup-image links).
 - **Tests:** `src/lib/install/icons.test.ts` and `src/lib/install/head.test.ts`.
-- **Static assets:** the four icons in `static/` are redrawn, and 10 startup images are added there, in `static/splash/`.
+- **Static assets:** the four icons in `static/` are redrawn, and 10 startup images are added there, in `static/startup/`.
 - **Dependencies:** none new. `sharp` already draws the icons.
 - **Verification:** besides the tests, the user checks a real iPad and a Galaxy Tab after deploy (D9).

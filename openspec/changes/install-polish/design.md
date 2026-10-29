@@ -34,7 +34,7 @@
 
 ### The logo is one SVG fragment in palette colours
 
-A new `logoSvg()` returns the slate as SVG elements in a 100 × 100 box: a rounded frame in `BASE.structural.dark`, the slate inside it in `BASE.raised.dark`, and a five-point star in `PALETTE.sun.deep.dark`. The star is a mark drawn on a surface, so it takes `deep`, not `accent`, as ADR 0006 says. The background is `BASE.surface.dark`. Each image wraps the fragment in its own `<svg>` with a `transform` that places and scales it. The mark keeps one shape and one colour set at every size. These are the colours of the concept the user picked (D4).
+A new `logoSvg()` returns the slate as SVG elements in a 100 × 100 box. It draws a rounded frame in `BASE.structural.dark`, and the slate inside it in `BASE.raised.dark`. On the slate it draws a five-point star in `PALETTE.sun.deep.dark`. The star is a mark drawn on a surface, so it takes `deep`, not `accent`, as ADR 0006 says. The background is `BASE.surface.dark`. Each image wraps the fragment in its own `<svg>` with a `transform` that places and scales it. The mark keeps one shape and one colour set at every size. These are the colours of the concept the user picked (D4).
 
 *Alternatives:* a hand-drawn SVG file in the repository. It would need a second source for its colours, and `palette.ts` is the only place colour values live.
 
@@ -48,11 +48,11 @@ The star's centre is filled, so a test can tell that the centre pixel of every i
 
 ### The startup images are listed in one typed module
 
-A new `src/lib/install/startup-images.ts` exports `STARTUP_SCREENS`: the five screens, each with its portrait width and height in points and its pixel ratio. A function expands them into the 10 images. Each image has its `file` (`splash/<width>x<height>.png`, in pixels), its pixel `width` and `height`, its `orientation` and its `media` query.
+A new `src/lib/install/startup-images.ts` exports `STARTUP_SCREENS`: the five screens, each with its portrait width and height in points and its pixel ratio. A function expands them into the 10 images. Each image has its `file` (`startup/<width>x<height>.png`, in pixels), its pixel `width` and `height`, its `orientation` and its `media` query.
 
 *Alternatives:* adding the list to `webmanifest.ts`. That module builds the web app manifest, which does not list startup images, so a separate module keeps each one about one thing.
 
-The images go in `static/splash/`, named by their pixel size. That keeps 10 files out of the root of `static/`, and the name says which screen each image is for.
+The images go in `static/startup/`, named by their pixel size. The folder takes Apple's name for the file, as the specs do; "splash" is only what the player sees. That keeps 10 files out of the root of `static/`, and the name says which screen each image is for.
 
 ### The app shell carries the links as written tags
 
@@ -65,15 +65,22 @@ The 10 `<link rel="apple-touch-startup-image">` tags are written by hand in `src
 
 ### The script draws the startup images too
 
-`scripts/generate-icons.ts` draws the icons and the startup images from the same logo, so one command (`npm run generate:icons`) redraws all of the art. The PNGs are committed, and the build still does not run the script.
+`scripts/generate-icons.ts` draws the icons and the startup images from the same logo, so one command (`npm run generate:icons`) redraws all of the art. The author commits the PNGs, and the build still does not run the script.
 
 ### The app shell adds `apple-mobile-web-app-capable`
 
-The head gains `<meta name="apple-mobile-web-app-capable" content="yes">`. Apple's documentation ties startup images to web apps that set this tag. The web app manifest's `display: standalone` already opens the app full-screen, so the tag changes nothing else. It is a guard against iPad ignoring the startup images without it. The real-device check (D9) is the only test that can prove whether it is needed.
+The head gains `<meta name="apple-mobile-web-app-capable" content="yes">`. Apple's documentation ties startup images to web apps that set this tag. It is a guard against iPad ignoring the startup images without it.
+
+The tag should change nothing else. The web app manifest's `display: standalone` already opens the app full-screen. With no `scope`, the manifest's scope is `/`, so every page of the site is in the app. Links between pages, such as the picker's link to a sheet (`src/lib/CharacterPicker.svelte:48`), are same-origin, and the SvelteKit client router follows them without a page load.
+
+`head.test.ts` checks the tag is in the app shell. Only a real device can prove what the tag does, so the device check (D9) also opens a sheet from the installed home page and confirms it stays full-screen.
+
+*Alternatives:* leave the tag out, and rely on the web app manifest alone. If iPad then ignores the startup images, the fix needs a second deploy and a second device check.
 
 ## Risks / Trade-offs
 
 - [iPad ignores the startup images, for example because the links need a tag this design does not add] → The real-device check after deploy (D9) catches it. The fix is in the app shell head only, and the images stay as they are.
+- [The tag makes iPad open a link between pages in Safari, outside the app] → The device check opens a sheet from the installed home page. If it leaves the app, remove the tag; the startup images may still work without it.
 - [Apple ships an iPad with a new screen size] → That iPad shows the plain screen, as every iPad does today. Adding it is one entry in `STARTUP_SCREENS`, a new pair of images, and two links.
 - [A device keeps its cached "HS" icon after the update] → Re-adding the icon to the home screen picks up the new one. The device check does this.
 - [`sharp` antialiasing puts a non-background pixel just outside the maskable safe zone] → The frame's corners sit 2.5% of the width inside the circle. The test checks every pixel outside the circle, so a drift fails it.

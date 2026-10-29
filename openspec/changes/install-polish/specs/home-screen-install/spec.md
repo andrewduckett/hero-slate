@@ -43,21 +43,22 @@ Each home-screen icon SHALL show the Hero Slate logo, centred, on the base surfa
 
 ### Requirement: iPad startup image sizes
 
-The site SHALL serve one PNG startup image for each iPad screen below, in portrait and in landscape, sized to that screen's pixels. In landscape, width and height swap.
+The site SHALL serve a PNG startup image at `/startup/<width>x<height>.png` for each iPad screen below, in portrait and in landscape. Each image's size SHALL be its screen's pixels; landscape swaps width and height. Every screen has a pixel ratio of 2.
 
-| iPad | Points | Ratio | Pixels |
-|---|---|---|---|
-| mini 8.3" | 744 × 1133 | 2 | 1488 × 2266 |
-| iPad, Air 11" | 820 × 1180 | 2 | 1640 × 2360 |
-| Pro 11" | 834 × 1210 | 2 | 1668 × 2420 |
-| Air 13" | 1024 × 1366 | 2 | 2048 × 2732 |
-| Pro 13" | 1032 × 1376 | 2 | 2064 × 2752 |
+| iPad | Points | Pixels |
+|---|---|---|
+| mini 8.3" | 744 × 1133 | 1488 × 2266 |
+| iPad, Air 11" | 820 × 1180 | 1640 × 2360 |
+| Pro 11" | 834 × 1210 | 1668 × 2420 |
+| Air 13" | 1024 × 1366 | 2048 × 2732 |
+| Pro 13" | 1032 × 1376 | 2064 × 2752 |
 
 #### Scenario: Each startup image exists at its screen size
 
 - **WHEN** a test reads the startup image for each screen and orientation in the table
 - **THEN** there are 10 files, and each is a PNG
 - **AND** its width and height equal that screen's pixels in that orientation, such as 1488 × 2266 for the mini in portrait and 2266 × 1488 in landscape
+- **AND** it is served at `/startup/<width>x<height>.png`
 
 ### Requirement: iPad startup images show the logo
 
@@ -71,7 +72,7 @@ Each startup image SHALL show the Hero Slate logo, centred, on the base surface'
 
 ### Requirement: Every page links the iPad startup images
 
-Every page, including `/` and every `/:id` sheet, SHALL link each startup image from the document head with `rel="apple-touch-startup-image"`. Each link's media query SHALL match only its own screen and orientation, using `device-width` and `device-height` in portrait points, `-webkit-device-pixel-ratio` and `orientation`.
+Every page, including `/` and every `/:id` sheet, SHALL link each startup image from the document head with `rel="apple-touch-startup-image"`. Each link's media query SHALL match only its own screen and orientation. It SHALL use `device-width`, `device-height`, `-webkit-device-pixel-ratio` and `orientation`. `device-width` and `device-height` SHALL be the portrait points, in both orientations.
 
 #### Scenario: A page links a startup image for each screen and orientation
 
@@ -81,8 +82,13 @@ Every page, including `/` and every `/:id` sheet, SHALL link each startup image 
 
 #### Scenario: The iPad mini portrait link matches only that screen
 
-- **WHEN** a test reads the link whose `href` is the iPad mini portrait image
+- **WHEN** a test reads the link whose `href` is `/startup/1488x2266.png`
 - **THEN** its `media` is `(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)`
+
+#### Scenario: The iPad mini landscape link keeps the portrait points
+
+- **WHEN** a test reads the link whose `href` is `/startup/2266x1488.png`
+- **THEN** its `media` is `(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)`
 
 #### Scenario: Each link's media query is unique
 
