@@ -216,6 +216,13 @@
 		border: 4px solid var(--structural);
 	}
 
+	/* A dot fades between filled and empty, so a tap that lands is seen. */
+	button[data-pool-dot] {
+		transition:
+			background-color var(--motion-duration) var(--motion-easing),
+			border-color var(--motion-duration) var(--motion-easing);
+	}
+
 	[data-pool-adjust] {
 		font-family: var(--font-display);
 		font-size: 1rem;

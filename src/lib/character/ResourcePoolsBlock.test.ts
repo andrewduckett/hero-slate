@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/svelte';
 import ResourcePoolsBlock from './ResourcePoolsBlock.svelte';
 import type { StateStore } from '#lib/state/store';
+import { eased, readStyles, transitionOf } from '#lib/theme/style-source';
 
 function store(): StateStore & { write: ReturnType<typeof vi.fn> } {
 	return { read: vi.fn().mockResolvedValue(undefined), write: vi.fn().mockResolvedValue(undefined) };
@@ -181,5 +182,15 @@ describe('ResourcePoolsBlock', () => {
 
 			expect(container.querySelector('.readout')?.textContent?.replace(/\s+/g, ' ').trim()).toBe('8 / 20');
 		});
+	});
+});
+
+describe('ResourcePoolsBlock — motion', () => {
+	const styles = readStyles('src/lib/character/ResourcePoolsBlock.svelte');
+
+	it('eases a dot between filled and empty with the shared motion timing', () => {
+		const transition = transitionOf(styles, 'button[data-pool-dot]');
+		expect(transition).toContain(eased('background-color'));
+		expect(transition).toContain(eased('border-color'));
 	});
 });
