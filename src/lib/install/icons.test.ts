@@ -35,4 +35,23 @@ describe('home-screen icons', () => {
 		const centre = Math.floor(size / 2);
 		expect(await pixel(file, centre, centre)).not.toBe(BACKGROUND);
 	});
+
+	it('keeps the maskable logo inside the centre circle of 80% diameter', async () => {
+		const { file, size } = ICONS.find(({ purpose }) => purpose === 'maskable')!;
+		const { data, info } = await sharp(resolve(process.cwd(), 'static', file))
+			.removeAlpha()
+			.raw()
+			.toBuffer({ resolveWithObject: true });
+		const radius = size * 0.4;
+		const outside: string[] = [];
+		for (let y = 0; y < size; y++) {
+			for (let x = 0; x < size; x++) {
+				if (Math.hypot(x + 0.5 - size / 2, y + 0.5 - size / 2) <= radius) continue;
+				const i = (y * size + x) * info.channels;
+				const colour = hex(data[i], data[i + 1], data[i + 2]);
+				if (colour !== BACKGROUND) outside.push(`${x},${y} ${colour}`);
+			}
+		}
+		expect(outside).toEqual([]);
+	});
 });

@@ -5,7 +5,7 @@
 ## 2. The art [depends-on: 1]
 
 - [x] 2.1 [medium] `npm run generate:icons` redraws the four home-screen icons with the slate logo (frame `BASE.structural.dark`, slate `BASE.raised.dark`, star `PALETTE.sun.deep.dark`) on `BASE.surface.dark`, at the sizes in design.md, and the redrawn PNGs are committed. In each icon, the top-left pixel is the dark base surface and the centre pixel is not (verify: npx vitest run src/lib/install/icons) (✓ npx vitest run src/lib/install/icons passed)
-- [ ] 2.2 [medium] On the maskable icon, every pixel outside the centre circle whose diameter is 80% of the width is the dark base surface (verify: npx vitest run src/lib/install/icons)
+- [x] 2.2 [medium] On the maskable icon, every pixel outside the centre circle whose diameter is 80% of the width is the dark base surface (verify: npx vitest run src/lib/install/icons) (✓ npx vitest run src/lib/install/icons passed; fails when the maskable logo is drawn unscaled)
 - [ ] 2.3 [medium] `npm run generate:icons` also draws the 10 startup images into `static/startup/`: the slate alone, centred, its box 40% of the shorter side, on the dark base surface. They are committed. Each is a PNG at its listed pixel size, its top-left pixel is the dark base surface, and its centre pixel is not (verify: npx vitest run src/lib/install/icons)
 
 ## 3. The app shell head [depends-on: 1]
@@ -19,3 +19,5 @@
 - [ ] 4.2 [easy] The pull request description lists the after-deploy device check (D9): on a current iPad, remove the old icon and add it again, then open it in portrait and in landscape and see the slate splash; open a sheet from the installed home page and confirm it stays full-screen; on a Galaxy Tab, add the icon again and see the slate icon and splash (verify: gh pr view install-polish --json body --jq .body | grep -q 'stays full-screen')
 
 ## Deviations Ledger
+
+- 2.2: the maskable icon's 80% scale shipped with 2.1, because the script draws all four icons in one pass. So 2.2 adds only the safe-zone test. It passes on the committed art, and fails when the maskable logo is drawn at full size.
