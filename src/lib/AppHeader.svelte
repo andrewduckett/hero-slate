@@ -31,10 +31,10 @@
 	<!-- Opaque so the icon keeps the contrast-checked accent pairing over any art. -->
 	<span data-toggle-backing style="background-color: var(--accent);">
 		<ThemeToggle />
+		{#if homeLink}
+			<a href="/" aria-label="All heroes">⌂</a>
+		{/if}
 	</span>
-	{#if homeLink}
-		<a href="/" aria-label="All heroes">⌂</a>
-	{/if}
 </header>
 
 <style>
@@ -61,12 +61,36 @@
 		padding-right: var(--avatar-width);
 	}
 
-	/* Above the art, with the toggle's own corners, so it never shows as a box. */
+	/* Above the art, with the toggle's own corners, so it never shows as a box.
+	   The way back stacks under the toggle, so the name keeps its width. */
 	[data-toggle-backing] {
 		position: relative;
 		display: flex;
+		flex-direction: column;
+		gap: var(--space-2);
 		flex-shrink: 0;
 		border-radius: var(--radius-s);
+	}
+
+	/* Matches ThemeToggle's button, so the two read as one control set. */
+	a {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 2.75rem;
+		min-height: 2.75rem;
+		padding: var(--space-2);
+		font-size: 1.25rem;
+		line-height: 1;
+		border: 2px solid currentColor;
+		border-radius: var(--radius-s);
+		color: inherit;
+		text-decoration: none;
+	}
+
+	a:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
 	}
 
 	h1 {

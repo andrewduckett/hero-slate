@@ -1,7 +1,7 @@
 ## 1. Way back to the picker
 
 - [x] 1.1 [easy] The shared header shows a link named "All heroes" to `/`, showing "⌂", only when its caller asks for it; without the request it shows no such link (verify: npm test -- src/lib/AppHeader.test.ts) (✓ npm test -- src/lib/AppHeader.test.ts passed)
-- [ ] 1.2 [easy] The "All heroes" link sits inside the toggle's opaque accent backing, after the theme toggle, sized and bordered like the toggle (min 44 by 44 CSS pixels) and stacked below it (verify: npm test -- src/lib/AppHeader.test.ts)
+- [x] 1.2 [easy] The "All heroes" link sits inside the toggle's opaque accent backing, after the theme toggle, sized and bordered like the toggle (min 44 by 44 CSS pixels) and stacked below it (verify: npm test -- src/lib/AppHeader.test.ts) (✓ npm test -- src/lib/AppHeader.test.ts passed)
 - [ ] 1.3 [easy] A loaded sheet's header contains the "All heroes" link to `/` (verify: npm test -- src/lib/CharacterView.test.ts)
 - [ ] 1.4 [easy] The home page's header contains no "All heroes" link (verify: npm test -- src/lib/CharacterPicker.test.ts)
 - [ ] 1.5 [easy] The not-found and invalid results show a "Choose your hero" link to `/` under "Character not found" (verify: npm test -- src/lib/CharacterView.test.ts)

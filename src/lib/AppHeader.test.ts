@@ -125,6 +125,14 @@ describe('AppHeader: the way back to the picker', () => {
 		expect(link.textContent?.trim()).toBe('⌂');
 	});
 
+	it('sets the link on the toggle backing, after the toggle', () => {
+		render(AppHeader, { props: { title: 'Test Hero', avatar: '/characters/test-hero.png', homeLink: true } });
+		const backing = screen.getByRole('button').parentElement as HTMLElement;
+		const link = screen.getByRole('link', { name: 'All heroes' });
+		expect(link.parentElement).toBe(backing);
+		expect(backing.lastElementChild).toBe(link);
+	});
+
 	it('shows no link to the home page by default', () => {
 		render(AppHeader, { props: { title: 'Hero Slate' } });
 		expect(screen.queryByRole('link', { name: 'All heroes' })).toBeNull();
