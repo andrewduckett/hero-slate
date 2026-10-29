@@ -37,6 +37,13 @@ describe('CharacterPicker', () => {
 		expect(container.querySelector('[data-block="header"] img')).toBeNull();
 	});
 
+	it('shows no link to the home page in the home header', async () => {
+		render(CharacterPicker, { props: { provider: found(sunny) } });
+
+		await screen.findByText('Sunny Thornwood');
+		expect(screen.queryByRole('link', { name: 'All heroes' })).toBeNull();
+	});
+
 	it('shows Loading… and no cards while the listing is pending', () => {
 		render(CharacterPicker, { props: { provider: listing(new Promise(() => {})) } });
 
