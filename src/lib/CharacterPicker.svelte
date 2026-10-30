@@ -31,7 +31,7 @@
 </svelte:head>
 
 <div class="picker">
-	<AppHeader title={APP_NAME} subtitle="Choose your hero" />
+	<AppHeader title={APP_NAME} subtitle="Choose your hero" themeToggle />
 
 	{#if result.status === 'loading'}
 		<p>Loading…</p>

@@ -8,9 +8,16 @@
 		subtitle,
 		palette = 'neutral' as PaletteName,
 		avatar,
-		homeLink = false
-	}: { title: string; subtitle?: string; palette?: PaletteName; avatar?: string; homeLink?: boolean } =
-		$props();
+		homeLink = false,
+		themeToggle = false
+	}: {
+		title: string;
+		subtitle?: string;
+		palette?: PaletteName;
+		avatar?: string;
+		homeLink?: boolean;
+		themeToggle?: boolean;
+	} = $props();
 
 	let avatarShowing = $state(false);
 </script>
@@ -32,21 +39,19 @@
 			{/if}
 		</div>
 		<AvatarArt src={avatar} bind:showing={avatarShowing} />
+		{#if themeToggle}
+			<ThemeToggle />
+		{/if}
 	</header>
 {/snippet}
 
-<div class="masthead" data-masthead>
-	<div class="bar" data-bar>
-		<ThemeToggle />
-	</div>
-	<!-- The whole card is the tap target, so a child cannot miss it; the caption
-	     says what a tap does. -->
-	{#if homeLink}
-		<a href="/" aria-label="All heroes" data-way-back>{@render card()}</a>
-	{:else}
-		{@render card()}
-	{/if}
-</div>
+<!-- The whole card is the tap target, so a child cannot miss it; the caption
+     says what a tap does. -->
+{#if homeLink}
+	<a href="/" aria-label="All heroes" data-way-back>{@render card()}</a>
+{:else}
+	{@render card()}
+{/if}
 
 <style>
 	header {
@@ -70,28 +75,6 @@
 	   width, fade zone included, keeps the text on solid accent. */
 	header[data-avatar] .text {
 		padding-right: var(--avatar-width);
-	}
-
-	/* The bar stands in for the page's top padding (.page in base.css), so it
-	   adds as little height as it can above the card. */
-	.masthead {
-		display: grid;
-		gap: var(--space-2);
-		margin-top: calc(-1 * var(--space-4));
-	}
-
-	.bar {
-		display: flex;
-		align-items: center;
-		min-height: 2.75rem;
-		color: var(--foreground);
-	}
-
-	/* The toggle keeps the end of the bar even when it is alone, and drops its
-	   border so the rarely used control stays quiet beside the way back. */
-	.bar :global(button) {
-		margin-inline-start: auto;
-		border-color: transparent;
 	}
 
 	a {

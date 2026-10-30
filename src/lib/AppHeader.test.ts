@@ -49,19 +49,24 @@ describe('AppHeader', () => {
 		expect(header?.getAttribute('data-palette')).toBe('neutral');
 	});
 
-	it('renders the theme toggle button', () => {
-		render(AppHeader, { props: { title: 'Hero Slate' } });
-		expect(screen.getByRole('button')).toBeTruthy();
+	it('shows the theme toggle inside the header when its caller asks', () => {
+		const { container } = render(AppHeader, { props: { title: 'Hero Slate', themeToggle: true } });
+		expect(container.querySelector('header')?.contains(screen.getByRole('button'))).toBe(true);
+	});
+
+	it('shows no theme toggle by default', () => {
+		render(AppHeader, { props: { title: 'Test Hero' } });
+		expect(screen.queryByRole('button')).toBeNull();
 	});
 
 	it('the toggle button has a minimum touch target via CSS class or inline style', () => {
-		const { container } = render(AppHeader, { props: { title: 'Hero Slate' } });
+		const { container } = render(AppHeader, { props: { title: 'Hero Slate', themeToggle: true } });
 		const button = container.querySelector('button');
 		expect(button).toBeTruthy();
 	});
 
 	it('activating the toggle switches data-theme', async () => {
-		render(AppHeader, { props: { title: 'Hero Slate' } });
+		render(AppHeader, { props: { title: 'Hero Slate', themeToggle: true } });
 		await fireEvent.click(screen.getByRole('button'));
 		expect(document.documentElement.dataset.theme).toBe('light');
 	});
@@ -100,13 +105,12 @@ describe('AppHeader', () => {
 		expect(container.querySelector('header')?.hasAttribute('data-avatar')).toBe(false);
 	});
 
-	it('keeps the title, subtitle and toggle beside an avatar', () => {
+	it('keeps the title and subtitle beside an avatar', () => {
 		render(AppHeader, {
 			props: { title: 'Test Hero', subtitle: 'Level 6 Druid', avatar: '/characters/test-hero.png' }
 		});
 		expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('Test Hero');
 		expect(screen.getByText('Level 6 Druid')).toBeTruthy();
-		expect(screen.getByRole('button')).toBeTruthy();
 	});
 
 });
@@ -125,15 +129,6 @@ describe('AppHeader: the way back to the picker', () => {
 		const caption = screen.getByText('‹ All heroes');
 		const name = screen.getByRole('heading', { level: 1 });
 		expect(caption.compareDocumentPosition(name) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-	});
-
-	it('puts only the toggle in the bar without the link', () => {
-		const { container } = render(AppHeader, { props: { title: 'Hero Slate' } });
-		const header = container.querySelector('header') as HTMLElement;
-		const bar = screen.getByRole('button').parentElement as HTMLElement;
-		expect(header.contains(bar)).toBe(false);
-		expect(bar.compareDocumentPosition(header) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-		expect(bar.children).toHaveLength(1);
 	});
 
 
