@@ -2,7 +2,7 @@
 
 - [x] 1.1 [easy] The shared header shows a link named "All heroes" to `/`, with the visible text "← All heroes", only when its caller asks for it; without the request it shows no such link (verify: npm test -- src/lib/AppHeader.test.ts) (✓ npm test -- src/lib/AppHeader.test.ts passed)
 - [x] 1.2 [easy] The link and the theme toggle sit in one bar placed before the header element, outside it, with the link first; without the link the bar holds only the toggle; the opaque toggle backing in the header is gone (verify: npm test -- src/lib/AppHeader.test.ts) (✓ npm test -- src/lib/AppHeader.test.ts passed)
-- [ ] 1.3 [easy] A loaded sheet shows the "All heroes" link to `/` in the bar before its header (verify: npm test -- src/lib/CharacterView.test.ts)
+- [x] 1.3 [easy] A loaded sheet shows the "All heroes" link to `/` in the bar before its header (verify: npm test -- src/lib/CharacterView.test.ts) (✓ npm test -- src/lib/CharacterView.test.ts passed)
 - [x] 1.4 [easy] The home page contains no "All heroes" link (verify: npm test -- src/lib/CharacterPicker.test.ts) (✓ npm test -- src/lib/CharacterPicker.test.ts passed)
 - [x] 1.5 [easy] The not-found and invalid results show a "Choose your hero" link to `/` under "Character not found" (verify: npm test -- src/lib/CharacterView.test.ts) (✓ npm test -- src/lib/CharacterView.test.ts passed)
 - [x] 1.6 [easy] The error result shows a "Choose your hero" link to `/` under "Could not load this character. Try again.", with a tap target of at least 44 by 44 CSS pixels shared with 1.5 (verify: npm test -- src/lib/CharacterView.test.ts) (✓ npm test -- src/lib/CharacterView.test.ts passed)
