@@ -112,6 +112,24 @@ describe('CharacterView', () => {
 		expect(screen.queryByText('Level')).toBeNull();
 	});
 
+	it("makes the sheet's header the link back to the home page", () => {
+		const { container } = render(CharacterView, { props: { result: { status: 'found', character: testHero } } });
+
+		const link = screen.getByRole('link', { name: 'All heroes' });
+		expect(link.getAttribute('href')).toBe('/');
+		expect(link.contains(container.querySelector('[data-block="header"]'))).toBe(true);
+	});
+
+	it.each([
+		{ label: 'a loaded sheet', result: { status: 'found' as const, character: testHero } },
+		{ label: 'the not-found page', result: { status: 'not-found' as const } },
+		{ label: 'the error page', result: { status: 'error' as const } }
+	])('shows no theme toggle on $label', ({ result }) => {
+		render(CharacterView, { props: { result } });
+
+		expect(screen.queryByRole('button', { name: /Switch to/ })).toBeNull();
+	});
+
 	it('shows a generic message for not-found without echoing the id', () => {
 		render(CharacterView, { props: { result: { status: 'not-found' } } });
 
@@ -126,10 +144,25 @@ describe('CharacterView', () => {
 		expect(screen.queryByText(/bad id/)).toBeNull();
 	});
 
+	it.each([
+		{ status: 'not-found' as const },
+		{ status: 'invalid' as const, reason: 'bad id' }
+	])('links the $status result back to the home page', (result) => {
+		render(CharacterView, { props: { result } });
+
+		expect(screen.getByRole('link', { name: 'Choose your hero' }).getAttribute('href')).toBe('/');
+	});
+
 	it('shows a retry message for a transient error', () => {
 		render(CharacterView, { props: { result: { status: 'error' } } });
 
 		expect(screen.getByText('Could not load this character. Try again.')).toBeTruthy();
+	});
+
+	it('links the error result back to the home page', () => {
+		render(CharacterView, { props: { result: { status: 'error' } } });
+
+		expect(screen.getByRole('link', { name: 'Choose your hero' }).getAttribute('href')).toBe('/');
 	});
 });
 

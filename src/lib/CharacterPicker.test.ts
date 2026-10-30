@@ -37,6 +37,26 @@ describe('CharacterPicker', () => {
 		expect(container.querySelector('[data-block="header"] img')).toBeNull();
 	});
 
+	it('puts the theme toggle in the home header', () => {
+		const { container } = render(CharacterPicker, { props: { provider: found() } });
+
+		const toggle = screen.getByRole('button', { name: /Switch to/ });
+		expect(container.querySelector('[data-block="header"]')?.contains(toggle)).toBe(true);
+	});
+
+	it('does not make the home header a link', () => {
+		const { container } = render(CharacterPicker, { props: { provider: found() } });
+
+		expect(container.querySelector('[data-block="header"]')?.closest('a')).toBeNull();
+	});
+
+	it('shows no link to the home page in the home header', async () => {
+		render(CharacterPicker, { props: { provider: found(sunny) } });
+
+		await screen.findByText('Sunny Thornwood');
+		expect(screen.queryByRole('link', { name: 'All heroes' })).toBeNull();
+	});
+
 	it('shows Loading… and no cards while the listing is pending', () => {
 		render(CharacterPicker, { props: { provider: listing(new Promise(() => {})) } });
 

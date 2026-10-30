@@ -14,8 +14,8 @@ vi.mock('#lib/theme/palette.css', () => ({}));
 vi.mock('#lib/theme/fonts.css', () => ({}));
 vi.mock('#lib/theme/base.css', () => ({}));
 
-// The toggle is now in AppHeader, which both +page.svelte and CharacterView
-// use. Test that it is present and functional on the no-character index route.
+// The home page is the one route that shows the toggle: the picker asks the
+// shared header for it, and a sheet does not. Test the whole route renders it.
 import IndexPage from '../../routes/+page.svelte';
 
 beforeEach(() => {

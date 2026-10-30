@@ -49,19 +49,24 @@ describe('AppHeader', () => {
 		expect(header?.getAttribute('data-palette')).toBe('neutral');
 	});
 
-	it('renders the theme toggle button', () => {
-		render(AppHeader, { props: { title: 'Hero Slate' } });
-		expect(screen.getByRole('button')).toBeTruthy();
+	it('shows the theme toggle inside the header when its caller asks', () => {
+		const { container } = render(AppHeader, { props: { title: 'Hero Slate', themeToggle: true } });
+		expect(container.querySelector('header')?.contains(screen.getByRole('button'))).toBe(true);
+	});
+
+	it('shows no theme toggle by default', () => {
+		render(AppHeader, { props: { title: 'Test Hero' } });
+		expect(screen.queryByRole('button')).toBeNull();
 	});
 
 	it('the toggle button has a minimum touch target via CSS class or inline style', () => {
-		const { container } = render(AppHeader, { props: { title: 'Hero Slate' } });
+		const { container } = render(AppHeader, { props: { title: 'Hero Slate', themeToggle: true } });
 		const button = container.querySelector('button');
 		expect(button).toBeTruthy();
 	});
 
 	it('activating the toggle switches data-theme', async () => {
-		render(AppHeader, { props: { title: 'Hero Slate' } });
+		render(AppHeader, { props: { title: 'Hero Slate', themeToggle: true } });
 		await fireEvent.click(screen.getByRole('button'));
 		expect(document.documentElement.dataset.theme).toBe('light');
 	});
@@ -100,19 +105,36 @@ describe('AppHeader', () => {
 		expect(container.querySelector('header')?.hasAttribute('data-avatar')).toBe(false);
 	});
 
-	it('keeps the title, subtitle and toggle beside an avatar', () => {
+	it('keeps the title and subtitle beside an avatar', () => {
 		render(AppHeader, {
 			props: { title: 'Test Hero', subtitle: 'Level 6 Druid', avatar: '/characters/test-hero.png' }
 		});
 		expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('Test Hero');
 		expect(screen.getByText('Level 6 Druid')).toBeTruthy();
-		expect(screen.getByRole('button')).toBeTruthy();
 	});
 
-	it('sets the toggle on an opaque accent backing', () => {
-		render(AppHeader, { props: { title: 'Test Hero', avatar: '/characters/test-hero.png' } });
-		const backing = screen.getByRole('button').parentElement as HTMLElement;
-		expect(backing.hasAttribute('data-toggle-backing')).toBe(true);
-		expect(backing.style.backgroundColor).toBe('var(--accent)');
+});
+
+describe('AppHeader: the way back to the picker', () => {
+	it('wraps the header in a link to the home page when its caller asks', () => {
+		const { container } = render(AppHeader, { props: { title: 'Test Hero', homeLink: true } });
+		const link = screen.getByRole('link', { name: 'All heroes' });
+		expect(link.getAttribute('href')).toBe('/');
+		expect(link.contains(container.querySelector('header'))).toBe(true);
+		expect(link.textContent).toContain('Test Hero');
+	});
+
+	it('shows the caption before the name', () => {
+		render(AppHeader, { props: { title: 'Test Hero', homeLink: true } });
+		const caption = screen.getByText('‹ All heroes');
+		const name = screen.getByRole('heading', { level: 1 });
+		expect(caption.compareDocumentPosition(name) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	});
+
+
+	it('shows no link and no caption by default', () => {
+		render(AppHeader, { props: { title: 'Hero Slate' } });
+		expect(screen.queryByRole('link', { name: 'All heroes' })).toBeNull();
+		expect(screen.queryByText('‹ All heroes')).toBeNull();
 	});
 });

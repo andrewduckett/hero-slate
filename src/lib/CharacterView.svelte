@@ -64,6 +64,7 @@
 			subtitle={formatIdentity(result.character) || undefined}
 			palette={resolvePalette(result.character.color)}
 			avatar={result.character.avatar}
+			homeLink
 		/>
 		<!-- Blocks render in one fixed order: stats, hit points, pools, the
 		     authored sections, then the links. Each group heading sits directly
@@ -111,12 +112,23 @@
 	</article>
 {:else if result.status === 'error'}
 	<p>Could not load this character. Try again.</p>
+	<a class="way-back" href="/">Choose your hero</a>
 {:else}
 	<!-- not-found and invalid share a fixed, id-free message. -->
 	<p>Character not found</p>
+	<a class="way-back" href="/">Choose your hero</a>
 {/if}
 
 <style>
+	/* A child taps this, so it gets a full 44px target, not just its text. */
+	.way-back {
+		display: inline-flex;
+		align-items: center;
+		min-width: 2.75rem;
+		min-height: 2.75rem;
+		font-weight: 700;
+	}
+
 	article {
 		display: grid;
 		gap: var(--space-5);
@@ -138,7 +150,7 @@
 			align-items: start;
 		}
 
-		article > :global(header),
+		article > :global([data-way-back]),
 		.column[data-span='full'] {
 			grid-column: 1 / -1;
 		}
