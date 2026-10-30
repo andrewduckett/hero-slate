@@ -112,24 +112,19 @@ describe('AppHeader', () => {
 });
 
 describe('AppHeader: the way back to the picker', () => {
-	it('links to the home page when its caller asks', () => {
-		render(AppHeader, { props: { title: 'Test Hero', homeLink: true } });
+	it('wraps the header in a link to the home page when its caller asks', () => {
+		const { container } = render(AppHeader, { props: { title: 'Test Hero', homeLink: true } });
 		const link = screen.getByRole('link', { name: 'All heroes' });
 		expect(link.getAttribute('href')).toBe('/');
-		expect(link.textContent?.trim()).toBe('← All heroes');
+		expect(link.contains(container.querySelector('header'))).toBe(true);
+		expect(link.textContent).toContain('Test Hero');
 	});
 
-	it('puts the link and the toggle in one bar before the header', () => {
-		const { container } = render(AppHeader, {
-			props: { title: 'Test Hero', avatar: '/characters/test-hero.png', homeLink: true }
-		});
-		const header = container.querySelector('header') as HTMLElement;
-		const link = screen.getByRole('link', { name: 'All heroes' });
-		const bar = link.parentElement as HTMLElement;
-		expect(screen.getByRole('button').parentElement).toBe(bar);
-		expect(header.contains(bar)).toBe(false);
-		expect(bar.compareDocumentPosition(header) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-		expect(bar.firstElementChild).toBe(link);
+	it('shows the caption before the name', () => {
+		render(AppHeader, { props: { title: 'Test Hero', homeLink: true } });
+		const caption = screen.getByText('‹ All heroes');
+		const name = screen.getByRole('heading', { level: 1 });
+		expect(caption.compareDocumentPosition(name) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 	});
 
 	it('puts only the toggle in the bar without the link', () => {
@@ -142,8 +137,9 @@ describe('AppHeader: the way back to the picker', () => {
 	});
 
 
-	it('shows no link to the home page by default', () => {
+	it('shows no link and no caption by default', () => {
 		render(AppHeader, { props: { title: 'Hero Slate' } });
 		expect(screen.queryByRole('link', { name: 'All heroes' })).toBeNull();
+		expect(screen.queryByText('‹ All heroes')).toBeNull();
 	});
 });

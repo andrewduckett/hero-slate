@@ -112,14 +112,12 @@ describe('CharacterView', () => {
 		expect(screen.queryByText('Level')).toBeNull();
 	});
 
-	it('links the sheet back to the home page from the bar before its header', () => {
+	it("makes the sheet's header the link back to the home page", () => {
 		const { container } = render(CharacterView, { props: { result: { status: 'found', character: testHero } } });
 
 		const link = screen.getByRole('link', { name: 'All heroes' });
-		const header = container.querySelector('[data-block="header"]') as HTMLElement;
 		expect(link.getAttribute('href')).toBe('/');
-		expect(link.closest('[data-bar]')).not.toBeNull();
-		expect(link.compareDocumentPosition(header) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+		expect(link.contains(container.querySelector('[data-block="header"]'))).toBe(true);
 	});
 
 	it('shows a generic message for not-found without echoing the id', () => {

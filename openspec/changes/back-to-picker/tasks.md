@@ -1,6 +1,6 @@
 ## 1. Way back to the picker
 
-- [ ] 1.1 [easy] The shared header renders as a link to `/` named "All heroes", with the caption "‹ All heroes" before the name, only when its caller asks; otherwise it is a plain header with no link (verify: npm test -- src/lib/AppHeader.test.ts)
+- [x] 1.1 [easy] The shared header renders as a link to `/` named "All heroes", with the caption "‹ All heroes" before the name, only when its caller asks; otherwise it is a plain header with no link (verify: npm test -- src/lib/AppHeader.test.ts) (✓ npm test -- src/lib/AppHeader.test.ts passed)
 - [ ] 1.2 [easy] The shared header shows the theme toggle in its corner only when its caller asks; the bar above the header is gone (verify: npm test -- src/lib/AppHeader.test.ts)
 - [ ] 1.3 [easy] A loaded sheet's header is the "All heroes" link and the page shows no theme toggle; the error and not-found pages show no toggle either (verify: npm test -- src/lib/CharacterView.test.ts)
 - [ ] 1.4 [easy] The home page's header holds the theme toggle, which switches the mode, and is not a link (verify: npm test -- src/lib/CharacterPicker.test.ts src/lib/theme/ThemeToggleLayout.test.ts)

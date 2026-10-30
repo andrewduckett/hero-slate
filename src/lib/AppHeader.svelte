@@ -15,14 +15,7 @@
 	let avatarShowing = $state(false);
 </script>
 
-<div class="masthead" data-masthead>
-	<!-- Off the card, so no control ever covers the avatar. -->
-	<div class="bar" data-bar>
-		{#if homeLink}
-			<a href="/"><span aria-hidden="true">←</span> All heroes</a>
-		{/if}
-		<ThemeToggle />
-	</div>
+{#snippet card()}
 	<header
 		data-block="header"
 		data-palette={palette}
@@ -30,6 +23,9 @@
 		style="background-color: var(--accent); color: var(--on-accent);"
 	>
 		<div class="text">
+			{#if homeLink}
+				<span class="caption">‹ All heroes</span>
+			{/if}
 			<h1>{title}</h1>
 			{#if subtitle}
 				<p>{subtitle}</p>
@@ -37,6 +33,19 @@
 		</div>
 		<AvatarArt src={avatar} bind:showing={avatarShowing} />
 	</header>
+{/snippet}
+
+<div class="masthead" data-masthead>
+	<div class="bar" data-bar>
+		<ThemeToggle />
+	</div>
+	<!-- The whole card is the tap target, so a child cannot miss it; the caption
+	     says what a tap does. -->
+	{#if homeLink}
+		<a href="/" aria-label="All heroes" data-way-back>{@render card()}</a>
+	{:else}
+		{@render card()}
+	{/if}
 </div>
 
 <style>
@@ -86,21 +95,24 @@
 	}
 
 	a {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--space-1);
-		min-height: 2.75rem;
-		padding: 0 var(--space-3);
-		font-weight: 800;
-		border: 2px solid currentColor;
-		border-radius: var(--radius-s);
+		display: block;
+		border-radius: var(--radius-l);
 		color: inherit;
 		text-decoration: none;
 	}
 
 	a:focus-visible {
-		outline: 2px solid currentColor;
+		outline: 3px solid var(--foreground);
 		outline-offset: 2px;
+	}
+
+	.caption {
+		display: block;
+		margin-bottom: var(--space-1);
+		font-size: 0.8125rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 	}
 
 	h1 {
