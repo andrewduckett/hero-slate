@@ -32,7 +32,7 @@
 	<span data-toggle-backing style="background-color: var(--accent);">
 		<ThemeToggle />
 		{#if homeLink}
-			<a href="/" aria-label="All heroes">⌂</a>
+			<a href="/"><span aria-hidden="true">←</span> All heroes</a>
 		{/if}
 	</span>
 </header>

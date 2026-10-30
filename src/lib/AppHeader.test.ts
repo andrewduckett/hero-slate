@@ -122,7 +122,7 @@ describe('AppHeader: the way back to the picker', () => {
 		render(AppHeader, { props: { title: 'Test Hero', homeLink: true } });
 		const link = screen.getByRole('link', { name: 'All heroes' });
 		expect(link.getAttribute('href')).toBe('/');
-		expect(link.textContent?.trim()).toBe('⌂');
+		expect(link.textContent?.trim()).toBe('← All heroes');
 	});
 
 	it('sets the link on the toggle backing, after the toggle', () => {
