@@ -150,7 +150,7 @@
 			align-items: start;
 		}
 
-		article > :global(header),
+		article > :global([data-masthead]),
 		.column[data-span='full'] {
 			grid-column: 1 / -1;
 		}

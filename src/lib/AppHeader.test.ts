@@ -109,12 +109,6 @@ describe('AppHeader', () => {
 		expect(screen.getByRole('button')).toBeTruthy();
 	});
 
-	it('sets the toggle on an opaque accent backing', () => {
-		render(AppHeader, { props: { title: 'Test Hero', avatar: '/characters/test-hero.png' } });
-		const backing = screen.getByRole('button').parentElement as HTMLElement;
-		expect(backing.hasAttribute('data-toggle-backing')).toBe(true);
-		expect(backing.style.backgroundColor).toBe('var(--accent)');
-	});
 });
 
 describe('AppHeader: the way back to the picker', () => {
@@ -125,13 +119,28 @@ describe('AppHeader: the way back to the picker', () => {
 		expect(link.textContent?.trim()).toBe('← All heroes');
 	});
 
-	it('sets the link on the toggle backing, after the toggle', () => {
-		render(AppHeader, { props: { title: 'Test Hero', avatar: '/characters/test-hero.png', homeLink: true } });
-		const backing = screen.getByRole('button').parentElement as HTMLElement;
+	it('puts the link and the toggle in one bar before the header', () => {
+		const { container } = render(AppHeader, {
+			props: { title: 'Test Hero', avatar: '/characters/test-hero.png', homeLink: true }
+		});
+		const header = container.querySelector('header') as HTMLElement;
 		const link = screen.getByRole('link', { name: 'All heroes' });
-		expect(link.parentElement).toBe(backing);
-		expect(backing.lastElementChild).toBe(link);
+		const bar = link.parentElement as HTMLElement;
+		expect(screen.getByRole('button').parentElement).toBe(bar);
+		expect(header.contains(bar)).toBe(false);
+		expect(bar.compareDocumentPosition(header) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+		expect(bar.firstElementChild).toBe(link);
 	});
+
+	it('puts only the toggle in the bar without the link', () => {
+		const { container } = render(AppHeader, { props: { title: 'Hero Slate' } });
+		const header = container.querySelector('header') as HTMLElement;
+		const bar = screen.getByRole('button').parentElement as HTMLElement;
+		expect(header.contains(bar)).toBe(false);
+		expect(bar.compareDocumentPosition(header) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+		expect(bar.children).toHaveLength(1);
+	});
+
 
 	it('shows no link to the home page by default', () => {
 		render(AppHeader, { props: { title: 'Hero Slate' } });

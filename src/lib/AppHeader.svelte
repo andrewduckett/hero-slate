@@ -15,27 +15,29 @@
 	let avatarShowing = $state(false);
 </script>
 
-<header
-	data-block="header"
-	data-palette={palette}
-	data-avatar={avatarShowing || undefined}
-	style="background-color: var(--accent); color: var(--on-accent);"
->
-	<div class="text">
-		<h1>{title}</h1>
-		{#if subtitle}
-			<p>{subtitle}</p>
-		{/if}
-	</div>
-	<AvatarArt src={avatar} bind:showing={avatarShowing} />
-	<!-- Opaque so the icon keeps the contrast-checked accent pairing over any art. -->
-	<span data-toggle-backing style="background-color: var(--accent);">
-		<ThemeToggle />
+<div class="masthead" data-masthead>
+	<!-- Off the card, so no control ever covers the avatar. -->
+	<div class="bar" data-bar>
 		{#if homeLink}
 			<a href="/"><span aria-hidden="true">←</span> All heroes</a>
 		{/if}
-	</span>
-</header>
+		<ThemeToggle />
+	</div>
+	<header
+		data-block="header"
+		data-palette={palette}
+		data-avatar={avatarShowing || undefined}
+		style="background-color: var(--accent); color: var(--on-accent);"
+	>
+		<div class="text">
+			<h1>{title}</h1>
+			{#if subtitle}
+				<p>{subtitle}</p>
+			{/if}
+		</div>
+		<AvatarArt src={avatar} bind:showing={avatarShowing} />
+	</header>
+</div>
 
 <style>
 	header {
@@ -61,27 +63,35 @@
 		padding-right: var(--avatar-width);
 	}
 
-	/* Above the art, with the toggle's own corners, so it never shows as a box.
-	   The way back stacks under the toggle, so the name keeps its width. */
-	[data-toggle-backing] {
-		position: relative;
-		display: flex;
-		flex-direction: column;
+	/* The bar stands in for the page's top padding (.page in base.css), so it
+	   adds as little height as it can above the card. */
+	.masthead {
+		display: grid;
 		gap: var(--space-2);
-		flex-shrink: 0;
-		border-radius: var(--radius-s);
+		margin-top: calc(-1 * var(--space-4));
 	}
 
-	/* Matches ThemeToggle's button, so the two read as one control set. */
-	a {
+	.bar {
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		min-width: 2.75rem;
 		min-height: 2.75rem;
-		padding: var(--space-2);
-		font-size: 1.25rem;
-		line-height: 1;
+		color: var(--foreground);
+	}
+
+	/* The toggle keeps the end of the bar even when it is alone, and drops its
+	   border so the rarely used control stays quiet beside the way back. */
+	.bar :global(button) {
+		margin-inline-start: auto;
+		border-color: transparent;
+	}
+
+	a {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-1);
+		min-height: 2.75rem;
+		padding: 0 var(--space-3);
+		font-weight: 800;
 		border: 2px solid currentColor;
 		border-radius: var(--radius-s);
 		color: inherit;
