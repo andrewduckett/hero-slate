@@ -120,6 +120,16 @@ describe('CharacterView', () => {
 		expect(link.contains(container.querySelector('[data-block="header"]'))).toBe(true);
 	});
 
+	it.each([
+		{ label: 'a loaded sheet', result: { status: 'found' as const, character: testHero } },
+		{ label: 'the not-found page', result: { status: 'not-found' as const } },
+		{ label: 'the error page', result: { status: 'error' as const } }
+	])('shows no theme toggle on $label', ({ result }) => {
+		render(CharacterView, { props: { result } });
+
+		expect(screen.queryByRole('button', { name: /Switch to/ })).toBeNull();
+	});
+
 	it('shows a generic message for not-found without echoing the id', () => {
 		render(CharacterView, { props: { result: { status: 'not-found' } } });
 
