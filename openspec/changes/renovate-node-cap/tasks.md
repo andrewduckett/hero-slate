@@ -1,5 +1,5 @@
 ## 1. Cap the runner's Node
 
 - [x] 1.1 [easy] A `packageRules` entry in `.github/renovate.json5` matches the `node` dependency in `.github/workflows/renovate.yml` and sets `allowedVersions: "<25"`, with a comment saying when to raise it, and the config passes strict validation (verify: `mise exec node@24 -- npx --yes --package renovate@44.201.1 -- renovate-config-validator --strict --no-global .github/renovate.json5`) (✓ renovate-config-validator --strict passed)
-- [ ] 1.2 [medium] A local Renovate lookup proposes no Node update for `RENOVATE_NODE_VERSION`, and still looks up the `node` pin in `mise.toml` without the cap (verify: `mise exec node@24 -- npx --yes --package renovate@44.201.1 -- renovate --platform=local --dry-run=lookup` with `LOG_LEVEL=debug`, then read the `node` entries for both files)
+- [x] 1.2 [medium] A local Renovate lookup proposes no Node update for `RENOVATE_NODE_VERSION`, and still looks up the `node` pin in `mise.toml` without the cap (verify: `mise exec node@24 -- npx --yes --package renovate@44.201.1 -- renovate --platform=local --dry-run=lookup` with `LOG_LEVEL=debug`, then read the `node` entries for both files) (✓ lookup proposed no update for renovate.yml; with mise.toml at 24 it still proposed 26)
 - [ ] 1.3 [easy] The project's checks stay green (verify: `npm test && npm run build`)
