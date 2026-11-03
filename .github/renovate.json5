@@ -57,6 +57,15 @@
       matchUpdateTypes: ["minor", "patch"],
       groupName: "mise.toml minor and patch",
     },
+    // The Node that Renovate itself runs on (#117). Renovate's package.json
+    // `engines` allows only Node ^24.11.0, and Renovate can't read that range
+    // for us. Raise this cap when a Renovate release accepts a newer Node.
+    // The project's Node in mise.toml is not capped.
+    {
+      matchFileNames: [".github/workflows/renovate.yml"],
+      matchDepNames: ["node"],
+      allowedVersions: "<25",
+    },
     // Let's Spec on its own, so its rule changes can be reviewed and reverted
     // alone. `lets sync` writes the skills, schemas and AGENTS.md block the new
     // version ships; the runner allows no other command.
