@@ -17,18 +17,18 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^4.0.1",
-    "@sveltejs/kit": "^3.2.0",
-    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@sveltejs/kit": "^3.4.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.2",
     "@testing-library/svelte": "^5.4.2",
     "jsdom": "^31.0.1",
     "sharp": "^0.35.5",
-    "svelte": "^5.57.3",
+    "svelte": "^5.59.1",
     "svelte-check": "^4.7.8",
     "typescript": "^6.0.3",
     "vite": "^8.3.8",
     "vite-node": "6.0.0",
-    "vitest": "^5.1.0",
-    "wrangler": "^4.163.0"
+    "vitest": "^5.1.1",
+    "wrangler": "^4.168.0"
   },
   "dependencies": {
     "yaml": "^2.9.1"
