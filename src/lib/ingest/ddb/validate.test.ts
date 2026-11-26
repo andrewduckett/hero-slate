@@ -59,6 +59,11 @@ describe('validateDraft — errors', () => {
 		expect(result.errors.length).toBeGreaterThan(0);
 	});
 
+	it('reports the reserved manifest id, which names the character manifest', () => {
+		const result = validateDraft('name: Test Hero', 'manifest');
+		expect(result.errors).toEqual(['"manifest" is not a character id; it is reserved for the character manifest']);
+	});
+
 	it('reports a file id that differs from the target id', () => {
 		const result = validateDraft('id: other-hero\nname: Test Hero', 'test-hero');
 		expect(result.errors.length).toBeGreaterThan(0);

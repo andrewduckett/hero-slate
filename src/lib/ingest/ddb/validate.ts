@@ -2,12 +2,12 @@
  * Validate a drafted character file before the preview draws anything, and
  * before the write tool saves it.
  *
- * Reuses the provider's own rules instead of copying them: `ID_GRAMMAR` and
- * `checkIdentity` from `#lib/data/yaml`, `PALETTE_NAMES` from
+ * Reuses the provider's own rules instead of copying them: `ID_GRAMMAR`,
+ * `MANIFEST_ID` and `checkIdentity` from `#lib/data/yaml`, `PALETTE_NAMES` from
  * `#lib/theme/palette`, and `validEntries` from `#lib/character/entries`.
  */
 import { parse as parseYaml } from 'yaml';
-import { ID_GRAMMAR, checkIdentity } from '#lib/data/yaml';
+import { ID_GRAMMAR, MANIFEST_ID, checkIdentity } from '#lib/data/yaml';
 import { PALETTE_NAMES } from '#lib/theme/palette';
 import { validEntries } from '#lib/character/entries';
 import { MAX_POOL_USES, resolvePools } from '#lib/character/pools';
@@ -47,6 +47,10 @@ export function validateDraft(text: string, targetId: string): ValidationResult 
 
 	if (!ID_GRAMMAR.test(targetId)) {
 		errors.push(`the logical id "${targetId}" does not match the id grammar`);
+	}
+
+	if (targetId === MANIFEST_ID) {
+		errors.push(`"${MANIFEST_ID}" is not a character id; it is reserved for the character manifest`);
 	}
 
 	if (parsed.id !== undefined && parsed.id !== targetId) {

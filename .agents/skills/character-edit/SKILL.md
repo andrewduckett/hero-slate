@@ -47,6 +47,8 @@ character file's name without `.yaml`, such as `sunny` for
 Read `static/characters/<id>.yaml`. If it does not exist, tell the Author
 that no character file has that id, and stop. Write no file. A new
 character from D&D Beyond uses the `dndbeyond-to-slate` skill instead.
+The id `manifest` is not a character: `static/characters/manifest.yaml` is
+the character manifest, so stop the same way, and the tools refuse it.
 
 You can change any block the app reads and draws today:
 

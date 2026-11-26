@@ -307,6 +307,16 @@ describe('cli run — write --edit', () => {
 		expect(deps.writes).toEqual({});
 	});
 
+	it('exits 1 and leaves the character manifest unchanged for a draft named manifest.yaml', async () => {
+		const deps = filesDeps({
+			'static/characters/manifest.yaml': 'characters:\n  - sunny\n',
+			'.workspace/edit/manifest.yaml': VALID_DRAFT
+		});
+		const result = await run(['write', '.workspace/edit/manifest.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(1);
+		expect({ ...deps.writes, ...deps.replaced }).toEqual({});
+	});
+
 	it('exits 1 and leaves the saved file unchanged when the draft has an error', async () => {
 		const deps = filesDeps({
 			'static/characters/test-hero.yaml': VALID_DRAFT,
