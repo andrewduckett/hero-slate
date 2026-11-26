@@ -298,3 +298,6 @@ then go back to step 13 and run `preview` again. Re-run `preview` after
 every change to the draft, and ask for approval again before writing. Never
 write a character file any other way: this skill saves character files only
 through the write tool.
+
+After the write, if `.workspace/<id>.gaps.md` lists any gap, shape each one
+as [the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do) say.

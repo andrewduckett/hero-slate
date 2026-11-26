@@ -110,8 +110,8 @@ The reference has these sections, in this order:
 ### D-3. An accepted issue is shaped after the sheet is done
 
 When the Author accepts the offer to open an issue, the agent adds the gap
-to `.workspace/<id>.gaps.md`, one line each, and carries on. After the
-sheet is written or the avatar saved, the agent runs `lets-shape` once for
+to `.workspace/<id>.gaps.md`, one line each, and carries on. When the
+skill's last step is done, the agent runs `lets-shape` once for
 each listed gap, so that each gap becomes an issue of its own.
 
 - **Why:** `lets-shape` is a separate workflow with its own questions and

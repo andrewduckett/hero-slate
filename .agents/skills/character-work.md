@@ -65,7 +65,9 @@ avatar. On a gap, do these four things in order:
 
 When the Author accepts the issue, do not run `lets-shape` yet. Add the gap
 as one line to `.workspace/<id>.gaps.md`, where `<id>` is the character's id,
-and carry on. After the sheet is written or the avatar is saved, run
+and carry on. If no id is chosen yet, add the line once one is. If the
+id changes, move the file to the new id. When the character work is done —
+after the skill's last step, or once a hand edit is saved — run
 `lets-shape` once for each line in that file, so that each gap becomes an
 issue of its own. Remove each line once its issue is open, and delete the
 file when no line is left, so a later session does not shape the gap again.

@@ -167,3 +167,6 @@ It checks that every character still loads and that every PNG is named
 after a character. Tell the Author whether it passed, and show any failure.
 Tell them the avatar's path, and that the sheet shows it the next time it
 loads.
+
+Then, if `.workspace/<id>.gaps.md` lists any gap, shape each one as
+[the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do) say.
