@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { listChanges, poolResetWarnings } from './changes';
+import { readFileSync } from 'node:fs';
+import { listChanges, lostCommentWarnings, poolResetWarnings } from './changes';
 
 const IDENTITY = { name: 'Sunny Thornwood', level: 7, class: 'Druid', color: 'forest' };
 
@@ -132,5 +133,29 @@ describe('poolResetWarnings', () => {
 
 	it('gives no warning when only a pool maximum changes', () => {
 		expect(poolResetWarnings({ pools: [wildShape] }, { pools: [{ ...wildShape, max: 4 }] })).toEqual([]);
+	});
+});
+
+describe('lostCommentWarnings', () => {
+	const sunny = readFileSync('static/characters/sunny.yaml', 'utf8');
+	const avatarLine =
+		'# Avatar: Gemini 4 Argon, 2026-10-29. Look: wood elf, auburn hair, leaf circlet, fox kit Pip on shoulder.';
+
+	it('quotes the avatar provenance comment when the draft drops it', () => {
+		const draft = sunny.replace(`${avatarLine}\n`, '');
+		expect(lostCommentWarnings(sunny, draft)).toEqual([`the comment "${avatarLine}" is missing from the draft`]);
+	});
+
+	it('gives no warning when the draft keeps every comment and changes only level', () => {
+		expect(lostCommentWarnings(sunny, sunny.replace('level: 7', 'level: 8'))).toEqual([]);
+	});
+
+	it('does not read a # inside a scalar as a comment', () => {
+		expect(lostCommentWarnings('body: a#b\n', 'body: ab\n')).toEqual([]);
+	});
+
+	it('needs a comment saved twice to appear twice in the draft', () => {
+		const saved = '# spare\na: 1\n# spare\n';
+		expect(lostCommentWarnings(saved, '# spare\na: 1\n')).toEqual(['the comment "# spare" is missing from the draft']);
 	});
 });

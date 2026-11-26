@@ -3,6 +3,7 @@
  * preview: the change list, and the warnings for silent losses an edit can
  * cause (see design.md, D-5 and D-6).
  */
+import { Lexer } from 'yaml';
 
 type Mapping = Record<string, unknown>;
 
@@ -213,4 +214,21 @@ export function poolResetWarnings(saved: Mapping, draft: Mapping): string[] {
 			(id) =>
 				`the pool id ${show(id)} is gone: every device forgets its remaining uses, and a pool with a new id starts full`
 		);
+}
+
+/** Comment tokens, trimmed. The lexer tells a comment from a `#` inside a scalar, such as `body: a#b`. */
+function comments(text: string): string[] {
+	return [...new Lexer().lex(text)].filter((token) => token.startsWith('#')).map((token) => token.trim());
+}
+
+/** Each saved comment the draft lacks, counting repeats: a comment saved twice must appear twice. */
+export function lostCommentWarnings(savedText: string, draftText: string): string[] {
+	const unmatched = comments(draftText);
+	return comments(savedText)
+		.filter((comment) => {
+			const index = unmatched.indexOf(comment);
+			if (index >= 0) unmatched.splice(index, 1);
+			return index < 0;
+		})
+		.map((comment) => `the comment ${show(comment)} is missing from the draft`);
 }
