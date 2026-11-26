@@ -17,8 +17,8 @@ work", and agents must apply that mark reliably.
 
 ## Decision
 
-A pull request is character work when its title starts with the exact,
-lowercase prefix `char:`. The check reads only the title. The commits inside
+A pull request is a character work pull request when its title starts with the
+exact, lowercase prefix `char:`. The check reads only the title. The commits inside
 the pull request keep their Conventional Commits types, such as `feat:`.
 
 GitHub re-runs a check when a title is edited, so the Author or an agent can
@@ -45,7 +45,7 @@ add or remove the mark at any time and the check follows at once.
 - Easier: the mark is visible in every pull request list, any agent that can
   open a pull request can set it, and fixing a wrong mark is a title edit.
 - Easier: the commit rule stays as it is.
-- Harder: an unmarked character pull request is not checked. The mark depends
+- Harder: a pull request of character work without the mark is not checked. The mark depends
   on the agent or the Author remembering it, so the boundary reference must
   state the rule.
 - Harder: `char:` looks like a Conventional Commits type in a title but is not
