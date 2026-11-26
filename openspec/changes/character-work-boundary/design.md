@@ -99,9 +99,10 @@ The reference has these sections, in this order:
    section row.
 4. **When the Author wants something the sheet cannot do:** the four gap
    steps (D4), as a numbered list.
-5. **When the Author wants the app changed now:** the agent does not change
-   it. The change starts as an issue through `lets-shape` and is built
-   later through `lets-go` (D5).
+5. **When the Author asks for a change outside character work:** the agent
+   does not change any file outside `static/characters/` and `.workspace/`,
+   such as the app or the avatar style guide. The change starts as an issue
+   through `lets-shape` and is built later through `lets-go` (D5).
 6. **Commits:** the skills do not commit. A commit of character work holds
    only files under `static/characters/`; leave other changes out and name
    them to the Author (D6).

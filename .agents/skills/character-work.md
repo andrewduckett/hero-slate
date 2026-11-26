@@ -69,10 +69,12 @@ and carry on. After the sheet is written or the avatar is saved, run
 `lets-shape` once for every gap in that file. When the Author declines, open
 no issue and add no line.
 
-## When the Author wants the app changed now
+## When the Author asks for a change outside character work
 
-Do not change it, even when the Author asks for the change now. An app change
-is a new capability, not character work. Tell the Author that:
+Do not change any file outside `static/characters/` and `.workspace/`, such
+as app code, a test, a spec, a skill's instructions or the avatar style
+guide, even when the Author asks for the change now. That change is new
+work, not character work. Tell the Author that:
 
 - the change starts as an issue through the `lets-shape` skill
 - the `lets-go` skill builds it later, on its own branch and pull request
