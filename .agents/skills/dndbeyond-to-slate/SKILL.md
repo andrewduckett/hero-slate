@@ -135,7 +135,9 @@ palette color, and a pool id, and the Author confirms or changes them:
 - Propose `slots-N` for the spell-slot pool at level `N` (for example,
   `slots-1`), and `pact-slots` for the Pact Magic pool.
 - If a pool's maximum is above 100, tell the Author: the app tracks at most
-  100 uses and would drop that pool.
+  100 uses and would drop that pool. This is a gap: follow
+  [the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do),
+  such as offering a section row that names the uses in prose.
 
 ### 7. Recommend a Your Turn section
 
@@ -224,7 +226,8 @@ character's. The Author may ask for one.
 The Author may also ask for any other link, by URL and an optional label.
 Add each one after the offered links, in the order the Author asked for
 them. The app shows only `https:` links, so tell the Author when a requested
-URL is not one — the preview will warn that the app drops it.
+URL is not one — the preview will warn that the app drops it. This is a gap:
+follow [the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do).
 
 List the kept links under `links` in this order. When the Author keeps no
 link, write no `links` key at all.
@@ -265,6 +268,11 @@ cross-check warning is advisory: it does not block anything, but the Author
 should see it before approving. The preview does not cross-check section
 pills against the digest — it draws every section and row instead, so the
 Author can read each pill in context.
+
+A warning that the app drops an entry means the sheet cannot show it. Treat
+each one as a gap, and follow
+[the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do)
+before you ask for approval.
 
 If the preview exits with code 3, the target `static/characters/<id>.yaml`
 already exists. Tell the Author this skill does not support updating an
