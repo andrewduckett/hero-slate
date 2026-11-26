@@ -20,7 +20,10 @@ import { parse as parseYaml } from 'yaml';
 export interface CliDeps {
 	readFile: (path: string) => string;
 	exists: (path: string) => boolean;
+	/** Create a new file; refuses one that already exists. */
 	writeFile: (path: string, content: string) => void;
+	/** Replace an existing file, for edit mode. */
+	replaceFile: (path: string, content: string) => void;
 	fetchFn: DdbFetchLike;
 }
 
@@ -129,20 +132,22 @@ function runPreview(args: string[], deps: CliDeps): CliOutcome {
 }
 
 function runWrite(args: string[], deps: CliDeps): CliOutcome {
-	const [draftPath] = args;
+	const [draftPath, ...rest] = args;
+	const edit = rest.includes('--edit');
 	const id = idFromDraftPath(draftPath);
 
-	if (deps.exists(targetPath(id))) {
-		return fail(
-			EXIT_CODES.targetExists,
-			`${targetPath(id)} already exists; the ingest does not support updating an existing sheet yet`
-		);
-	}
+	const targetProblem = checkTarget(id, edit, deps);
+	if (targetProblem) return targetProblem;
 
 	const text = deps.readFile(draftPath);
 	const { errors } = validateDraft(text, id);
 	if (errors.length > 0) {
 		return fail(EXIT_CODES.draftHasErrors, errors.join('\n'));
+	}
+
+	if (edit) {
+		deps.replaceFile(targetPath(id), text);
+		return ok(targetPath(id));
 	}
 
 	try {
@@ -175,6 +180,7 @@ async function main(): Promise<void> {
 		readFile: (path) => fs.readFileSync(path, 'utf8'),
 		exists: (path) => fs.existsSync(path),
 		writeFile: (path, content) => fs.writeFileSync(path, content, { flag: 'wx' }),
+		replaceFile: (path, content) => fs.writeFileSync(path, content),
 		fetchFn: fetch
 	};
 

@@ -42,18 +42,25 @@ const VALID_DRAFT = ['name: Test Hero', 'level: 6', 'class: Druid', 'color: fore
 
 const INVALID_DRAFT = 'level: 6';
 
-function fakeDeps(overrides: Partial<CliDeps> = {}): CliDeps & { writes: Record<string, string> } {
+function fakeDeps(
+	overrides: Partial<CliDeps> = {}
+): CliDeps & { writes: Record<string, string>; replaced: Record<string, string> } {
 	const writes: Record<string, string> = {};
+	const replaced: Record<string, string> = {};
 	return {
 		readFile: () => VALID_DRAFT,
 		exists: () => false,
 		writeFile: (path: string, content: string) => {
 			writes[path] = content;
 		},
+		replaceFile: (path: string, content: string) => {
+			replaced[path] = content;
+		},
 		fetchFn: async () => {
 			throw new Error('fetchFn not stubbed for this test');
 		},
 		writes,
+		replaced,
 		...overrides
 	};
 }
@@ -246,6 +253,12 @@ describe('cli run — write', () => {
 		expect(Object.keys(deps.writes)).toHaveLength(0);
 	});
 
+	it('names the existing file and the edit flag when the target already exists', async () => {
+		const deps = fakeDeps({ exists: () => true });
+		const result = await run(['write', '.workspace/test-hero.yaml'], deps);
+		expect(result.stderr).toBe('static/characters/test-hero.yaml already exists; pass --edit to change an existing sheet');
+	});
+
 	it('takes the id from the base name, ignoring the draft directory', async () => {
 		const deps = fakeDeps();
 		const result = await run(['write', '.workspace/nested/dir/test-hero.yaml'], deps);
@@ -274,5 +287,33 @@ describe('cli run — write', () => {
 		});
 		const result = await run(['write', '.workspace/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(3);
+	});
+});
+
+describe('cli run — write --edit', () => {
+	it('exits 6 and writes nothing when the saved file does not exist', async () => {
+		const deps = filesDeps({ '.workspace/edit/nobody.yaml': VALID_DRAFT });
+		const result = await run(['write', '.workspace/edit/nobody.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(6);
+		expect({ ...deps.writes, ...deps.replaced }).toEqual({});
+	});
+
+	it('replaces only the saved file with exactly the draft bytes, and exits 0', async () => {
+		const draft = `${VALID_DRAFT}\n# kept\n`;
+		const deps = filesDeps({ 'static/characters/test-hero.yaml': VALID_DRAFT, '.workspace/edit/test-hero.yaml': draft });
+		const result = await run(['write', '.workspace/edit/test-hero.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(0);
+		expect(deps.replaced).toEqual({ 'static/characters/test-hero.yaml': draft });
+		expect(deps.writes).toEqual({});
+	});
+
+	it('exits 1 and leaves the saved file unchanged when the draft has an error', async () => {
+		const deps = filesDeps({
+			'static/characters/test-hero.yaml': VALID_DRAFT,
+			'.workspace/edit/test-hero.yaml': INVALID_DRAFT
+		});
+		const result = await run(['write', '.workspace/edit/test-hero.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(1);
+		expect({ ...deps.writes, ...deps.replaced }).toEqual({});
 	});
 });
