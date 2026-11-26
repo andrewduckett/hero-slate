@@ -25,6 +25,13 @@ its line in the character manifest. Character work changes nothing outside
 express, that is a new capability: it becomes an issue, not part of the
 character work.
 
+## Character work pull request
+
+A pull request whose title starts with `char:`. It may change only files in
+`static/characters/`, compared with its base branch. The mark is on the title
+only; its commits keep their Conventional Commits types. A pull request without
+the mark may change character files together with anything else.
+
 ## Web app manifest
 
 The file that tells a device how to install Hero Slate on its home screen and
