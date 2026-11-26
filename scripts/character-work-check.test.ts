@@ -10,4 +10,13 @@ describe('judgeCharacterWork', () => {
 		expect(result.pass).toBe(true);
 		expect(result.message).toMatch(/not marked as character work/);
 	});
+
+	it.each(['Char: add Gimdak', ' char: add Gimdak', 'fix: char: typo'])(
+		'treats %j as unmarked, because only the exact lowercase prefix char: marks it',
+		(title) => {
+			const result = judgeCharacterWork({ title, changedPaths: ['src/app.html'] });
+			expect(result.pass).toBe(true);
+			expect(result.message).toMatch(/not marked as character work/);
+		}
+	);
 });

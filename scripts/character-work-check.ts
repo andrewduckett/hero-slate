@@ -13,9 +13,15 @@ export interface CharacterWorkResult {
 	message: string;
 }
 
+/** Exact and lowercase, so `Char:` or ` char:` is not a second spelling to learn (design D-a). */
+export const CHARACTER_WORK_MARK = 'char:';
+
 export function judgeCharacterWork({ title }: CharacterWorkInput): CharacterWorkResult {
-	return {
-		pass: true,
-		message: `This pull request is not marked as character work: its title "${title}" does not start with "char:". Nothing to check.`
-	};
+	if (!title.startsWith(CHARACTER_WORK_MARK)) {
+		return {
+			pass: true,
+			message: `This pull request is not marked as character work: its title does not start with "${CHARACTER_WORK_MARK}". Nothing to check.`
+		};
+	}
+	return { pass: true, message: '' };
 }
