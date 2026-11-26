@@ -17,6 +17,14 @@ The roster file, `static/characters/manifest.yaml`, that lists the characters
 on the home page, in the order their cards appear. Do not shorten it to
 "manifest"; see [Web app manifest](#web-app-manifest).
 
+## Character work
+
+Creating or changing a character's files: its character file, its avatar and
+its line in the character manifest. Character work changes nothing outside
+`static/characters/`. When the Author wants something the sheet format cannot
+express, that is a new capability: it becomes an issue, not part of the
+character work.
+
 ## Web app manifest
 
 The file that tells a device how to install Hero Slate on its home screen and
