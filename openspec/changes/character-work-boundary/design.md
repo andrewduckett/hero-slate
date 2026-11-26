@@ -112,7 +112,7 @@ The reference has these sections, in this order:
 When the Author accepts the offer to open an issue, the agent adds the gap
 to `.workspace/<id>.gaps.md`, one line each, and carries on. After the
 sheet is written or the avatar saved, the agent runs `lets-shape` once for
-the listed gaps.
+each listed gap, so that each gap becomes an issue of its own.
 
 - **Why:** `lets-shape` is a separate workflow with its own questions and
   its own writes, such as the glossary on a branch of its own. Running it in

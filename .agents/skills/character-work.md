@@ -66,8 +66,8 @@ avatar. On a gap, do these four things in order:
 When the Author accepts the issue, do not run `lets-shape` yet. Add the gap
 as one line to `.workspace/<id>.gaps.md`, where `<id>` is the character's id,
 and carry on. After the sheet is written or the avatar is saved, run
-`lets-shape` once for every gap in that file. When the Author declines, open
-no issue and add no line.
+`lets-shape` once for each line in that file, so that each gap becomes an
+issue of its own. When the Author declines, open no issue and add no line.
 
 ## When the Author asks for a change outside character work
 
