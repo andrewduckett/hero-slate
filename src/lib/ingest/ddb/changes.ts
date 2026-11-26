@@ -47,10 +47,11 @@ function compareField(name: string, saved: Mapping, draft: Mapping, key: string)
 
 /**
  * How one list block matches and names its entries. An entry's key is its
- * first present key field. The three phrases place an entry in its block for
- * an added, removed and changed line, as in `added "Wits" to abilities` or
- * `changed pool wild-shape max: 3 → 4`. A block with `nested` compares that
- * field of a paired entry as a list of its own, such as a section's rows.
+ * first key field with a value. The three phrases place an entry in its
+ * block for an added, removed and changed line, as in `added "Wits" to
+ * abilities` or `changed pool wild-shape max: 3 → 4`. A block with `nested`
+ * compares that field of a paired entry as a list of its own, such as a
+ * section's rows.
  */
 interface ListBlock {
 	keyFields: string[];
@@ -109,8 +110,11 @@ const LIST_BLOCKS: Record<string, ListBlock> = {
 	links: named('url', 'link', 'links')
 };
 
+/** The app reads an empty or null title as no title, so neither can key an entry. */
+const isKeyValue = (value: unknown) => value !== undefined && value !== null && value !== '';
+
 function keyText(block: ListBlock, entry: unknown): string {
-	const field = block.keyFields.find((name) => isMapping(entry) && entry[name] !== undefined);
+	const field = block.keyFields.find((name) => isMapping(entry) && isKeyValue(entry[name]));
 	if (field === undefined || !isMapping(entry)) return `(no ${block.keyFields[0]})`;
 	const key = entry[field];
 	return typeof key === 'string' && block.bareKey ? key : show(key);

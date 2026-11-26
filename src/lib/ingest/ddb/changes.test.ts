@@ -106,6 +106,17 @@ describe('listChanges — sections and rows', () => {
 		expect(listChanges({ sections: [yourTurn] }, draft)).toEqual(['  - added section "Strengths"']);
 	});
 
+	it.each([
+		['an empty', ''],
+		['a null', null]
+	])('matches a row with %s title by its body, as the app reads it', (_, title) => {
+		const noteA = { title, body: 'Note A' };
+		const noteB = { title, body: 'Note B' };
+		const saved = { sections: [{ ...yourTurn, rows: [noteA, noteB] }] };
+		const draft = { sections: [{ ...yourTurn, rows: [noteB] }] };
+		expect(listChanges(saved, draft)).toEqual(['  - removed row "Note A" from section "Your Turn"']);
+	});
+
 	it('matches a row with no title by its body', () => {
 		const note = { body: 'Pip hides in your hood' };
 		const saved = { sections: [{ ...yourTurn, rows: [attack, note] }] };
