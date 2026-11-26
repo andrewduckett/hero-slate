@@ -38,6 +38,20 @@ The reasoning behind each one is in `docs/decisions/`.
   never be hand-edited. Every accent/on-accent and foreground/surface pair meets
   WCAG AA — enforced by tests that read the emitted CSS.
 
+## Character work
+
+Character work — creating or changing a character's files — writes only
+`static/characters/` and `.workspace/`, and never changes app code, tests,
+specs or skill instructions. When the Author wants something the sheet format
+cannot express, that gap becomes an issue through `lets-shape`, not an app
+change. [Character work](.agents/skills/character-work.md) gives the gap steps
+and the commit rule.
+
+To start: a new sheet from D&D Beyond uses the `dndbeyond-to-slate` skill, an
+avatar uses `character-avatar`, a hand edit follows
+[Character work](.agents/skills/character-work.md) directly, and a missing
+capability starts with `lets-shape`.
+
 ## Toolchain
 
 - **Dev tools:** [mise](https://mise.jdx.dev) (`mise.toml`) supplies Node, `gh`,
