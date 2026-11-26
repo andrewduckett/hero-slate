@@ -103,6 +103,8 @@ open a pull request for the character work:
 - Give it a title that starts with `char:`, such as `char: add Gimdak`. The
   mark makes it a
   [character work pull request](../../openspec/glossary.md#character-work-pull-request).
+  Write it exactly so, in lowercase with nothing before it: the check treats
+  `Char:` or ` char:` as no mark, and does not check the pull request.
 - Keep the Conventional Commits types on its commits, such as `feat:`. Only
   the title carries the mark; no commit message starts with `char:`.
 

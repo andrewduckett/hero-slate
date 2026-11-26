@@ -43,7 +43,7 @@ CI SHALL run one check named `character work` on every pull request, whatever br
 
 ### Requirement: A pull request without the mark passes the character work check
 
-The `character work` check SHALL pass on a pull request whose title does not start with `char:`, whatever files it changes. Its log SHALL say that the pull request is not marked as character work.
+The `character work` check SHALL pass on a pull request whose title does not start with `char:`, whatever files it changes. Only the exact, lowercase prefix counts: a title that starts with `Char:` or with a space before `char:` is not marked. Its log SHALL say that the pull request is not marked as character work.
 
 #### Scenario: A feature pull request changes character files and code
 
@@ -55,6 +55,18 @@ The `character work` check SHALL pass on a pull request whose title does not sta
 
 - **WHEN** a pull request titled `fix: char: typo` changes `src/app.html`
 - **THEN** the `character work` check passes
+
+#### Scenario: The mark is not lowercase
+
+- **WHEN** a pull request titled `Char: add Gimdak` changes `src/app.html`
+- **THEN** the `character work` check passes
+- **AND** its log says that the pull request is not marked as character work
+
+#### Scenario: A space comes before the mark
+
+- **WHEN** a pull request titled ` char: add Gimdak` changes `src/app.html`
+- **THEN** the `character work` check passes
+- **AND** its log says that the pull request is not marked as character work
 
 ### Requirement: Editing the title re-runs the character work check
 
