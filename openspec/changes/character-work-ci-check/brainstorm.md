@@ -15,11 +15,11 @@ https://github.com/andrewduckett/hero-slate/issues/134
 | D4 | Which changed files fail a marked pull request? | Any file added, changed or deleted outside `static/characters/`, including either side of a rename that crosses that boundary. Files in subfolders of `static/characters/` count as inside. Changes are compared against the pull request's base branch, so a stacked pull request is judged only on its own changes. | Assumption |
 | D5 | What does a failed check tell the Author? | It lists every changed path outside `static/characters/`, and gives two ways to fix it: move that change to its own issue and pull request, or remove the `char:` mark if the pull request is not character work. | Assumption |
 | D6 | Is the new check a required status check on `main`? | No. It stays advisory, like `test and build`; merge settings are out of scope. | Assumption |
-| D7 | Should "character work pull request" go in `openspec/glossary.md`? | Yes, next to Character work: a pull request whose title starts with `char:`, which may change only files in `static/characters/`. Tentative: not written to the glossary until the user confirms this ledger. | Assumption |
+| D7 | Should "character work pull request" go in `openspec/glossary.md`? | Yes, next to Character work: a pull request whose title starts with `char:`, which may change only files in `static/characters/`. | Assumption |
 | D8 | Where do agents learn the marking rule? | In the boundary reference, `.agents/skills/character-work.md`, beside its commit rule. | Evidence: #134 packet, **Scope** |
 
 ## Changes from the story
 
 None. D2 settles the packet's open question about how to mark the pull request.
 
-Confirmed by user: no
+Confirmed by user: yes
