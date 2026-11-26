@@ -47,5 +47,24 @@ it:
 Read the specs when you need the details; this file does not copy them.
 
 A preview warning that the app drops an entry is evidence that the sheet does
-not support that entry. Treat it as a gap. The nearest supported choice is
-often prose in a custom section row.
+not support that entry. Treat it as a gap, and follow
+[the gap steps](#when-the-author-wants-something-the-sheet-cannot-do). The
+nearest supported choice is often prose in a custom section row.
+
+## When the Author wants something the sheet cannot do
+
+A *gap* is something the Author wants that the sheet format cannot express,
+such as a pool of more than 100 uses, a link that is not `https:`, or a second
+avatar. On a gap, do these four things in order:
+
+1. Tell the Author that the sheet cannot do it, and why.
+2. Offer the nearest supported choice, such as prose in a custom section row.
+3. Offer to open an issue for it through the `lets-shape` skill.
+4. Carry on with the sheet or the avatar, whether the Author accepts or
+   declines each offer.
+
+When the Author accepts the issue, do not run `lets-shape` yet. Add the gap
+as one line to `.workspace/<id>.gaps.md`, where `<id>` is the character's id,
+and carry on. After the sheet is written or the avatar is saved, run
+`lets-shape` once for every gap in that file. When the Author declines, open
+no issue and add no line.
