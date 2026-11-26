@@ -31,4 +31,4 @@ https://github.com/andrewduckett/hero-slate/issues/133
 - **Overlap with #41:** #41 stays a separate story for a refresh from D&D Beyond. It can reuse the edit mode from D5.
 - **No split:** the story fits one change.
 
-Confirmed by user: no
+Confirmed by user: yes
