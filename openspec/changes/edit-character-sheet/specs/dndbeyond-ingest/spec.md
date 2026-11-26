@@ -239,12 +239,17 @@ The preview tool SHALL compare every field outside those lists, such as `level` 
 
 ### Requirement: The edit preview reports a new order
 
-When the matched entries of a block appear in a different order in the draft than in the saved file, the change list SHALL have one line saying that the block's order changed.
+When the matched entries of a block appear in a different order in the draft than in the saved file, the change list SHALL have one line saying that the block's order changed. For the rows of a matched section, the line SHALL name the section.
 
 #### Scenario: Reordered sections
 
 - **WHEN** the draft swaps the order of the sections `Strengths` and `Your Turn`, and changes nothing else
 - **THEN** the change list has one line, saying that the order of `sections` changed
+
+#### Scenario: Reordered rows
+
+- **WHEN** the draft swaps the rows `Attack` and `Cast a Spell` in the section `Your Turn`, and changes nothing else
+- **THEN** the change list has one line, saying that the order of rows in `Your Turn` changed
 
 ### Requirement: The edit preview warns when pool uses would reset
 

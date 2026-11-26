@@ -40,7 +40,7 @@ inside it.
   `character-work.md` and step 13 of `dndbeyond-to-slate`. A hand edit with
   no skill stays allowed (D11).
 - Out of scope: a refresh from D&D Beyond (#41, which can reuse edit mode),
-  reordering the roster, and adding the manifest line inside
+  reordering the roster, and adding the character manifest line inside
   `dndbeyond-to-slate`.
 
 ## Capabilities

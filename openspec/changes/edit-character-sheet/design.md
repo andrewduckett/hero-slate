@@ -155,7 +155,9 @@ with a deep equality on the parsed YAML.
 
 **Order.** Take the paired entries' keys in saved order and in draft order.
 If the two sequences differ, add one `the order of <block> changed` line.
-Added and removed entries do not count.
+For the rows of a paired section, the line is
+`the order of rows in section "<title>" changed`. Added and removed entries
+do not count.
 
 **Line format.** Each line is `  - ` followed by one of:
 
@@ -164,6 +166,7 @@ Added and removed entries do not count.
 - `added pool slots-5`
 - `removed row "Help" from section "Your Turn"`
 - `the order of sections changed`
+- `the order of rows in section "Your Turn" changed`
 
 Values print as YAML scalars: a string in double quotes, a number or
 boolean bare, and a list or mapping as one-line JSON. An empty list is the
@@ -230,7 +233,7 @@ step of the spec's guided flow. The steps carry these details:
 | Step | Detail |
 |---|---|
 | 1 | List the blocks the skill can change. Answer an id rename, a deletion, an avatar (`character-avatar`) or a D&D Beyond refresh (#41) as "Some changes belong elsewhere" says. |
-| 2 | Read `static/characters/manifest.yaml`. When the id is missing, offer to add it; on a yes, add one `  - <id>` line after the last item, with a text edit. |
+| 2 | Read `static/characters/manifest.yaml`. When the id is missing, offer to add it, and say that without the line the character does not show on the home page and the characters smoke test fails; on a yes, add one `  - <id>` line after the last item, with a text edit. |
 | 3 | `mkdir -p .workspace/edit`, copy the file, edit in place (D-7). Ask the Author for every number; never compute one. |
 | 4 | Show the full preview output. Explain each pool reset and lost comment warning. A drop warning is a gap. |
 | 5–6 | Approval loop; write only through `write --edit`. Exit-code table for 1 and 6. |
