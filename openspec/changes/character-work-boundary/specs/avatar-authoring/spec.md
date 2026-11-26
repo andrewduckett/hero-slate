@@ -6,6 +6,8 @@
 
 The skill does character work, as the glossary defines it. It SHALL create or change files only under `static/characters/` and `.workspace/`. It SHALL NOT create or change any other file, such as app code, tests, specs, the style guide, or skill instructions.
 
+These scenarios describe skill behavior. A scripted manual walkthrough of the skill validates them, not an automated test.
+
 #### Scenario: A new avatar touches only character files
 
 - **WHEN** the skill takes the Author from the id `sunny` to a saved avatar
@@ -14,6 +16,8 @@ The skill does character work, as the glossary defines it. It SHALL create or ch
 ### Requirement: An app change waits for its own workflow
 
 When the Author asks for a change outside `static/characters/` and `.workspace/`, the skill SHALL NOT make it. It SHALL tell the Author that the change starts as an issue through `lets-shape`, and that `lets-go` builds it later, on its own branch and pull request, in a run the Author can start once the avatar is done.
+
+These scenarios describe skill behavior. A scripted manual walkthrough of the skill validates them, not an automated test.
 
 #### Scenario: The Author asks for an app change now
 
@@ -24,6 +28,8 @@ When the Author asks for a change outside `static/characters/` and `.workspace/`
 ### Requirement: The skill offers only what the sheet supports
 
 The skill SHALL offer only avatar choices that the app reads and draws today, as the specs `character-data` and `character-sheet` define them: one avatar image for each character.
+
+These scenarios describe skill behavior. A scripted manual walkthrough of the skill validates them, not an automated test.
 
 #### Scenario: One avatar for each character
 
@@ -37,6 +43,8 @@ A *gap* is something the Author wants that the sheet format cannot express. On a
 2. Offer the nearest supported choice.
 3. Offer to open an issue for it through `lets-shape`.
 4. Carry on with the avatar, whether the Author accepts or declines each offer.
+
+These scenarios describe skill behavior. A scripted manual walkthrough of the skill validates them, not an automated test.
 
 #### Scenario: A second picture for a Wild Shape form
 
@@ -55,6 +63,8 @@ A *gap* is something the Author wants that the sheet format cannot express. On a
 ### Requirement: A commit of character work holds only character files
 
 The skill SHALL NOT commit. When the Author asks an agent to commit the character work, the commit SHALL hold only files under `static/characters/`. When the working tree holds other changes, the agent SHALL leave them out of the commit and tell the Author which files it left out.
+
+These scenarios describe skill behavior. A scripted manual walkthrough of the skill validates them, not an automated test.
 
 #### Scenario: The skill does not commit
 
