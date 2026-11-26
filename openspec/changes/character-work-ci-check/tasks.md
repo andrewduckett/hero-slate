@@ -29,7 +29,7 @@ pull request.
 
 ## 4. The finished change [depends-on: 2, 3]
 
-- [ ] 4.1 [easy] Run every project check on the branch (verify: `openspec validate character-work-ci-check --strict && npm test && npm run build && mise exec -- lets sync --check`)
+- [x] 4.1 [easy] Run every project check on the branch (verify: `openspec validate character-work-ci-check --strict && npm test && npm run build && mise exec -- lets sync --check`) (✓ verify passed: change valid, 935 tests passed, build OK, `lets sync --check` clean)
 - [ ] 4.2 [medium] Push, then check the workflow live on this pull request, which is stacked on `character-work-boundary`. Edit its title to start with `char:`, and confirm the `character work` check runs again and fails, and that its log lists `.github/workflows/character-work.yml` but not `.agents/skills/dndbeyond-to-slate/SKILL.md`, which only the base branch changes. Restore the original title, and confirm the check runs again and passes (verify: `gh run list --workflow character-work.yml --branch character-work-ci-check --json conclusion --jq '.[].conclusion' | grep -qx failure && gh pr checks character-work-ci-check`)
 
 ## Deviations Ledger
