@@ -11,7 +11,7 @@ pull request.
 
 ## 1. The pass-or-fail rule
 
-- [ ] 1.1 [easy] Add `scripts/**/*.test.ts` to `test.include` in `vite.config.ts`, and make `judgeCharacterWork` pass a pull request whose title does not start with `char:`, such as `feat: add spell slots` changing `static/characters/sunny.yaml` and `src/lib/character/pools.ts`, with a message saying the pull request is not marked as character work (verify: `npx vitest run scripts/character-work-check.test.ts`)
+- [x] 1.1 [easy] Add `scripts/**/*.test.ts` to `test.include` in `vite.config.ts`, and make `judgeCharacterWork` pass a pull request whose title does not start with `char:`, such as `feat: add spell slots` changing `static/characters/sunny.yaml` and `src/lib/character/pools.ts`, with a message saying the pull request is not marked as character work (verify: `npx vitest run scripts/character-work-check.test.ts`) (✓ `npx vitest run scripts/character-work-check.test.ts` passed, 1 test)
 - [ ] 1.2 [easy] Make `judgeCharacterWork` treat only the exact, lowercase prefix `char:` as the mark (design.md D-a): `Char: add Gimdak`, ` char: add Gimdak` and `fix: char: typo` are all unmarked and pass, whatever paths they change (verify: `npx vitest run scripts/character-work-check.test.ts`)
 - [ ] 1.3 [easy] Make `judgeCharacterWork` pass a marked pull request whose every changed path starts with `static/characters/`, including a subfolder such as `static/characters/notes/gimdak.md`, and pass one with no changed paths (verify: `npx vitest run scripts/character-work-check.test.ts`)
 - [ ] 1.4 [medium] Make `judgeCharacterWork` fail a marked pull request when any changed path is outside `static/characters/`. Cover an added or changed file such as `src/lib/character/pools.ts`, a deleted `docs/notes.md`, a rename out (the paths `static/characters/sunny.yaml` and `docs/sunny.yaml`, as `git diff --no-renames` reports it), a rename in (`docs/sunny.yaml` and `static/characters/sunny.yaml`), and a look-alike such as `static/characters-old/x.yaml` (verify: `npx vitest run scripts/character-work-check.test.ts`)
@@ -35,3 +35,5 @@ pull request.
 ## Deviations Ledger
 
 <!-- Dated notes on small departures from the plan, written during apply. Stop and ask the user about a large one. -->
+
+- 2026-11-25, task 1.1: `tsconfig.json` also gains `scripts` in `include`. Without it, Vitest cannot load a test under `scripts/`: Vite's transform fails to resolve `$app/tsconfig` for a file outside the root tsconfig's `include`. As a side effect, `npm run check` now also type-checks `scripts/`, which adds more of the known `node:` type errors until `@types/node` lands.
