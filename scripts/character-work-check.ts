@@ -19,12 +19,16 @@ export const CHARACTER_WORK_MARK = 'char:';
 /** With its trailing slash, so `static/characters-old/` is outside. */
 export const CHARACTER_FOLDER = 'static/characters/';
 
-export function judgeCharacterWork({ title }: CharacterWorkInput): CharacterWorkResult {
+export function judgeCharacterWork({ title, changedPaths }: CharacterWorkInput): CharacterWorkResult {
 	if (!title.startsWith(CHARACTER_WORK_MARK)) {
 		return {
 			pass: true,
 			message: `This pull request is not marked as character work: its title does not start with "${CHARACTER_WORK_MARK}". Nothing to check.`
 		};
+	}
+	const outside = changedPaths.filter((path) => !path.startsWith(CHARACTER_FOLDER));
+	if (outside.length > 0) {
+		return { pass: false, message: '' };
 	}
 	return {
 		pass: true,

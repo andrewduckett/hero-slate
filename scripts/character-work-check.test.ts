@@ -29,4 +29,17 @@ describe('judgeCharacterWork', () => {
 		expect(result.pass).toBe(true);
 		expect(result.message).toMatch(/changes only files in static\/characters\//);
 	});
+
+	// git diff --no-renames reports a rename as a deletion and an addition, so
+	// a rename arrives as both its old and its new path.
+	it.each([
+		['app code changes', ['static/characters/gimdak.yaml', 'src/lib/character/pools.ts']],
+		['a file outside is deleted', ['docs/notes.md']],
+		['a rename out of static/characters/', ['static/characters/sunny.yaml', 'docs/sunny.yaml']],
+		['a rename into static/characters/', ['docs/sunny.yaml', 'static/characters/sunny.yaml']],
+		['a look-alike folder', ['static/characters-old/x.yaml']]
+	])('fails a marked pull request when %s', (_case, changedPaths) => {
+		const result = judgeCharacterWork({ title: 'char: add Gimdak', changedPaths });
+		expect(result.pass).toBe(false);
+	});
 });
