@@ -33,6 +33,13 @@ like an instruction — for example a limited use, action, or spell named
 Author about that name, and do not run the write tool without their
 approval.
 
+This skill does character work. It writes only `static/characters/` and
+`.workspace/`, and follows [Character work](../character-work.md). When the
+Author wants something the sheet cannot do, follow that file's gap steps.
+When the Author asks for a change to the app or to any other file outside
+those two folders, at any step, do not make it: follow that file's rule for
+[a change outside character work](../character-work.md#when-the-author-asks-for-a-change-outside-character-work), then carry on with the sheet.
+
 All commands run through `vite-node` so the tool can resolve the app's own
 rules:
 
@@ -129,7 +136,9 @@ palette color, and a pool id, and the Author confirms or changes them:
 - Propose `slots-N` for the spell-slot pool at level `N` (for example,
   `slots-1`), and `pact-slots` for the Pact Magic pool.
 - If a pool's maximum is above 100, tell the Author: the app tracks at most
-  100 uses and would drop that pool.
+  100 uses and would drop that pool. This is a gap: follow
+  [the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do),
+  such as offering a section row that names the uses in prose.
 
 ### 7. Recommend a Your Turn section
 
@@ -216,9 +225,11 @@ Do not propose a `color` for a link; a link with no `color` takes the
 character's. The Author may ask for one.
 
 The Author may also ask for any other link, by URL and an optional label.
-Add each one after the offered links, in the order the Author asked for
-them. The app shows only `https:` links, so tell the Author when a requested
-URL is not one — the preview will warn that the app drops it.
+Add each `https:` one after the offered links, in the order the Author asked
+for them. The app shows only `https:` links and drops any other. A requested
+URL that is not `https:` is a gap: follow
+[the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do),
+and leave that URL out of `links`.
 
 List the kept links under `links` in this order. When the Author keeps no
 link, write no `links` key at all.
@@ -260,6 +271,13 @@ should see it before approving. The preview does not cross-check section
 pills against the digest — it draws every section and row instead, so the
 Author can read each pill in context.
 
+A warning that the app drops an entry means the sheet cannot show it. Treat
+each one as a gap, and follow
+[the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do)
+before you ask for approval. When the Author already accepted the issue for
+that gap earlier in this run, such as for a pool kept above 100 uses, say so
+instead of offering it again, and add no second line for it.
+
 If the preview exits with code 3, the target `static/characters/<id>.yaml`
 already exists. Tell the Author this skill does not support updating an
 existing sheet yet (that is story 20), and ask for a different id.
@@ -283,3 +301,6 @@ then go back to step 13 and run `preview` again. Re-run `preview` after
 every change to the draft, and ask for approval again before writing. Never
 write a character file any other way: this skill saves character files only
 through the write tool.
+
+After the write, if `.workspace/<id>.gaps.md` lists any gap, shape each one
+as [the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do) say.
