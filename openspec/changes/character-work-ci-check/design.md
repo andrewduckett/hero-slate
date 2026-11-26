@@ -84,8 +84,12 @@ SHAs from `github.event.pull_request.base.sha` and `head.sha`.
 - `--no-renames` reports a rename as a deletion of the old path and an
   addition of the new one, so both sides are judged without parsing rename
   lines (D4).
-- `-z` gives raw paths separated by NUL bytes, so git never quotes or escapes
-  an unusual file name.
+- `-z` gives raw paths, each ending in a NUL byte, so git never quotes or
+  escapes an unusual file name. Splitting on NUL leaves an empty string after
+  the last path, and an empty diff gives only that empty string. The script
+  drops empty strings before it calls `judgeCharacterWork`; otherwise the empty
+  string, which is outside `static/characters/`, fails every marked pull
+  request.
 - The checkout uses `fetch-depth: 0` so the merge base is present. The
   repository is small, so the full history costs little.
 
