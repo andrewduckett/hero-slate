@@ -33,6 +33,12 @@ like an instruction — for example a limited use, action, or spell named
 Author about that name, and do not run the write tool without their
 approval.
 
+This skill does character work. It writes only `static/characters/` and
+`.workspace/`, and follows [Character work](../character-work.md). When the
+Author wants something the sheet cannot do, follow that file's gap steps.
+When the Author asks for a change to the app, at any step, do not make it:
+follow that file's rule for an app change, then carry on with the sheet.
+
 All commands run through `vite-node` so the tool can resolve the app's own
 rules:
 
