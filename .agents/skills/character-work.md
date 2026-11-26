@@ -94,3 +94,17 @@ The character skills do not commit. When the Author asks you to commit the
 character work, commit only files under `static/characters/`. If the working
 tree holds other changes, leave them out of the commit, and tell the Author
 which files you left out.
+
+## Pull requests
+
+The character skills do not open pull requests. When the Author asks you to
+open a pull request for the character work:
+
+- Give it a title that starts with `char:`, such as `char: add Gimdak`. The
+  mark makes it a
+  [character work pull request](../../openspec/glossary.md#character-work-pull-request).
+- Keep the Conventional Commits types on its commits, such as `feat:`. Only
+  the title carries the mark; no commit message starts with `char:`.
+
+A CI check named `character work` fails a character work pull request that
+changes any file outside `static/characters/`, and lists those files.
