@@ -1,0 +1,42 @@
+# Fails a character work pull request, one whose title starts with `char:`,
+# when it changes any file outside static/characters/. A pull request without
+# the mark passes. The log lists the outside files and says how to fix it.
+# No branch filter on pull_request, so stacked pull requests get the check too.
+name: character work
+
+on:
+  pull_request:
+    # edited fires when the title changes, so adding or removing the mark
+    # re-judges the pull request at once.
+    types: [opened, synchronize, reopened, edited]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  character-work:
+    name: character work
+    runs-on: ubuntu-latest
+    steps:
+      # The full history holds the merge base that the three-dot diff needs.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install mise and its tools
+        uses: jdx/mise-action@v5
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      # The title reaches the script only through env, never inside run:,
+      # because text in run: is pasted into the shell script.
+      - name: Check the changed files
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/character-work-check.ts

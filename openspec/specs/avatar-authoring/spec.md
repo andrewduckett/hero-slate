@@ -280,3 +280,19 @@ These scenarios describe skill behavior. A scripted manual walkthrough of the sk
 - **WHEN** the Author asks the agent to commit Sunny's new avatar, and the working tree also changes `src/lib/components/Header.svelte`
 - **THEN** the commit holds `static/characters/sunny.png` and `static/characters/sunny.yaml`, and no file outside `static/characters/`
 - **AND** the agent tells the Author that it left `src/lib/components/Header.svelte` out of the commit
+
+### Requirement: A pull request of character work is marked as character work
+
+The skill SHALL NOT open a pull request. When the Author asks an agent to open a pull request for the character work, the agent SHALL give it a title that starts with `char:`, which makes it a character work pull request. Its commits SHALL keep their Conventional Commits types and SHALL NOT start with `char:`.
+
+These scenarios describe skill behavior. A scripted manual walkthrough of the skill validates them, not an automated test.
+
+#### Scenario: The Author asks for a pull request
+
+- **WHEN** the Author asks the agent to open a pull request for Sunny's new avatar, which changes `static/characters/sunny.png`
+- **THEN** the pull request's title starts with `char:`, such as `char: new avatar for Sunny`
+
+#### Scenario: Commits keep their types
+
+- **WHEN** the agent commits Sunny's new avatar for that pull request
+- **THEN** the commit message starts with a Conventional Commits type, such as `feat:`, and not with `char:`
