@@ -1,4 +1,7 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { parse } from 'yaml';
 import { judgeCharacterWork } from './character-work-check.ts';
 
 describe('judgeCharacterWork', () => {
@@ -82,5 +85,59 @@ describe('judgeCharacterWork', () => {
 			);
 			expect(fix).toBeGreaterThan(lines.indexOf('README.md'));
 		});
+	});
+});
+
+describe('the character work workflow', () => {
+	const workflow = parse(
+		readFileSync(resolve(process.cwd(), '.github/workflows/character-work.yml'), 'utf8')
+	);
+	const jobs = Object.values(workflow.jobs ?? {}) as Array<Record<string, any>>;
+	const steps = (jobs[0]?.steps ?? []) as Array<Record<string, any>>;
+
+	it('is named character work, with one job of the same name', () => {
+		expect(workflow.name).toBe('character work');
+		expect(jobs.map((job) => job.name)).toEqual(['character work']);
+	});
+
+	// edited fires on a title change, so adding or removing the mark re-judges it.
+	it('runs on every pull request when opened, pushed to, reopened or edited', () => {
+		expect(workflow.on.pull_request).toEqual({
+			types: ['opened', 'synchronize', 'reopened', 'edited']
+		});
+	});
+
+	it('can only read the repository', () => {
+		expect(workflow.permissions).toEqual({ contents: 'read' });
+	});
+
+	it('cancels an older run for the same pull request', () => {
+		expect(workflow.concurrency.group).toContain('github.event.pull_request.number');
+		expect(workflow.concurrency['cancel-in-progress']).toBe(true);
+	});
+
+	it('checks out the full history, so the merge base is present', () => {
+		const checkout = steps.find((step) => String(step.uses).startsWith('actions/checkout@'));
+		expect(checkout?.with?.['fetch-depth']).toBe(0);
+	});
+
+	it('installs Node with mise', () => {
+		expect(steps.some((step) => String(step.uses).startsWith('jdx/mise-action@'))).toBe(true);
+	});
+
+	it('passes the title and both commits to the check through env', () => {
+		const check = steps.find((step) => String(step.run ?? '').includes('character-work-check.ts'));
+		expect(check?.env).toEqual({
+			PR_TITLE: '${{ github.event.pull_request.title }}',
+			BASE_SHA: '${{ github.event.pull_request.base.sha }}',
+			HEAD_SHA: '${{ github.event.pull_request.head.sha }}'
+		});
+	});
+
+	// Text in run: is pasted into the shell script, so a crafted title could run commands.
+	it('never writes the title into a run: script', () => {
+		for (const step of steps) {
+			expect(String(step.run ?? '')).not.toContain('github.event.pull_request.title');
+		}
 	});
 });
