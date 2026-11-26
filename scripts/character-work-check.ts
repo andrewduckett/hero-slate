@@ -79,7 +79,7 @@ function requireEnv(name: string): string {
 }
 
 if (import.meta.main) {
-	const title = process.env.PR_TITLE ?? '';
+	const title = requireEnv('PR_TITLE');
 	const result = judgeCharacterWork({
 		title,
 		changedPaths: changedPathsBetween(requireEnv('BASE_SHA'), requireEnv('HEAD_SHA'))
