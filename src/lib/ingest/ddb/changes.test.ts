@@ -75,3 +75,42 @@ describe('listChanges — list entries', () => {
 		expect(listChanges(saved, draft)).toEqual(['  - changed "Luck" in abilities value: 2 → 3']);
 	});
 });
+
+describe('listChanges — sections and rows', () => {
+	const attack = { title: 'Attack', body: 'claws' };
+	const cast = { title: 'Cast a Spell', body: 'a prepared spell' };
+	const help = { title: 'Help', body: 'heal a friend' };
+	const yourTurn = { title: 'Your Turn', color: 'berry', rows: [attack, cast, help] };
+	const strengths = { title: 'Strengths', color: 'forest', rows: [{ title: 'Sneaking', body: 'moving quietly' }] };
+
+	it('reports a removed row by its title and its section', () => {
+		const draft = { sections: [{ ...yourTurn, rows: [attack, cast] }] };
+		expect(listChanges({ sections: [yourTurn] }, draft)).toEqual(['  - removed row "Help" from section "Your Turn"']);
+	});
+
+	it('reports swapped sections as one new-order line', () => {
+		const saved = { sections: [strengths, yourTurn] };
+		expect(listChanges(saved, { sections: [yourTurn, strengths] })).toEqual(['  - the order of sections changed']);
+	});
+
+	it('reports swapped rows as one new-order line that names the section', () => {
+		const draft = { sections: [{ ...yourTurn, rows: [cast, attack, help] }] };
+		expect(listChanges({ sections: [yourTurn] }, draft)).toEqual([
+			'  - the order of rows in section "Your Turn" changed'
+		]);
+	});
+
+	it('reports an added section as one line, without its rows', () => {
+		const draft = { sections: [yourTurn, strengths] };
+		expect(listChanges({ sections: [yourTurn] }, draft)).toEqual(['  - added section "Strengths"']);
+	});
+
+	it('matches a row with no title by its body', () => {
+		const note = { body: 'Pip hides in your hood' };
+		const saved = { sections: [{ ...yourTurn, rows: [attack, note] }] };
+		const draft = { sections: [{ ...yourTurn, rows: [attack, { ...note, color: 'ocean' }] }] };
+		expect(listChanges(saved, draft)).toEqual([
+			'  - changed row "Pip hides in your hood" in section "Your Turn" color: (none) → "ocean"'
+		]);
+	});
+});
