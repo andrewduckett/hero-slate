@@ -68,3 +68,22 @@ as one line to `.workspace/<id>.gaps.md`, where `<id>` is the character's id,
 and carry on. After the sheet is written or the avatar is saved, run
 `lets-shape` once for every gap in that file. When the Author declines, open
 no issue and add no line.
+
+## When the Author wants the app changed now
+
+Do not change it, even when the Author asks for the change now. An app change
+is a new capability, not character work. Tell the Author that:
+
+- the change starts as an issue through the `lets-shape` skill
+- the `lets-go` skill builds it later, on its own branch and pull request
+- they can start that run once the sheet or the avatar is done
+
+Then offer the issue as in [the gap steps](#when-the-author-wants-something-the-sheet-cannot-do),
+and carry on with the character.
+
+## Commits
+
+The character skills do not commit. When the Author asks you to commit the
+character work, commit only files under `static/characters/`. If the working
+tree holds other changes, leave them out of the commit, and tell the Author
+which files you left out.
