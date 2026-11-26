@@ -18,7 +18,7 @@ function deepEqual(a: unknown, b: unknown): boolean {
 	}
 	if (isMapping(a) && isMapping(b)) {
 		const keys = Object.keys(a);
-		return keys.length === Object.keys(b).length && keys.every((key) => key in b && deepEqual(a[key], b[key]));
+		return keys.length === Object.keys(b).length && keys.every((key) => Object.hasOwn(b, key) && deepEqual(a[key], b[key]));
 	}
 	return false;
 }
@@ -30,17 +30,17 @@ function show(value: unknown): string {
 
 /** Keys of both mappings: the saved file's in its order, then the draft's new ones in theirs. */
 function unionKeys(saved: Mapping, draft: Mapping): string[] {
-	return [...Object.keys(saved), ...Object.keys(draft).filter((key) => !(key in saved))];
+	return [...Object.keys(saved), ...Object.keys(draft).filter((key) => !Object.hasOwn(saved, key))];
 }
 
 /** A field of a paired entry, where a missing field shows as `(none)`. */
 function showField(entry: Mapping, field: string): string {
-	return field in entry ? show(entry[field]) : '(none)';
+	return Object.hasOwn(entry, field) ? show(entry[field]) : '(none)';
 }
 
 function compareField(name: string, saved: Mapping, draft: Mapping, key: string): string[] {
-	if (!(key in draft)) return [`removed ${name}: ${show(saved[key])}`];
-	if (!(key in saved)) return [`added ${name}: ${show(draft[key])}`];
+	if (!Object.hasOwn(draft, key)) return [`removed ${name}: ${show(saved[key])}`];
+	if (!Object.hasOwn(saved, key)) return [`added ${name}: ${show(draft[key])}`];
 	if (deepEqual(saved[key], draft[key])) return [];
 	return [`changed ${name}: ${show(saved[key])} → ${show(draft[key])}`];
 }

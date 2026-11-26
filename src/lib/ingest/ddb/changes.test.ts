@@ -19,6 +19,14 @@ describe('listChanges — fields', () => {
 		]);
 	});
 
+	it('reports an added top-level block whose name is also an Object property, such as toString', () => {
+		expect(listChanges({ name: 'Sunny' }, { name: 'Sunny', toString: 'x' })).toEqual(['  - added toString: "x"']);
+	});
+
+	it('reports a removed top-level block whose name is also an Object property, such as toString', () => {
+		expect(listChanges({ name: 'Sunny', toString: 'x' }, { name: 'Sunny' })).toEqual(['  - removed toString: "x"']);
+	});
+
 	it('reports a top-level field the draft removes, with its saved value', () => {
 		const { class: _removed, ...withoutClass } = IDENTITY;
 		expect(listChanges(IDENTITY, withoutClass)).toEqual(['  - removed class: "Druid"']);
