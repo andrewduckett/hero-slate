@@ -45,8 +45,8 @@ already exists. The rest of 0009 still applies.
 
 - Every saved character file, new or changed, has passed the same checks,
   and the Author has seen a preview of it before approving.
-- The Author sees a short list of what changed, not the whole sheet, so a
-  small edit to a long sheet is easy to approve.
+- The Author sees a short list of what changed beside the drawn sheet, so a
+  small edit to a long sheet is easy to find and approve.
 - A later refresh of a sheet from D&D Beyond can reuse edit mode and the
   digest cross-check without a new save path.
 - The write tool can now replace a tracked file. Replacing needs the
