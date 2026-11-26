@@ -97,6 +97,21 @@ function checkTarget(id: string, edit: boolean, deps: CliDeps): CliOutcome | und
 	return undefined;
 }
 
+/**
+ * A saved sheet that is empty, broken or not a mapping, such as after a bad
+ * hand edit, must not crash the preview that would repair it.
+ */
+function readSavedSheet(savedText: string): Record<string, unknown> | undefined {
+	try {
+		const saved: unknown = parseYaml(savedText);
+		return typeof saved === 'object' && saved !== null && !Array.isArray(saved)
+			? (saved as Record<string, unknown>)
+			: undefined;
+	} catch {
+		return undefined;
+	}
+}
+
 function runPreview(args: string[], deps: CliDeps): CliOutcome {
 	const [draftPath, ...rest] = args;
 	const digestFlagIndex = rest.indexOf('--digest');
@@ -120,9 +135,14 @@ function runPreview(args: string[], deps: CliDeps): CliOutcome {
 	const allWarnings = [...warnings, ...crosscheckWarnings];
 	if (edit) {
 		const savedText = deps.readFile(targetPath(id));
-		const saved = parseYaml(savedText) as Record<string, unknown>;
-		lines.push('', 'Changes:', ...listChanges(saved, draft));
-		allWarnings.push(...poolResetWarnings(saved, draft), ...lostCommentWarnings(savedText, text));
+		const saved = readSavedSheet(savedText);
+		if (saved === undefined) {
+			allWarnings.push(
+				`${targetPath(id)} is not a readable character file, so the change list compares the draft with an empty sheet`
+			);
+		}
+		lines.push('', 'Changes:', ...listChanges(saved ?? {}, draft));
+		allWarnings.push(...poolResetWarnings(saved ?? {}, draft), ...lostCommentWarnings(savedText, text));
 	}
 	if (allWarnings.length > 0) {
 		lines.push('', 'Warnings:', ...allWarnings.map((w) => `  - ${w}`));

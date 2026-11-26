@@ -201,6 +201,20 @@ describe('cli run — preview --edit', () => {
 		expect(result.stdout).toBe('');
 	});
 
+	it.each([
+		['empty', ''],
+		['not parseable YAML', 'name: [unclosed'],
+		['not a mapping', '- a list\n- not a sheet\n']
+	])('compares against an empty sheet and warns when the saved file is %s', async (_, saved) => {
+		const deps = filesDeps({ 'static/characters/sunny.yaml': saved, '.workspace/edit/sunny.yaml': 'name: Test Hero' });
+		const result = await run(['preview', '.workspace/edit/sunny.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(0);
+		expect(result.stdout).toContain('Changes:\n  - added name: "Test Hero"');
+		expect(result.stdout).toContain(
+			'  - static/characters/sunny.yaml is not a readable character file, so the change list compares the draft with an empty sheet'
+		);
+	});
+
 	it('prints the drawing, then the change list, then every warning in order', async () => {
 		const saved = ['# keep me', 'name: Test Hero', 'level: 6', 'pools:', '  - id: wild-shape', '    label: Wild Shape', '    max: 3'].join('\n');
 		const draft = ['name: Test Hero', 'level: 7', 'color: plum', 'pools:', '  - id: wildshape', '    label: Wild Shape', '    max: 3'].join('\n');

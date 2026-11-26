@@ -136,6 +136,10 @@ Explain these warnings to the Author before you ask for approval:
   unless the Author asked to remove it.
 - **The app would drop an entry.** The sheet cannot show that entry. Treat
   it as a gap, as in step 3.
+- **The saved file is not a readable character file.** It is empty, or a
+  hand edit broke it. The change list compares the draft with an empty
+  sheet, so it shows every block as added. Tell the Author that saving the
+  draft replaces the broken file.
 
 If the preview fails, relay its message to the Author. Do not work around
 it:
