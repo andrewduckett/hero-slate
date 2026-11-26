@@ -1,8 +1,9 @@
 # Character work
 
 Read this before you create or change a character's files, with or without a
-skill. The `dndbeyond-to-slate` and `character-avatar` skills follow it, and so
-does a hand edit.
+skill. The `dndbeyond-to-slate`, `character-edit` and `character-avatar` skills
+follow it, and so does a hand edit. A change to an existing sheet uses
+`character-edit`, but a hand edit with no skill stays allowed.
 
 ## What character work is
 

@@ -42,18 +42,25 @@ const VALID_DRAFT = ['name: Test Hero', 'level: 6', 'class: Druid', 'color: fore
 
 const INVALID_DRAFT = 'level: 6';
 
-function fakeDeps(overrides: Partial<CliDeps> = {}): CliDeps & { writes: Record<string, string> } {
+function fakeDeps(
+	overrides: Partial<CliDeps> = {}
+): CliDeps & { writes: Record<string, string>; replaced: Record<string, string> } {
 	const writes: Record<string, string> = {};
+	const replaced: Record<string, string> = {};
 	return {
 		readFile: () => VALID_DRAFT,
 		exists: () => false,
 		writeFile: (path: string, content: string) => {
 			writes[path] = content;
 		},
+		replaceFile: (path: string, content: string) => {
+			replaced[path] = content;
+		},
 		fetchFn: async () => {
 			throw new Error('fetchFn not stubbed for this test');
 		},
 		writes,
+		replaced,
 		...overrides
 	};
 }
@@ -130,6 +137,12 @@ describe('cli run — preview', () => {
 		expect(result.stdout).toBe('');
 	});
 
+	it('names the existing file and the edit flag when the target already exists', async () => {
+		const deps = fakeDeps({ exists: () => true });
+		const result = await run(['preview', '.workspace/test-hero.yaml'], deps);
+		expect(result.stderr).toBe('static/characters/test-hero.yaml already exists; pass --edit to change an existing sheet');
+	});
+
 	it('draws the preview when there are no errors and the target does not exist', async () => {
 		const deps = fakeDeps();
 		const result = await run(['preview', '.workspace/test-hero.yaml'], deps);
@@ -158,6 +171,87 @@ describe('cli run — preview', () => {
 	});
 });
 
+/** A file system holding exactly these files, by path. */
+function filesDeps(files: Record<string, string>, overrides: Partial<CliDeps> = {}) {
+	return fakeDeps({
+		readFile: (path: string) => {
+			if (!(path in files)) throw new Error(`ENOENT: ${path}`);
+			return files[path];
+		},
+		exists: (path: string) => path in files,
+		...overrides
+	});
+}
+
+describe('cli run — preview --edit', () => {
+	it('exits 6 without drawing when the saved file does not exist', async () => {
+		const deps = filesDeps({ '.workspace/edit/nobody.yaml': VALID_DRAFT });
+		const result = await run(['preview', '.workspace/edit/nobody.yaml', '--edit'], deps);
+		expect(result).toEqual({
+			exitCode: 6,
+			stdout: '',
+			stderr: 'static/characters/nobody.yaml does not exist; edit mode changes an existing sheet'
+		});
+	});
+
+	it('exits 1 without drawing when the draft has an error', async () => {
+		const deps = filesDeps({ 'static/characters/sunny.yaml': VALID_DRAFT, '.workspace/edit/sunny.yaml': INVALID_DRAFT });
+		const result = await run(['preview', '.workspace/edit/sunny.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(1);
+		expect(result.stdout).toBe('');
+	});
+
+	it.each([
+		['empty', ''],
+		['not parseable YAML', 'name: [unclosed'],
+		['not a mapping', '- a list\n- not a sheet\n']
+	])('compares against an empty sheet and warns when the saved file is %s', async (_, saved) => {
+		const deps = filesDeps({ 'static/characters/sunny.yaml': saved, '.workspace/edit/sunny.yaml': 'name: Test Hero' });
+		const result = await run(['preview', '.workspace/edit/sunny.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(0);
+		expect(result.stdout).toContain('Changes:\n  - added name: "Test Hero"');
+		expect(result.stdout).toContain(
+			'  - static/characters/sunny.yaml is not a readable character file, so the change list compares the draft with an empty sheet'
+		);
+	});
+
+	it('prints the drawing, then the change list, then every warning in order', async () => {
+		const saved = ['# keep me', 'name: Test Hero', 'level: 6', 'pools:', '  - id: wild-shape', '    label: Wild Shape', '    max: 3'].join('\n');
+		const draft = ['name: Test Hero', 'level: 7', 'color: plum', 'pools:', '  - id: wildshape', '    label: Wild Shape', '    max: 3'].join('\n');
+		const digest = JSON.stringify({
+			name: 'Test Hero',
+			classes: [],
+			level: 9,
+			abilities: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+			armorClass: null,
+			armorClassReason: null,
+			speed: 30,
+			initiative: 0,
+			hitPointsMax: 10
+		});
+		const deps = filesDeps({
+			'static/characters/sunny.yaml': saved,
+			'.workspace/edit/sunny.yaml': draft,
+			'.workspace/sunny.digest.json': digest
+		});
+
+		const result = await run(['preview', '.workspace/edit/sunny.yaml', '--edit', '--digest', '.workspace/sunny.digest.json'], deps);
+
+		expect(result.exitCode).toBe(0);
+		const [drawing, rest] = result.stdout.split('\n\nChanges:\n');
+		expect(drawing).toContain('Test Hero');
+		const [changes, warnings] = rest.split('\n\nWarnings:\n');
+		expect(changes.split('\n')).toEqual([
+			'  - changed level: 6 → 7',
+			'  - removed pool wild-shape',
+			'  - added pool wildshape',
+			'  - added color: "plum"'
+		]);
+		const warningPatterns = [/color "plum"/, /level/i, /pool id "wild-shape" is gone/, /comment "# keep me" is missing/];
+		expect(warnings.split('\n').map((line, i) => warningPatterns[i]?.test(line))).toEqual([true, true, true, true]);
+	});
+});
+
 describe('cli run — write', () => {
 	it('exits 1 on a draft error and writes nothing', async () => {
 		const deps = fakeDeps({ readFile: () => INVALID_DRAFT });
@@ -171,6 +265,12 @@ describe('cli run — write', () => {
 		const result = await run(['write', '.workspace/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(3);
 		expect(Object.keys(deps.writes)).toHaveLength(0);
+	});
+
+	it('names the existing file and the edit flag when the target already exists', async () => {
+		const deps = fakeDeps({ exists: () => true });
+		const result = await run(['write', '.workspace/test-hero.yaml'], deps);
+		expect(result.stderr).toBe('static/characters/test-hero.yaml already exists; pass --edit to change an existing sheet');
 	});
 
 	it('takes the id from the base name, ignoring the draft directory', async () => {
@@ -201,5 +301,43 @@ describe('cli run — write', () => {
 		});
 		const result = await run(['write', '.workspace/test-hero.yaml'], deps);
 		expect(result.exitCode).toBe(3);
+	});
+});
+
+describe('cli run — write --edit', () => {
+	it('exits 6 and writes nothing when the saved file does not exist', async () => {
+		const deps = filesDeps({ '.workspace/edit/nobody.yaml': VALID_DRAFT });
+		const result = await run(['write', '.workspace/edit/nobody.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(6);
+		expect({ ...deps.writes, ...deps.replaced }).toEqual({});
+	});
+
+	it('replaces only the saved file with exactly the draft bytes, and exits 0', async () => {
+		const draft = `${VALID_DRAFT}\n# kept\n`;
+		const deps = filesDeps({ 'static/characters/test-hero.yaml': VALID_DRAFT, '.workspace/edit/test-hero.yaml': draft });
+		const result = await run(['write', '.workspace/edit/test-hero.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(0);
+		expect(deps.replaced).toEqual({ 'static/characters/test-hero.yaml': draft });
+		expect(deps.writes).toEqual({});
+	});
+
+	it('exits 1 and leaves the character manifest unchanged for a draft named manifest.yaml', async () => {
+		const deps = filesDeps({
+			'static/characters/manifest.yaml': 'characters:\n  - sunny\n',
+			'.workspace/edit/manifest.yaml': VALID_DRAFT
+		});
+		const result = await run(['write', '.workspace/edit/manifest.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(1);
+		expect({ ...deps.writes, ...deps.replaced }).toEqual({});
+	});
+
+	it('exits 1 and leaves the saved file unchanged when the draft has an error', async () => {
+		const deps = filesDeps({
+			'static/characters/test-hero.yaml': VALID_DRAFT,
+			'.workspace/edit/test-hero.yaml': INVALID_DRAFT
+		});
+		const result = await run(['write', '.workspace/edit/test-hero.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(1);
+		expect({ ...deps.writes, ...deps.replaced }).toEqual({});
 	});
 });

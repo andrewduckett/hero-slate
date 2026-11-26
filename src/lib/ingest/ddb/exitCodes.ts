@@ -6,10 +6,11 @@
  * | 0    | Success                                                          | all             |
  * | 1    | The draft has at least one error                                 | preview, write  |
  * | 2    | The character is private, or the service refused access          | digest          |
- * | 3    | The target character file already exists                         | preview, write  |
+ * | 3    | The target character file already exists (new-character mode)    | preview, write  |
  * | 4    | The character reference is unreadable, or the character does not | digest          |
  * |      | exist                                                             |                 |
  * | 5    | A network failure, or a response the digest tool cannot read     | digest          |
+ * | 6    | The target character file does not exist (edit mode)             | preview, write  |
  */
 export const EXIT_CODES = {
 	success: 0,
@@ -17,7 +18,8 @@ export const EXIT_CODES = {
 	characterPrivate: 2,
 	targetExists: 3,
 	referenceUnreadable: 4,
-	fetchFailed: 5
+	fetchFailed: 5,
+	characterMissing: 6
 } as const;
 
 export type ExitCode = (typeof EXIT_CODES)[keyof typeof EXIT_CODES];

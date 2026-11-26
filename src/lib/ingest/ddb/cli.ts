@@ -14,12 +14,16 @@ import { computeDigest, type Digest } from './digest';
 import { validateDraft } from './validate';
 import { crosscheckDraft } from './crosscheck';
 import { renderPreview } from './preview';
+import { listChanges, lostCommentWarnings, poolResetWarnings } from './changes';
 import { parse as parseYaml } from 'yaml';
 
 export interface CliDeps {
 	readFile: (path: string) => string;
 	exists: (path: string) => boolean;
+	/** Create a new file; refuses one that already exists. */
 	writeFile: (path: string, content: string) => void;
+	/** Replace an existing file, for edit mode. */
+	replaceFile: (path: string, content: string) => void;
 	fetchFn: DdbFetchLike;
 }
 
@@ -77,18 +81,46 @@ function readDigestFile(path: string, deps: CliDeps): Digest {
 	return JSON.parse(deps.readFile(path)) as Digest;
 }
 
+/**
+ * New-character mode refuses an existing file; edit mode (`--edit`) refuses
+ * a missing one. Either way the check runs before anything is drawn or
+ * written, so the Author never approves a draft the write would refuse.
+ */
+function checkTarget(id: string, edit: boolean, deps: CliDeps): CliOutcome | undefined {
+	const exists = deps.exists(targetPath(id));
+	if (edit && !exists) {
+		return fail(EXIT_CODES.characterMissing, `${targetPath(id)} does not exist; edit mode changes an existing sheet`);
+	}
+	if (!edit && exists) {
+		return fail(EXIT_CODES.targetExists, `${targetPath(id)} already exists; pass --edit to change an existing sheet`);
+	}
+	return undefined;
+}
+
+/**
+ * A saved sheet that is empty, broken or not a mapping, such as after a bad
+ * hand edit, must not crash the preview that would repair it.
+ */
+function readSavedSheet(savedText: string): Record<string, unknown> | undefined {
+	try {
+		const saved: unknown = parseYaml(savedText);
+		return typeof saved === 'object' && saved !== null && !Array.isArray(saved)
+			? (saved as Record<string, unknown>)
+			: undefined;
+	} catch {
+		return undefined;
+	}
+}
+
 function runPreview(args: string[], deps: CliDeps): CliOutcome {
 	const [draftPath, ...rest] = args;
 	const digestFlagIndex = rest.indexOf('--digest');
 	const digestPath = digestFlagIndex >= 0 ? rest[digestFlagIndex + 1] : undefined;
+	const edit = rest.includes('--edit');
 
 	const id = idFromDraftPath(draftPath);
-	if (deps.exists(targetPath(id))) {
-		return fail(
-			EXIT_CODES.targetExists,
-			`${targetPath(id)} already exists; the ingest does not support updating an existing sheet yet`
-		);
-	}
+	const targetProblem = checkTarget(id, edit, deps);
+	if (targetProblem) return targetProblem;
 
 	const text = deps.readFile(draftPath);
 	const { errors, warnings } = validateDraft(text, id);
@@ -101,6 +133,17 @@ function runPreview(args: string[], deps: CliDeps): CliOutcome {
 
 	const lines = [...renderPreview(draft)];
 	const allWarnings = [...warnings, ...crosscheckWarnings];
+	if (edit) {
+		const savedText = deps.readFile(targetPath(id));
+		const saved = readSavedSheet(savedText);
+		if (saved === undefined) {
+			allWarnings.push(
+				`${targetPath(id)} is not a readable character file, so the change list compares the draft with an empty sheet`
+			);
+		}
+		lines.push('', 'Changes:', ...listChanges(saved ?? {}, draft));
+		allWarnings.push(...poolResetWarnings(saved ?? {}, draft), ...lostCommentWarnings(savedText, text));
+	}
 	if (allWarnings.length > 0) {
 		lines.push('', 'Warnings:', ...allWarnings.map((w) => `  - ${w}`));
 	}
@@ -109,20 +152,22 @@ function runPreview(args: string[], deps: CliDeps): CliOutcome {
 }
 
 function runWrite(args: string[], deps: CliDeps): CliOutcome {
-	const [draftPath] = args;
+	const [draftPath, ...rest] = args;
+	const edit = rest.includes('--edit');
 	const id = idFromDraftPath(draftPath);
 
-	if (deps.exists(targetPath(id))) {
-		return fail(
-			EXIT_CODES.targetExists,
-			`${targetPath(id)} already exists; the ingest does not support updating an existing sheet yet`
-		);
-	}
+	const targetProblem = checkTarget(id, edit, deps);
+	if (targetProblem) return targetProblem;
 
 	const text = deps.readFile(draftPath);
 	const { errors } = validateDraft(text, id);
 	if (errors.length > 0) {
 		return fail(EXIT_CODES.draftHasErrors, errors.join('\n'));
+	}
+
+	if (edit) {
+		deps.replaceFile(targetPath(id), text);
+		return ok(targetPath(id));
 	}
 
 	try {
@@ -155,6 +200,7 @@ async function main(): Promise<void> {
 		readFile: (path) => fs.readFileSync(path, 'utf8'),
 		exists: (path) => fs.existsSync(path),
 		writeFile: (path, content) => fs.writeFileSync(path, content, { flag: 'wx' }),
+		replaceFile: (path, content) => fs.writeFileSync(path, content),
 		fetchFn: fetch
 	};
 
