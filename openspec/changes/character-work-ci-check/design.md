@@ -39,7 +39,10 @@
   `judgeCharacterWork({ title, changedPaths })` in
   `scripts/character-work-check.test.ts`. Every `ci-checks` scenario except
   the title edit and the stacked base maps to one case: a title and a list of
-  paths in, a pass or fail result and the log message out.
+  paths in, a pass or fail result and the log message out. The same file
+  also parses `.github/workflows/character-work.yml` with `yaml` and asserts
+  its triggers, job name and that the title reaches the script only through
+  `env:` (D-c, D-d), as the emitted web manifest test reads a generated file.
 - **Existing seams reused:** the Vitest suite. `vite.config.ts` gains
   `scripts/**/*.test.ts` in `test.include`, so `npm test` and the
   `test and build` check run the new test.
