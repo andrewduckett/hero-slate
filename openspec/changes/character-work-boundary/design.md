@@ -142,10 +142,12 @@ surfaces:
 | `dndbeyond-to-slate` | 6, Offer the pools | A pool above 100 uses |
 | `dndbeyond-to-slate` | 11, Offer links | A link that is not `https:` |
 | `dndbeyond-to-slate` | 13, Preview | Any warning that the app drops an entry |
-| `character-avatar` | 2, Ask how the character looks | A request for more than one avatar, or for a change to how the sheet shows it |
+| `character-avatar` | 2, Ask how the character looks | A request for more than one avatar |
 
 A request to change the app can come at any step, so the top paragraph
-covers it, not a step.
+covers it, not a step. Step 2 of `character-avatar` also names one: a
+change to how the sheet shows the avatar goes to the rule for a change
+outside character work, not to the gap steps.
 
 - **Rejected: copy the full rule into each skill.** Two copies drift apart.
   #133 would add a third.

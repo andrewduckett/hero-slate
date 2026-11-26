@@ -37,8 +37,8 @@ This skill does character work. It writes only `static/characters/` and
 `.workspace/`, and follows [Character work](../character-work.md). When the
 Author wants something the sheet cannot do, follow that file's gap steps.
 When the Author asks for a change to the app or to any other file outside
-those two folders, at any step, do not make it: follow that file's rule for a
-change outside character work, then carry on with the sheet.
+those two folders, at any step, do not make it: follow that file's rule for
+[a change outside character work](../character-work.md#when-the-author-asks-for-a-change-outside-character-work), then carry on with the sheet.
 
 All commands run through `vite-node` so the tool can resolve the app's own
 rules:

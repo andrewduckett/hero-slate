@@ -24,8 +24,8 @@ This skill does character work. It writes only `static/characters/` and
 `.workspace/`, and follows [Character work](../character-work.md). When the
 Author wants something the sheet cannot do, follow that file's gap steps.
 When the Author asks for a change to the app or to any other file outside
-those two folders, at any step, do not make it: follow that file's rule for a
-change outside character work, then carry on with the avatar.
+those two folders, at any step, do not make it: follow that file's rule for
+[a change outside character work](../character-work.md#when-the-author-asks-for-a-change-outside-character-work), then carry on with the avatar.
 
 Run every command from the repo root. Both commands read the Author's words
 from files under `.workspace/`, so shell quoting cannot change them:
@@ -64,10 +64,14 @@ last avatar. Offer that look as a starting point.
 
 The sheet shows one avatar for each character, drawn the same way on every
 sheet. A request for more than one avatar, such as a second picture for a
-Wild Shape form, or for a change to how the sheet shows the avatar, is a gap.
-Follow [the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do),
+Wild Shape form, is a gap. Follow
+[the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do),
 such as offering one avatar whose look hints at the other form, then go on
 with one avatar.
+
+A request to change how the sheet shows the avatar, such as a larger avatar
+in the sheet header, is a change to the app. Follow the rule for
+[a change outside character work](../character-work.md#when-the-author-asks-for-a-change-outside-character-work), then go on with the avatar.
 
 ### 3. Draft the look description
 
