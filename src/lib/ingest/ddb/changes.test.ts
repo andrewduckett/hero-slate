@@ -30,3 +30,48 @@ describe('listChanges — fields', () => {
 		]);
 	});
 });
+
+describe('listChanges — list entries', () => {
+	const abilities = [
+		{ label: 'Strength', value: 8 },
+		{ label: 'Wisdom', value: 20 }
+	];
+
+	it('reports a renamed ability label as one removal and one addition', () => {
+		const draft = { abilities: [abilities[0], { label: 'Wits', value: 20 }] };
+		expect(listChanges({ abilities }, draft)).toEqual([
+			'  - removed "Wisdom" from abilities',
+			'  - added "Wits" to abilities'
+		]);
+	});
+
+	const wildShape = { id: 'wild-shape', label: 'Wild Shape', max: 3 };
+
+	it('reports a changed field of a pool matched by its id', () => {
+		const draft = { pools: [{ ...wildShape, max: 4 }] };
+		expect(listChanges({ pools: [wildShape] }, draft)).toEqual(['  - changed pool wild-shape max: 3 → 4']);
+	});
+
+	it('reports a pool the draft adds by its id', () => {
+		const draft = { pools: [wildShape, { id: 'slots-5', label: '5th Level', max: 1 }] };
+		expect(listChanges({ pools: [wildShape] }, draft)).toEqual(['  - added pool slots-5']);
+	});
+
+	it('lists an added link the app would drop, matched by its url', () => {
+		const draft = { links: [{ label: 'Map', url: 'http://example.com/map' }] };
+		expect(listChanges({}, draft)).toEqual(['  - added link http://example.com/map']);
+	});
+
+	it('reports a changed combat value matched by its label', () => {
+		const saved = { combat: [{ label: 'Speed', value: 30 }] };
+		expect(listChanges(saved, { combat: [{ label: 'Speed', value: 35 }] })).toEqual([
+			'  - changed "Speed" in combat value: 30 → 35'
+		]);
+	});
+
+	it('pairs entries that share a key in their order', () => {
+		const saved = { abilities: [{ label: 'Luck', value: 1 }, { label: 'Luck', value: 2 }] };
+		const draft = { abilities: [{ label: 'Luck', value: 1 }, { label: 'Luck', value: 3 }] };
+		expect(listChanges(saved, draft)).toEqual(['  - changed "Luck" in abilities value: 2 → 3']);
+	});
+});
