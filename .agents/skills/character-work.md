@@ -32,9 +32,10 @@ Offer the Author only what the app reads and draws today. These specs define
 it:
 
 - [`character-data`](../../openspec/specs/character-data/spec.md): the
-  character file's identity fields, abilities, combat, hit points and avatar
-- [`character-sheet`](../../openspec/specs/character-sheet/spec.md): what the
-  sheet draws
+  character's id, the identity fields, the avatar's location and the
+  character manifest
+- [`character-sheet`](../../openspec/specs/character-sheet/spec.md):
+  abilities, combat, hit points and what the sheet draws
 - [`resource-pools`](../../openspec/specs/resource-pools/spec.md): limited
   uses, spell slots and Pact Magic
 - [`custom-sections`](../../openspec/specs/custom-sections/spec.md): sections
