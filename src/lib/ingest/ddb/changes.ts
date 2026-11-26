@@ -199,3 +199,18 @@ export function listChanges(saved: Mapping, draft: Mapping): string[] {
 	if (lines.length === 0) lines.push('No changes');
 	return lines.map((line) => `  - ${line}`);
 }
+
+function poolIds(file: Mapping): unknown[] {
+	return asList(file.pools).flatMap((pool) => (isMapping(pool) && pool.id !== undefined ? [pool.id] : []));
+}
+
+/** The app keeps each pool's remaining uses per device under its id, so a saved id the draft lacks loses them. */
+export function poolResetWarnings(saved: Mapping, draft: Mapping): string[] {
+	const draftIds = poolIds(draft);
+	return poolIds(saved)
+		.filter((id) => !draftIds.includes(id))
+		.map(
+			(id) =>
+				`the pool id ${show(id)} is gone: every device forgets its remaining uses, and a pool with a new id starts full`
+		);
+}

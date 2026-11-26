@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { listChanges } from './changes';
+import { listChanges, poolResetWarnings } from './changes';
 
 const IDENTITY = { name: 'Sunny Thornwood', level: 7, class: 'Druid', color: 'forest' };
 
@@ -112,5 +112,25 @@ describe('listChanges — sections and rows', () => {
 		expect(listChanges(saved, draft)).toEqual([
 			'  - changed row "Pip hides in your hood" in section "Your Turn" color: (none) → "ocean"'
 		]);
+	});
+});
+
+describe('poolResetWarnings', () => {
+	const wildShape = { id: 'wild-shape', label: 'Wild Shape', max: 3 };
+
+	it('warns that a renamed pool id resets its remaining uses on every device', () => {
+		expect(poolResetWarnings({ pools: [wildShape] }, { pools: [{ ...wildShape, id: 'wildshape' }] })).toEqual([
+			'the pool id "wild-shape" is gone: every device forgets its remaining uses, and a pool with a new id starts full'
+		]);
+	});
+
+	it('warns about a removed pool by its id', () => {
+		const slots = { id: 'spell-slots-4', label: '4th Level', max: 1 };
+		const [warning] = poolResetWarnings({ pools: [slots, wildShape] }, { pools: [wildShape] });
+		expect(warning).toContain('"spell-slots-4" is gone');
+	});
+
+	it('gives no warning when only a pool maximum changes', () => {
+		expect(poolResetWarnings({ pools: [wildShape] }, { pools: [{ ...wildShape, max: 4 }] })).toEqual([]);
 	});
 });
