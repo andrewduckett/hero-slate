@@ -225,10 +225,11 @@ Do not propose a `color` for a link; a link with no `color` takes the
 character's. The Author may ask for one.
 
 The Author may also ask for any other link, by URL and an optional label.
-Add each one after the offered links, in the order the Author asked for
-them. The app shows only `https:` links, so tell the Author when a requested
-URL is not one — the preview will warn that the app drops it. This is a gap:
-follow [the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do).
+Add each `https:` one after the offered links, in the order the Author asked
+for them. The app shows only `https:` links and drops any other. A requested
+URL that is not `https:` is a gap: follow
+[the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do),
+and leave that URL out of `links`.
 
 List the kept links under `links` in this order. When the Author keeps no
 link, write no `links` key at all.
@@ -273,7 +274,9 @@ Author can read each pill in context.
 A warning that the app drops an entry means the sheet cannot show it. Treat
 each one as a gap, and follow
 [the gap steps](../character-work.md#when-the-author-wants-something-the-sheet-cannot-do)
-before you ask for approval.
+before you ask for approval. When the Author already accepted the issue for
+that gap earlier in this run, such as for a pool kept above 100 uses, say so
+instead of offering it again, and add no second line for it.
 
 If the preview exits with code 3, the target `static/characters/<id>.yaml`
 already exists. Tell the Author this skill does not support updating an
