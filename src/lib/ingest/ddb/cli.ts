@@ -14,6 +14,7 @@ import { computeDigest, type Digest } from './digest';
 import { validateDraft } from './validate';
 import { crosscheckDraft } from './crosscheck';
 import { renderPreview } from './preview';
+import { listChanges, lostCommentWarnings, poolResetWarnings } from './changes';
 import { parse as parseYaml } from 'yaml';
 
 export interface CliDeps {
@@ -77,18 +78,31 @@ function readDigestFile(path: string, deps: CliDeps): Digest {
 	return JSON.parse(deps.readFile(path)) as Digest;
 }
 
+/**
+ * New-character mode refuses an existing file; edit mode (`--edit`) refuses
+ * a missing one. Either way the check runs before anything is drawn or
+ * written, so the Author never approves a draft the write would refuse.
+ */
+function checkTarget(id: string, edit: boolean, deps: CliDeps): CliOutcome | undefined {
+	const exists = deps.exists(targetPath(id));
+	if (edit && !exists) {
+		return fail(EXIT_CODES.characterMissing, `${targetPath(id)} does not exist; edit mode changes an existing sheet`);
+	}
+	if (!edit && exists) {
+		return fail(EXIT_CODES.targetExists, `${targetPath(id)} already exists; pass --edit to change an existing sheet`);
+	}
+	return undefined;
+}
+
 function runPreview(args: string[], deps: CliDeps): CliOutcome {
 	const [draftPath, ...rest] = args;
 	const digestFlagIndex = rest.indexOf('--digest');
 	const digestPath = digestFlagIndex >= 0 ? rest[digestFlagIndex + 1] : undefined;
+	const edit = rest.includes('--edit');
 
 	const id = idFromDraftPath(draftPath);
-	if (deps.exists(targetPath(id))) {
-		return fail(
-			EXIT_CODES.targetExists,
-			`${targetPath(id)} already exists; the ingest does not support updating an existing sheet yet`
-		);
-	}
+	const targetProblem = checkTarget(id, edit, deps);
+	if (targetProblem) return targetProblem;
 
 	const text = deps.readFile(draftPath);
 	const { errors, warnings } = validateDraft(text, id);
@@ -101,6 +115,12 @@ function runPreview(args: string[], deps: CliDeps): CliOutcome {
 
 	const lines = [...renderPreview(draft)];
 	const allWarnings = [...warnings, ...crosscheckWarnings];
+	if (edit) {
+		const savedText = deps.readFile(targetPath(id));
+		const saved = parseYaml(savedText) as Record<string, unknown>;
+		lines.push('', 'Changes:', ...listChanges(saved, draft));
+		allWarnings.push(...poolResetWarnings(saved, draft), ...lostCommentWarnings(savedText, text));
+	}
 	if (allWarnings.length > 0) {
 		lines.push('', 'Warnings:', ...allWarnings.map((w) => `  - ${w}`));
 	}

@@ -130,6 +130,12 @@ describe('cli run — preview', () => {
 		expect(result.stdout).toBe('');
 	});
 
+	it('names the existing file and the edit flag when the target already exists', async () => {
+		const deps = fakeDeps({ exists: () => true });
+		const result = await run(['preview', '.workspace/test-hero.yaml'], deps);
+		expect(result.stderr).toBe('static/characters/test-hero.yaml already exists; pass --edit to change an existing sheet');
+	});
+
 	it('draws the preview when there are no errors and the target does not exist', async () => {
 		const deps = fakeDeps();
 		const result = await run(['preview', '.workspace/test-hero.yaml'], deps);
@@ -155,6 +161,73 @@ describe('cli run — preview', () => {
 		const result = await run(['preview', '.workspace/test-hero.yaml', '--digest', '.workspace/test-hero.digest.json'], deps);
 		expect(result.exitCode).toBe(0);
 		expect(result.stdout).toMatch(/level/i);
+	});
+});
+
+/** A file system holding exactly these files, by path. */
+function filesDeps(files: Record<string, string>, overrides: Partial<CliDeps> = {}) {
+	return fakeDeps({
+		readFile: (path: string) => {
+			if (!(path in files)) throw new Error(`ENOENT: ${path}`);
+			return files[path];
+		},
+		exists: (path: string) => path in files,
+		...overrides
+	});
+}
+
+describe('cli run — preview --edit', () => {
+	it('exits 6 without drawing when the saved file does not exist', async () => {
+		const deps = filesDeps({ '.workspace/edit/nobody.yaml': VALID_DRAFT });
+		const result = await run(['preview', '.workspace/edit/nobody.yaml', '--edit'], deps);
+		expect(result).toEqual({
+			exitCode: 6,
+			stdout: '',
+			stderr: 'static/characters/nobody.yaml does not exist; edit mode changes an existing sheet'
+		});
+	});
+
+	it('exits 1 without drawing when the draft has an error', async () => {
+		const deps = filesDeps({ 'static/characters/sunny.yaml': VALID_DRAFT, '.workspace/edit/sunny.yaml': INVALID_DRAFT });
+		const result = await run(['preview', '.workspace/edit/sunny.yaml', '--edit'], deps);
+		expect(result.exitCode).toBe(1);
+		expect(result.stdout).toBe('');
+	});
+
+	it('prints the drawing, then the change list, then every warning in order', async () => {
+		const saved = ['# keep me', 'name: Test Hero', 'level: 6', 'pools:', '  - id: wild-shape', '    label: Wild Shape', '    max: 3'].join('\n');
+		const draft = ['name: Test Hero', 'level: 7', 'color: plum', 'pools:', '  - id: wildshape', '    label: Wild Shape', '    max: 3'].join('\n');
+		const digest = JSON.stringify({
+			name: 'Test Hero',
+			classes: [],
+			level: 9,
+			abilities: { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 },
+			armorClass: null,
+			armorClassReason: null,
+			speed: 30,
+			initiative: 0,
+			hitPointsMax: 10
+		});
+		const deps = filesDeps({
+			'static/characters/sunny.yaml': saved,
+			'.workspace/edit/sunny.yaml': draft,
+			'.workspace/sunny.digest.json': digest
+		});
+
+		const result = await run(['preview', '.workspace/edit/sunny.yaml', '--edit', '--digest', '.workspace/sunny.digest.json'], deps);
+
+		expect(result.exitCode).toBe(0);
+		const [drawing, rest] = result.stdout.split('\n\nChanges:\n');
+		expect(drawing).toContain('Test Hero');
+		const [changes, warnings] = rest.split('\n\nWarnings:\n');
+		expect(changes.split('\n')).toEqual([
+			'  - changed level: 6 → 7',
+			'  - removed pool wild-shape',
+			'  - added pool wildshape',
+			'  - added color: "plum"'
+		]);
+		const warningPatterns = [/color "plum"/, /level/i, /pool id "wild-shape" is gone/, /comment "# keep me" is missing/];
+		expect(warnings.split('\n').map((line, i) => warningPatterns[i]?.test(line))).toEqual([true, true, true, true]);
 	});
 });
 
