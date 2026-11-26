@@ -19,4 +19,14 @@ describe('judgeCharacterWork', () => {
 			expect(result.message).toMatch(/not marked as character work/);
 		}
 	);
+
+	it.each([
+		[['static/characters/gimdak.yaml', 'static/characters/manifest.yaml']],
+		[['static/characters/notes/gimdak.md']],
+		[[]]
+	])('passes a marked pull request that changes only files in static/characters/: %j', (changedPaths) => {
+		const result = judgeCharacterWork({ title: 'char: add Gimdak', changedPaths });
+		expect(result.pass).toBe(true);
+		expect(result.message).toMatch(/changes only files in static\/characters\//);
+	});
 });
