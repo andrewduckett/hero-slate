@@ -71,7 +71,7 @@ on with the rest:
 | A new avatar or portrait | The `character-avatar` skill makes avatars. |
 | A refresh from D&D Beyond | That is issue #41, not built yet. Until then, the Author can tell you each change to make. |
 | A new id, such as `sunny` to `sunny-thornwood` | This skill does not rename an id. The app keeps each device's tracked state, such as hit points and pool uses, under the id, so a new id resets that state on every device. |
-| Deleting a character | This skill does not delete a character. |
+| Deleting a character | This skill does not delete a character: it only changes a sheet that stays. To remove one, the Author deletes its character file, its avatar and its character manifest line by hand. |
 
 ### 2. Check the character manifest line
 
@@ -132,8 +132,9 @@ Explain these warnings to the Author before you ask for approval:
   device under the pool's id. A renamed or removed pool id makes every
   device forget its remaining uses, and a pool with a new id starts full.
 - **A comment is missing from the draft.** The draft lost a comment from
-  the saved file, such as the `# Avatar:` line. Restore it in the draft,
-  unless the Author asked to remove it.
+  the saved file, such as the `# Avatar:` line. Unless the Author asked to
+  remove it, restore it in the draft and run `preview` again before you ask
+  for approval.
 - **The app would drop an entry.** The sheet cannot show that entry. Treat
   it as a gap, as in step 3.
 - **The saved file is not a readable character file.** It is empty, or a
