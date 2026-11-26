@@ -47,8 +47,9 @@ cannot express, that gap becomes an issue through `lets-shape`, not an app
 change. [Character work](.agents/skills/character-work.md) gives the gap steps
 and the commit rule.
 
-To start: a new sheet from D&D Beyond uses the `dndbeyond-to-slate` skill, an
-avatar uses `character-avatar`, a hand edit follows
+To start: a new sheet from D&D Beyond uses the `dndbeyond-to-slate` skill, a
+change to an existing sheet uses `character-edit`, an avatar uses
+`character-avatar`, a hand edit follows
 [Character work](.agents/skills/character-work.md) directly, and a missing
 capability starts with `lets-shape`.
 

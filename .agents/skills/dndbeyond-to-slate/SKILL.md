@@ -279,8 +279,10 @@ that gap earlier in this run, such as for a pool kept above 100 uses, say so
 instead of offering it again, and add no second line for it.
 
 If the preview exits with code 3, the target `static/characters/<id>.yaml`
-already exists. Tell the Author this skill does not support updating an
-existing sheet yet (that is story 20), and ask for a different id.
+already exists. Tell the Author that a character file with that id already
+exists. Say that the `character-edit` skill changes an existing sheet, and
+that a refresh from D&D Beyond is issue #41, not built yet. Then ask the
+Author for a different id.
 
 If the preview exits with code 1, relay its errors, fix the draft, and run
 `preview` again before asking for approval.
